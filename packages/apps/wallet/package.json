@@ -1,7 +1,7 @@
 {
   "name": "@linkdrop/wallet",
   "version": "1.0.80",
-  "description": "Front end part for linkdrop app to claim tokens",
+  "description": "Wallet widget",
   "main": "index.js",
   "private": true,
   "author": "",
