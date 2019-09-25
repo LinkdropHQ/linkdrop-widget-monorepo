@@ -1,0 +1,31 @@
+@import "variables";
+
+.container {
+  height: 70px;
+  display: flex;
+  padding: 0px 30px;
+  border-bottom: 1px solid $greyStrokeMenuColor;
+  align-items: center;
+  margin-bottom: 50px;
+
+  div {
+    &:last-child {
+      flex: 1;
+    }
+  }
+}
+
+.input {
+  border: none;
+  width: 100%;
+  font-size: 18px;
+  &::placeholder {
+    color: $dbBlueTransparent;
+  }
+}
+
+.title {
+  color: $dbBlue;
+  font-family: 'Inter-Bold';
+  font-size: 18px;
+}

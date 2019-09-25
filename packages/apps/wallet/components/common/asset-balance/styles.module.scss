@@ -1,0 +1,55 @@
+@import "variables";
+
+.container {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  text-align: left;
+  margin-bottom: 15px;
+
+  &.loading {
+    opacity: .3;
+  }
+
+  &.eth {
+    .icon {
+      border: 1px solid $blackColor;
+      padding: 6px;
+    }
+  }
+}
+
+.icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 40px;
+  margin-right: 15px;
+  overflow: hidden;
+}
+
+.iconBlank {
+  border: 1px solid $blackColor;
+}
+
+.iconImg {
+  max-height: 100%;
+}
+
+.symbol {
+  flex: 1 0;
+}
+
+.amount {
+  font-family: 'Inter-Bold';
+}
+
+.price {
+  color: $textGreyColor;
+}
+
+.divider {
+  margin: 0px 4px;
+}

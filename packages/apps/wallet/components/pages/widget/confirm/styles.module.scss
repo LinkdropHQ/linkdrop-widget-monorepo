@@ -1,0 +1,60 @@
+@import "variables";
+
+.content {
+  padding: 20px 0px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: $textGreyColor;
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.footer {
+  text-align: center;
+  color: $textGreyColor;
+
+  a {
+    color: $textGreyColor;
+  }
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.assets {
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.title {
+  margin-bottom: 20px;
+  font-size: 24px;
+  span {
+    color: $dbBlue;
+  }
+}
+
+.buttonConfirm {
+  max-width: 198px;
+  min-width: 198px;
+  background: $dbBlue;
+}
+
+.buttonCancel {
+  border-color: $textGreyColor;
+  max-width: 90px;
+  color: $textGreyColor;
+  min-width: 90px;
+}

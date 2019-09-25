@@ -1,0 +1,39 @@
+@import "variables";
+
+.container {
+}
+
+.menuItem {
+  height: 70px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  justify-content: center;
+  font-family: 'Inter-Medium';
+  color: $dbBlue;
+  font-size: 18px;
+  border-top: 1px solid $greyStrokeMenuColor;
+  cursor: pointer;
+  transition: background-color .3s;
+  text-decoration: none;
+
+  &:hover {
+    background-color: $bgHoverGreyColor;
+  }
+}
+
+.menuItemLogo {
+  position: absolute;
+  left: 30px;
+  width: 30px;
+  line-height: 1;
+  height: 30px;
+  display: flex;
+  border-radius: 30px;
+  align-items: center;
+  justify-content: center;
+  color: $greenColor;
+  background: $greenColorTransparent;
+  top: 50%;
+  transform: translateY(-50%);
+}

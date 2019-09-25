@@ -1,0 +1,85 @@
+@import "variables";
+
+.container {
+  padding: 0px 30px;
+  border-bottom: 1px solid $greyStrokeMenuColor;
+
+
+  &.loading {
+    .close {
+      cursor: not-allowed;
+      opacity: .4;
+    }
+  }
+}
+
+.content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90px;
+  position: relative;
+}
+
+.close {
+  cursor: pointer;
+  position: absolute;
+  top: 30px;
+  left: 0px;
+
+  &.loading {
+
+  }
+}
+
+.controls {
+  position: absolute;
+  top: 20px;
+  right: 0px;
+}
+
+.amount {
+  max-width: 150px;
+  width: 33%;
+}
+
+.button {
+  padding: 0px 15px;
+  font-size: 20px;
+  color: $whiteColor;
+  width: 65px;
+  min-width: 65px;
+  background: $dbBlue;
+}
+
+.finishedButton {
+  background: $greenColorTransparent;
+  min-width: 65px;
+  width: 65px;
+  padding: 0px 15px;
+}
+
+.input {
+  max-width: 100%;
+  font-size: 30px!important;
+  font-family: 'Inter-Bold'!important;
+  text-align: center;
+  transition: border-color .3s;
+
+  &:focus {
+    border-color: $dbBlue;
+  }
+
+  &.empty {
+    color: $dbBlueTransparent;
+    &::placeholder {
+      color: $dbBlueTransparent;
+    }
+  }
+
+
+  &.errored {
+    color: $redColor;
+    border-color: $redColor;
+  }
+}

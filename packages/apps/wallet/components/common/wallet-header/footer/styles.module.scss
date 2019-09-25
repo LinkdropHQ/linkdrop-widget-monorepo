@@ -1,0 +1,11 @@
+@import "variables";
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $textGreyColor;
+  min-height: 120px;
+  text-align: center;
+  background: $dbMenuFooter;
+}

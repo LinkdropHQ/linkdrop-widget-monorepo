@@ -1,0 +1,12 @@
+@import "variables";
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 90px;
+  width: 100%;
+  color: $dbBlue;
+  position: relative;
+  font-size: 24px;
+}

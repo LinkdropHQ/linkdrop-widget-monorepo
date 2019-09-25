@@ -1,0 +1,20 @@
+{
+    "jsonRpcUrl": "https://rinkeby.infura.io",
+    "CHAIN": "rinkeby",
+    "API_HOST": "http://localhost:5000",
+    "chainId": "4",
+    "version": "2",
+    "linkdropMasterPrivateKey": "",
+    "masterCopy": "0x2f9Df93ebF334443c5719f01000f777749a3f99c",
+    "receiverAddress": "",
+    "weiAmount": "10",
+    "tokenAddress": "",
+    "tokenAmount": "",
+    "linksNumber": "10",
+    "nftAddress": "",
+    "nftIds": "[0,1,2,3]",
+    "CAMPAIGN_ID": "0",
+    "FACTORY_ADDRESS": "0x5AbdfcF089573C4E588E7278277E104E45B0fDa9",
+    "RELAYER_ADDRESS: ""
+   
+}

@@ -1,0 +1,33 @@
+@import "variables";
+
+.container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100vw;
+  z-index: 2;
+  background: $whiteColor;
+}
+
+.note {
+  font-size: 14px;
+  text-align: center;
+
+  a {
+    text-decoration: none;
+    color: $dbBlue;
+  }
+}
+
+.error {
+  font-size: 14px;
+  text-align: center;
+  color: $redColor;
+}
+
+.input {
+  &.inputErrored {
+    color: $redColor;
+  }
+}
