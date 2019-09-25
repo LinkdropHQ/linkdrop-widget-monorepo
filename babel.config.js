@@ -6,14 +6,9 @@ module.exports = ({
     '@babel/plugin-syntax-function-bind'
   ],
   env: {
-    'test-demo': {
+    'test-wallet': {
       plugins: [
-        ['babel-plugin-webpack-alias', { config: './packages/apps/app-demo/webpack.common.js' }]
-      ]
-    },
-    'test-claim': {
-      plugins: [
-        ['babel-plugin-webpack-alias', { config: './packages/apps/app-claim/webpack.common.js' }]
+        ['babel-plugin-webpack-alias', { config: './packages/apps/wallet/webpack.common.js' }]
       ]
     }
   }
