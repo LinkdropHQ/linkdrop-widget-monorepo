@@ -20,12 +20,8 @@ configs/server.config.json
 configs/scripts.config.json
 configs/auth.config.json
 
-packages/apps/app-claim/node_modules/
-packages/apps/app-claim/assets/scripts/
-
-packages/apps/app-demo/node_modules/
-packages/apps/app-demo/assets/scripts/
-packages/apps/linkdrop-ui-kit/dist/bundle.js
+packages/apps/wallet/node_modules/
+packages/apps/wallet/assets/scripts/
 
 # emacs
 *#
