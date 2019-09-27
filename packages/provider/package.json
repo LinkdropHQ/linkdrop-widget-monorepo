@@ -1,13 +1,13 @@
 {
   "name": "@huskiapp/provider",
-  "version": "1.0.80",
+  "version": "0.0.1",
   "main": "src/index.js",
   "license": "MIT",
   "publishConfig": {
     "access": "publish"
   },
   "babel": {
-    "extends": "../babel.config.js"
+    "extends": "../../babel.config.js"
   },
   "dependencies": {
     "ethers": "^4.0.27",
