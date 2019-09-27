@@ -9,7 +9,9 @@
     "packages/*",
     "packages/apps/*"
   ],
-  "scripts": {},
+  "scripts": {
+    "build": "npx babel packages/sdk/src -d packages/sdk/dist"
+  },
   "standard": {
     "parser": "babel-eslint"
   },
