@@ -1,5 +1,5 @@
 {
-  "name": "@linkdrop/wallet-provider",
+  "name": "@huskiapp/provider",
   "version": "1.0.80",
   "main": "src/index.js",
   "license": "MIT",

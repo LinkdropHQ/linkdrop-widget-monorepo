@@ -1,5 +1,5 @@
 {
-  "name": "safe-relayer",
+  "name": "@huskiapp/relayer",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",

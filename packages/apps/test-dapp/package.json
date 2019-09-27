@@ -1,5 +1,5 @@
 {
-  "name": "test-dapp",
+  "name": "@huskiapp/test-dapp",
   "version": "1.0.80",
   "private": true,
   "dependencies": {

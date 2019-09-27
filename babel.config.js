@@ -1,4 +1,4 @@
-module.exports = ({
+module.exports = {
   presets: ['@babel/preset-env', '@babel/preset-react'],
   plugins: [
     ['@babel/plugin-proposal-decorators', { legacy: true }],
@@ -8,8 +8,11 @@ module.exports = ({
   env: {
     'test-wallet': {
       plugins: [
-        ['babel-plugin-webpack-alias', { config: './packages/apps/wallet/webpack.common.js' }]
+        [
+          'babel-plugin-webpack-alias',
+          { config: './packages/apps/wallet/webpack.common.js' }
+        ]
       ]
     }
   }
-})
+}
