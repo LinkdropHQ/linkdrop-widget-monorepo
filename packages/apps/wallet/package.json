@@ -25,6 +25,7 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.4.4",
     "@linkdrop/commons": "^1.0.83",
+    "@linkdrop/contracts": "^1.0.83",
     "@linkdrop/sdk": "^1.0.83",
     "@linkdrop/ui-kit": "^1.0.84",
     "babel-eslint": "^10.0.2",
