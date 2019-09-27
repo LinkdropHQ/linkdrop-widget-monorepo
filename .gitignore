@@ -16,8 +16,6 @@ packages/scripts/output
 .env
 config.json
 configs/app.config.json
-configs/server.config.json
-configs/scripts.config.json
 configs/auth.config.json
 
 packages/apps/wallet/node_modules/
