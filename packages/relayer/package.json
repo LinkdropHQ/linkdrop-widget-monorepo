@@ -2,6 +2,7 @@
   "name": "@huskiapp/relayer",
   "version": "0.0.1",
   "main": "index.js",
+  "author": "Amir Jumaniyazov <amir@linkdrop.io>",
   "license": "MIT",
   "private": true,
   "scripts": {
