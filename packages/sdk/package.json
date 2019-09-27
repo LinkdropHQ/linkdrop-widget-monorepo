@@ -6,6 +6,9 @@
   "publishConfig": {
     "access": "public"
   },
+  "scripts": {
+    "build": "npx babel src -d dist"
+  },
   "babel": {
     "extends": "../../babel.config.js"
   },

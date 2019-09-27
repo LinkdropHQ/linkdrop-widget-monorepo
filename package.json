@@ -1,6 +1,6 @@
 {
-  "name": "root",
-  "version": "1.0.8",
+  "name": "@huskiapp/monorepo",
+  "version": "0.0.1",
   "private": true,
   "main": "index.js",
   "repository": "https://github.com/LinkdropHQ/huskiapp.git",
@@ -10,12 +10,15 @@
     "packages/apps/*"
   ],
   "scripts": {
-    "build": "npx babel packages/sdk/src -d packages/sdk/dist"
+    "build": "yarn wsrun build"
   },
-  "standard": {
-    "parser": "babel-eslint"
+  "dependencies": {
+    "wsrun": "^5.0.2"
   },
   "devDependencies": {
     "lerna": "^3.16.4"
+  },
+  "standard": {
+    "parser": "babel-eslint"
   }
 }
