@@ -10,7 +10,8 @@
     "packages/apps/*"
   ],
   "scripts": {
-    "build": "yarn wsrun build"
+    "build": "yarn wsrun --stages --exclude-missing build",
+    "test": "yarn wsrun --stages --exclude-missing test"
   },
   "dependencies": {
     "wsrun": "^5.0.2"
