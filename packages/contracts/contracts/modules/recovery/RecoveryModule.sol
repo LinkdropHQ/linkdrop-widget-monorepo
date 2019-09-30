@@ -2,16 +2,22 @@ pragma solidity ^0.5.6;
 import "@gnosis.pm/safe-contracts/contracts/base/OwnerManager.sol";
 import "@gnosis.pm/safe-contracts/contracts/base/Module.sol";
 
-
+/**
+* @title Recovery Module for Gnosis Safe
+* @author Amir Jumaniyazov - <amir@linkdrop.io>
+*/
 contract RecoveryModule is Module {
 
+    // Indicates whether an address is a guardian
     mapping (address => bool) public isGuardian;
 
     address[] public guardians;
 
-    uint public recoveryPeriod; // Recovery period duration (seconds)
+    // Recovery period duration (in seconds)
+    uint public recoveryPeriod;
 
-    uint public recoveryInitiated; // Recovery initiated timestamp
+    // Recovery initiation timestamp
+    uint public recoveryInitiated;
 
     modifier onlyGuardian() {
         require(isGuardian[msg.sender], "Only guardian");
@@ -20,24 +26,26 @@ contract RecoveryModule is Module {
 
     /**
     * @dev Function to setup the initial storage of module
+    * @param _guardians Array of guardians addresses
+    * @param _recoveryPeriod Recovery period duration (in atomic units - seconds)
     */
     function setup(address[] memory _guardians, uint _recoveryPeriod)
     public
     {
         setManager();
-
         for (uint i = 0; i < _guardians.length; i++) {
             address guardian = _guardians[i];
             require(guardian != address(0), "Invalid guardian address");
             require(!isGuardian[guardian], "Duplicate guardian address");
             isGuardian[guardian] = true;
         }
-
         guardians = _guardians;
         recoveryPeriod = _recoveryPeriod;
     }
 
-    // Can only be called by guardian
+    /**
+    * @dev Function to initiate recovery. Can only be called by guardian
+    */
     function initiateRecovery()
     public
     onlyGuardian
@@ -47,7 +55,9 @@ contract RecoveryModule is Module {
         recoveryInitiated = now;
     }
 
-    // Can only be called via Safe transaction
+    /**
+    * @dev Function to cancel recovery. Can only be called via Safe transaction
+    */
     function cancelRecovery()
     public
     authorized
@@ -57,6 +67,7 @@ contract RecoveryModule is Module {
     }
 
     /**
+    * @dev Function to recover access (change Safe owner). Can only be called by guardian
     * @param _prevOwner Owner that pointed to the owner to be replaced in the linked list
     * @param _oldOwner Owner address to be replaced
     * @param _newOwner New owner address
