@@ -19,7 +19,7 @@
     "build": "yarn wsrun --stages --exclude-missing build",
     "build:contracts": "cd packages/contracts && yarn build",
     "test": "yarn wsrun --stages --exclude-missing test",
-    "test:contracts": "cd packages/contracts && yarn test",
+    "test:contracts": "cd packages/contracts && yarn test ./test/modules/recovery",
     "relayer": "npx babel-node packages/relayer/index"
   },
   "dependencies": {

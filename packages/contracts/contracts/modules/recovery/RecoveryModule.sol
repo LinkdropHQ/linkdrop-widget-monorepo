@@ -5,16 +5,16 @@ import "@gnosis.pm/safe-contracts/contracts/base/Module.sol";
 
 contract RecoveryModule is Module {
 
-    mapping (address => bool) isGuardian;
+    mapping (address => bool) public isGuardian;
 
     address[] public guardians;
 
-    uint public recoveryPeriod; // Recovery period duration (days)
+    uint public recoveryPeriod; // Recovery period duration (seconds)
 
     uint public recoveryInitiated; // Recovery initiated timestamp
 
     modifier onlyGuardian() {
-        require(isGuardian[msg.sender], "ONLY_GUARDIAN");
+        require(isGuardian[msg.sender], "Only guardian");
         _;
     }
 
@@ -28,8 +28,8 @@ contract RecoveryModule is Module {
 
         for (uint i = 0; i < _guardians.length; i++) {
             address guardian = _guardians[i];
-            require(guardian != address(0), "INVALID_GUARDIAN_ADDRESS");
-            require(!isGuardian[guardian], "DUPLICATE_GUARDIAN_ADDRESS");
+            require(guardian != address(0), "Invalid guardian address");
+            require(!isGuardian[guardian], "Duplicate guardian address");
             isGuardian[guardian] = true;
         }
 
@@ -42,7 +42,7 @@ contract RecoveryModule is Module {
     public
     onlyGuardian
     {
-        require(recoveryInitiated == 0, "RECOVERY_ALREADY_INITIATED");
+        require(recoveryInitiated == 0, "Recovery is already initiated");
         /* solium-disable-next-line */
         recoveryInitiated = now;
     }
@@ -52,7 +52,7 @@ contract RecoveryModule is Module {
     public
     authorized
     {
-        require(recoveryInitiated != 0, "RECOVERY_NOT_INITIATED");
+        require(recoveryInitiated != 0, "Recovery is not initiated");
         delete recoveryInitiated;
     }
 
@@ -71,12 +71,13 @@ contract RecoveryModule is Module {
     public
     onlyGuardian
     {
-        require(recoveryInitiated != 0, "RECOVERY_NOT_INITIATED");
+        require(recoveryInitiated != 0, "Recovery is not initiated");
         /* solium-disable-next-line */
-        require(now - recoveryInitiated >= recoveryPeriod, "RECOVERY_PERIOD_NOT_PASSED");
+        require(now - recoveryInitiated >= recoveryPeriod, "Recovery period is not over");
 
         bytes memory data = abi.encodeWithSignature("swapOwner(address,address,address)", _prevOwner, _oldOwner, _newOwner);
-        require(manager.execTransactionFromModule(address(manager), 0, data, Enum.Operation.Call), "RECOVERY_FAILED");
+        require(manager.execTransactionFromModule(address(manager), 0, data, Enum.Operation.Call), "Recovery failed");
+        delete recoveryInitiated;
     }
 
 }
