@@ -1,5 +1,4 @@
 pragma solidity ^0.5.6;
-import "@gnosis.pm/safe-contracts/contracts/base/OwnerManager.sol";
 import "@gnosis.pm/safe-contracts/contracts/base/Module.sol";
 
 /**
