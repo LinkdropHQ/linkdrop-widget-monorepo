@@ -1,12 +1,12 @@
 import axios from 'axios'
 import assert from 'assert-js'
 import { computeSafeAddress } from './computeSafeAddress'
-import { signReceiverAddress } from '../utils'
 import { ethers } from 'ethers'
 import {
   encodeParams,
   encodeDataForCreateAndAddModules,
-  encodeDataForMultiSend
+  encodeDataForMultiSend,
+  signReceiverAddress
 } from './utils'
 
 import ProxyFactory from '@gnosis.pm/safe-contracts/build/contracts/ProxyFactory'

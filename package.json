@@ -11,7 +11,8 @@
   ],
   "scripts": {
     "build": "yarn wsrun --stages --exclude-missing build",
-    "test": "yarn wsrun --stages --exclude-missing test"
+    "test": "yarn wsrun --stages --exclude-missing test",
+    "relayer": "npx babel-node packages/relayer/index"
   },
   "dependencies": {
     "wsrun": "^5.0.2"

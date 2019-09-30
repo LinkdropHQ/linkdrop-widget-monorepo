@@ -17,11 +17,9 @@ var _assertJs = _interopRequireDefault(require("assert-js"));
 
 var _computeSafeAddress = require("./computeSafeAddress");
 
-var _utils = require("../utils");
+var _utils = require("./utils");
 
 var _ethers = require("ethers");
-
-var _utils2 = require("./utils");
 
 var _ProxyFactory = _interopRequireDefault(require("@gnosis.pm/safe-contracts/build/contracts/ProxyFactory"));
 
@@ -160,13 +158,13 @@ function () {
             _assertJs["default"].string(multiSend, 'MultiSend library address is required');
 
             saltNonce = new Date().getTime();
-            linkdropModuleSetupData = (0, _utils2.encodeParams)(_LinkdropModule["default"].abi, 'setup', [[owner]]);
-            linkdropModuleCreationData = (0, _utils2.encodeParams)(_ProxyFactory["default"].abi, 'createProxyWithNonce', [linkdropModuleMasterCopy, linkdropModuleSetupData, saltNonce]);
-            modulesCreationData = (0, _utils2.encodeDataForCreateAndAddModules)([linkdropModuleCreationData]);
-            createAndAddModulesData = (0, _utils2.encodeParams)(_CreateAndAddModules["default"].abi, 'createAndAddModules', [proxyFactory, modulesCreationData]);
-            createAndAddModulesMultiSendData = (0, _utils2.encodeDataForMultiSend)(DELEGATECALL_OP, createAndAddModules, 0, createAndAddModulesData);
+            linkdropModuleSetupData = (0, _utils.encodeParams)(_LinkdropModule["default"].abi, 'setup', [[owner]]);
+            linkdropModuleCreationData = (0, _utils.encodeParams)(_ProxyFactory["default"].abi, 'createProxyWithNonce', [linkdropModuleMasterCopy, linkdropModuleSetupData, saltNonce]);
+            modulesCreationData = (0, _utils.encodeDataForCreateAndAddModules)([linkdropModuleCreationData]);
+            createAndAddModulesData = (0, _utils.encodeParams)(_CreateAndAddModules["default"].abi, 'createAndAddModules', [proxyFactory, modulesCreationData]);
+            createAndAddModulesMultiSendData = (0, _utils.encodeDataForMultiSend)(DELEGATECALL_OP, createAndAddModules, 0, createAndAddModulesData);
             nestedTxData = '0x' + createAndAddModulesMultiSendData;
-            multiSendData = (0, _utils2.encodeParams)(_MultiSend["default"].abi, 'multiSend', [nestedTxData]);
+            multiSendData = (0, _utils.encodeParams)(_MultiSend["default"].abi, 'multiSend', [nestedTxData]);
             safe = (0, _computeSafeAddress.computeSafeAddress)({
               owner: owner,
               saltNonce: saltNonce,
