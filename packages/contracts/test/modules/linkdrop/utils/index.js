@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 
-export const createAndAddModulesData = dataArray => {
+export const encodeDataForCreateAndAddModules = dataArray => {
   const moduleDataWrapper = new ethers.utils.Interface([
     'function setup(bytes data)'
   ])
