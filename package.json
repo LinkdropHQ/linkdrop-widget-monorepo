@@ -5,13 +5,22 @@
   "main": "index.js",
   "repository": "https://github.com/LinkdropHQ/huskiapp.git",
   "license": "MIT",
-  "workspaces": [
-    "packages/*",
-    "packages/apps/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "packages/apps/*"
+    ],
+    "nohoist": [
+      "**/truffle",
+      "**/truffle/**"
+    ]
+  },
   "scripts": {
     "build": "yarn wsrun --stages --exclude-missing build",
-    "test": "yarn wsrun --stages --exclude-missing test"
+    "build:contracts": "cd packages/contracts && yarn build",
+    "test": "yarn wsrun --stages --exclude-missing test",
+    "test:contracts": "cd packages/contracts && yarn test",
+    "relayer": "npx babel-node packages/relayer/index"
   },
   "dependencies": {
     "wsrun": "^5.0.2"

@@ -10,14 +10,20 @@ import {
 } from 'ethereum-waffle'
 
 import { ethers } from 'ethers'
+import {
+  encodeDataForCreateAndAddModules,
+  encodeParams,
+  getParamFromTxEvent
+} from '../../../../sdk/src/utils'
+
 import { createLink, signReceiverAddress } from './utils'
 
-import TokenMock from '../build/TokenMock'
-import CreateAndAddModules from '../build/CreateAndAddModules'
-import ProxyFactory from '../build/ProxyFactory'
-import GnosisSafe from '../build/GnosisSafe'
-import LinkdropModule from '../build/LinkdropModule'
-import * as utils from './utils'
+import NFTMock from '../../../build/NFTMock'
+import CreateAndAddModules from '../../../build/CreateAndAddModules'
+import ProxyFactory from '../../../build/ProxyFactory'
+import GnosisSafe from '../../../build/GnosisSafe'
+import LinkdropModule from '../../../build/LinkdropModule'
+
 import { BigNumber } from 'ethers/utils'
 
 ethers.errors.setLogLevel('error')
@@ -33,22 +39,21 @@ let [deployer, firstOwner, secondOwner, linkdropSigner] = getWallets(provider)
 
 let gnosisSafe, linkdropModule, modules
 
-let tokenInstance
+let nftInstance
 
 let link
 let receiverAddress
 let receiverSignature
 let weiAmount
-let tokenAddress
-let tokenAmount
 
+let nftAddress
+let tokenId
 let expiration
 
 describe('Linkdrop Module Tests', () => {
-  //
   describe('Connection to Gnosis Safe', () => {
     before(async () => {
-      tokenInstance = await deployContract(deployer, TokenMock)
+      nftInstance = await deployContract(deployer, NFTMock)
 
       let proxyFactory = await deployContract(deployer, ProxyFactory)
 
@@ -82,26 +87,26 @@ describe('Linkdrop Module Tests', () => {
         LinkdropModule
       )
 
-      const moduleData = utils.getData(linkdropModuleMasterCopy, 'setup', [
+      const moduleData = encodeParams(LinkdropModule.abi, 'setup', [
         [linkdropSigner.address]
       ])
 
-      const proxyFactoryData = utils.getData(proxyFactory, 'createProxy', [
+      const proxyFactoryData = encodeParams(ProxyFactory.abi, 'createProxy', [
         linkdropModuleMasterCopy.address,
         moduleData
       ])
 
-      const modulesCreationData = utils.createAndAddModulesData([
+      const modulesCreationData = encodeDataForCreateAndAddModules([
         proxyFactoryData
       ])
 
-      const createAndAddModulesData = utils.getData(
-        createAndAddModules,
+      const createAndAddModulesData = encodeParams(
+        CreateAndAddModules.abi,
         'createAndAddModules',
         [proxyFactory.address, modulesCreationData]
       )
 
-      const gnosisSafeData = utils.getData(gnosisSafeMasterCopy, 'setup', [
+      const gnosisSafeData = encodeParams(GnosisSafe.abi, 'setup', [
         [firstOwner.address, secondOwner.address], // owners
         2, // treshold
         createAndAddModules.address, // to
@@ -111,7 +116,7 @@ describe('Linkdrop Module Tests', () => {
         ADDRESS_ZERO // payment receiver address
       ])
 
-      const proxy = await utils.getParamFromTxEvent(
+      const proxy = await getParamFromTxEvent(
         await proxyFactory.createProxy(
           gnosisSafeMasterCopy.address,
           gnosisSafeData,
@@ -138,18 +143,18 @@ describe('Linkdrop Module Tests', () => {
     })
   })
 
-  describe('ERC20 functionality', () => {
+  describe('ERC721 functionality', () => {
     it('should revert with unsufficient amount of ethers', async () => {
       weiAmount = 10000
-      tokenAddress = tokenInstance.address
-      tokenAmount = 25
+      nftAddress = nftInstance.address
+      tokenId = 1
       expiration = 12345678910
 
       link = await createLink(
         linkdropSigner,
         weiAmount,
-        tokenAddress,
-        tokenAmount,
+        nftAddress,
+        tokenId,
         expiration
       )
 
@@ -160,10 +165,10 @@ describe('Linkdrop Module Tests', () => {
       )
 
       await expect(
-        linkdropModule.checkLinkParams(
+        linkdropModule.checkLinkParamsERC721(
           weiAmount,
-          tokenAddress,
-          tokenAmount,
+          nftAddress,
+          tokenId,
           expiration,
           link.linkId,
           link.linkdropSignerSignature,
@@ -184,52 +189,47 @@ describe('Linkdrop Module Tests', () => {
       expect(weiBalanceAfter).to.eq(weiBalanceBefore + amount)
     })
 
-    it('should revert with unsufficient amount of tokens', async () => {
+    it('should revert with unavailable token', async () => {
       await expect(
-        linkdropModule.checkLinkParams(
+        linkdropModule.checkLinkParamsERC721(
           weiAmount,
-          tokenAddress,
-          tokenAmount,
+          nftAddress,
+          tokenId,
           expiration,
           link.linkId,
           link.linkdropSignerSignature,
           receiverAddress,
           receiverSignature
         )
-      ).to.be.revertedWith('Insufficient amount of tokens')
+      ).to.be.revertedWith('Unavailable token')
     })
 
-    it('should topup gnosis safe with tokens', async () => {
-      const tokenBalanceBefore = await tokenInstance.balanceOf(
-        gnosisSafe.address
+    it('should topup gnosis safe with nft', async () => {
+      const nftOwnerBefore = await nftInstance.ownerOf(tokenId)
+      await nftInstance.transferFrom(
+        nftOwnerBefore,
+        gnosisSafe.address,
+        tokenId
       )
-      let amount = 100000
-      await tokenInstance.transfer(gnosisSafe.address, amount)
-      const tokenBalanceAfter = await tokenInstance.balanceOf(
-        gnosisSafe.address
-      )
-      expect(tokenBalanceAfter).to.eq(tokenBalanceBefore + amount)
+      const nftOwnerAfter = await nftInstance.ownerOf(tokenId)
+      expect(nftOwnerAfter).to.eq(gnosisSafe.address)
     })
 
-    it('should successfully claim ethers and tokens', async () => {
+    it('should successfully claim ethers and nft', async () => {
       const receiverWeiBalanceBefore = await provider.getBalance(
-        receiverAddress
-      )
-      const receiverTokenBalanceBefore = await tokenInstance.balanceOf(
         receiverAddress
       )
 
       const gnosisSafeWeiBalanceBefore = await provider.getBalance(
         gnosisSafe.address
       )
-      const gnosisSafeTokenBalanceBefore = await tokenInstance.balanceOf(
-        gnosisSafe.address
-      )
 
-      await linkdropModule.claimLink(
+      const nftOwnerBefore = await nftInstance.ownerOf(tokenId)
+
+      await linkdropModule.claimLinkERC721(
         weiAmount,
-        tokenAddress,
-        tokenAmount,
+        nftAddress,
+        tokenId,
         expiration,
         link.linkId,
         link.linkdropSignerSignature,
@@ -238,38 +238,31 @@ describe('Linkdrop Module Tests', () => {
       )
 
       const receiverWeiBalanceAfter = await provider.getBalance(receiverAddress)
-      const receiverTokenBalanceAfter = await tokenInstance.balanceOf(
-        receiverAddress
-      )
 
       const gnosisSafeWeiBalanceAfter = await provider.getBalance(
         gnosisSafe.address
       )
-      const gnosisSafeTokenBalanceAfter = await tokenInstance.balanceOf(
-        gnosisSafe.address
-      )
+
+      const nftOwnerAfter = await nftInstance.ownerOf(tokenId)
 
       expect(receiverWeiBalanceAfter).to.eq(
         receiverWeiBalanceBefore + weiAmount
-      )
-      expect(receiverTokenBalanceAfter).to.eq(
-        receiverTokenBalanceBefore + tokenAmount
       )
 
       expect(gnosisSafeWeiBalanceAfter).to.eq(
         new BigNumber(gnosisSafeWeiBalanceBefore).sub(weiAmount)
       )
-      expect(gnosisSafeTokenBalanceAfter).to.eq(
-        new BigNumber(gnosisSafeTokenBalanceBefore).sub(tokenAmount)
-      )
+
+      expect(nftOwnerBefore).to.eq(gnosisSafe.address)
+      expect(nftOwnerAfter).to.eq(receiverAddress)
     })
 
     it('should fail to claim the same link twice', async () => {
       await expect(
-        linkdropModule.claimLink(
+        linkdropModule.claimLinkERC721(
           weiAmount,
-          tokenAddress,
-          tokenAmount,
+          nftAddress,
+          tokenId,
           expiration,
           link.linkId,
           link.linkdropSignerSignature,
@@ -285,8 +278,8 @@ describe('Linkdrop Module Tests', () => {
       link = await createLink(
         linkdropSigner,
         weiAmount,
-        tokenAddress,
-        tokenAmount,
+        nftAddress,
+        tokenId,
         expiration
       )
 
@@ -297,10 +290,10 @@ describe('Linkdrop Module Tests', () => {
       )
 
       await expect(
-        linkdropModule.checkLinkParams(
+        linkdropModule.checkLinkParamsERC721(
           weiAmount,
-          tokenAddress,
-          tokenAmount,
+          nftAddress,
+          tokenId,
           expiredTimestamp,
           link.linkId,
           link.linkdropSignerSignature,
@@ -311,13 +304,29 @@ describe('Linkdrop Module Tests', () => {
     })
 
     it('should fail to claim link with fake linkdrop signer signature', async () => {
+      tokenId = 2
+
+      link = await createLink(
+        linkdropSigner,
+        weiAmount,
+        nftAddress,
+        tokenId,
+        expiration
+      )
+
+      await nftInstance.transferFrom(
+        await nftInstance.ownerOf(tokenId),
+        gnosisSafe.address,
+        tokenId
+      )
+
       let fakeSignature = await deployer.signMessage('Fake message')
 
       await expect(
-        linkdropModule.checkLinkParams(
+        linkdropModule.checkLinkParamsERC721(
           weiAmount,
-          tokenAddress,
-          tokenAmount,
+          nftAddress,
+          tokenId,
           expiration,
           link.linkId,
           fakeSignature,
@@ -331,8 +340,8 @@ describe('Linkdrop Module Tests', () => {
       let fakeLink = await createLink(
         linkdropSigner,
         weiAmount,
-        tokenAddress,
-        tokenAmount,
+        nftAddress,
+        tokenId,
         expiration
       )
 
@@ -343,10 +352,10 @@ describe('Linkdrop Module Tests', () => {
       )
 
       await expect(
-        linkdropModule.checkLinkParams(
+        linkdropModule.checkLinkParamsERC721(
           weiAmount,
-          tokenAddress,
-          tokenAmount,
+          nftAddress,
+          tokenId,
           expiration,
           link.linkId,
           link.linkdropSignerSignature,
@@ -360,8 +369,8 @@ describe('Linkdrop Module Tests', () => {
       link = await createLink(
         linkdropSigner,
         weiAmount,
-        tokenAddress,
-        tokenAmount,
+        nftAddress,
+        tokenId,
         expiration
       )
 
@@ -376,10 +385,10 @@ describe('Linkdrop Module Tests', () => {
 
     it('should fail to claim canceled link', async () => {
       await expect(
-        linkdropModule.claimLink(
+        linkdropModule.claimLinkERC721(
           weiAmount,
-          tokenAddress,
-          tokenAmount,
+          nftAddress,
+          tokenId,
           expiration,
           link.linkId,
           link.linkdropSignerSignature,

@@ -3,7 +3,7 @@ import logger from '../utils/logger'
 import boom from '@hapi/boom'
 import assert from 'assert-js'
 import wrapAsync from '../utils/asyncWrapper'
-import safeCreationService from '../services/safeCreationService'
+import safeCreationService from '../services/safeCreationTestService'
 
 export const create = wrapAsync(async (req, res, next) => {
   try {
