@@ -7,6 +7,7 @@ import {
 } from './utils'
 import { computeSafeAddress } from './computeSafeAddress'
 import { computeLinkdropModuleAddress } from './computeLinkdropModuleAddress'
+import { computeRecoveryModuleAddress } from './computeRecoveryModuleAddress'
 import { create, claimAndCreate } from './createSafe'
 import { signTx } from './signTx'
 import { executeTx } from './executeTx'
@@ -27,7 +28,9 @@ class WalletSDK {
     proxyFactory = '0x12302fE9c02ff50939BaAaaf415fc226C078613C', // from https://safe-relay.gnosis.pm/api/v1/about/
     linkdropModuleMasterCopy = '0x19Ff4Cb4eFD0b9E04433Dde6507ADC68225757f2',
     createAndAddModules = '0x40Ba7DF971BBdE476517B7d6B908113f71583183', // from https://safe-relay.gnosis.pm/api/v1/about/
-    multiSend = '0x0CE1BBc1BbbF65C3953A3f1f80344b42C084FA0c'
+    multiSend = '0x0CE1BBc1BbbF65C3953A3f1f80344b42C084FA0c',
+    recoveryModuleMasterCopy = '0xfE7bCFd529eB16e0793a7c4ee9cb157F2501d474',
+    recoveryPeriod = 259200
   }) {
     this.chain = chain
     this.jsonRpcUrl = jsonRpcUrl || `https://${chain}.infura.io`
@@ -38,6 +41,8 @@ class WalletSDK {
     this.linkdropModuleMasterCopy = linkdropModuleMasterCopy
     this.createAndAddModules = createAndAddModules
     this.multiSend = multiSend
+    this.recoveryModuleMasterCopy = recoveryModuleMasterCopy
+    this.recoveryPeriod = recoveryPeriod
   }
 
   /**
@@ -284,6 +289,30 @@ class WalletSDK {
       owner,
       saltNonce,
       linkdropModuleMasterCopy,
+      deployer
+    })
+  }
+
+  /**
+   * Function to calculate the recovery module address based on given params
+   * @param {Array<String>} guardians Guardians addresses
+   * @param {Number} recoveryPeriod Recovery period duration in atomic value (seconds)
+   * @param {Number} saltNonce Random salt nonce
+   * @param {String} recoveryModuleMasterCopy Deployed recovery module mastercopy address
+   * @param {String} deployer Deployer address
+   */
+  computeRecoveryModuleAddress ({
+    guardians,
+    recoveryPeriod = this.recoveryPeriod,
+    saltNonce,
+    recoveryModuleMasterCopy = this.recoveryModuleMasterCopy,
+    deployer = this.proxyFactory
+  }) {
+    return computeRecoveryModuleAddress({
+      guardians,
+      recoveryPeriod,
+      saltNonce,
+      recoveryModuleMasterCopy,
       deployer
     })
   }

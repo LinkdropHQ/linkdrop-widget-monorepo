@@ -20,6 +20,7 @@ export const create = wrapAsync(async (req, res, next) => {
       txHash,
       safe,
       linkdropModule,
+      recoveryModule,
       errors
     } = await safeCreationService.create({
       owner,
@@ -32,6 +33,7 @@ export const create = wrapAsync(async (req, res, next) => {
       txHash,
       safe,
       linkdropModule,
+      recoveryModule,
       errors
     })
   } catch (err) {
@@ -81,6 +83,7 @@ export const claimAndCreate = wrapAsync(async (req, res, next) => {
       txHash,
       safe,
       linkdropModule,
+      recoveryModule,
       errors
     } = await safeCreationService.claimAndCreate({
       weiAmount,
@@ -103,6 +106,7 @@ export const claimAndCreate = wrapAsync(async (req, res, next) => {
       txHash,
       safe,
       linkdropModule,
+      recoveryModule,
       errors
     })
   } catch (err) {

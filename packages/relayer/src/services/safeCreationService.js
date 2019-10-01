@@ -21,7 +21,6 @@ import {
   LINKDROP_MODULE_MASTERCOPY_ADDRESS,
   MULTISEND_WITH_REFUND_ADDRESS,
   RECOVERY_MODULE_MASTERCOPY_ADDRESS,
-  GUARDIAN_ADDRESS,
   RECOVERY_PERIOD
 } from '../../config/config.json'
 
@@ -110,10 +109,7 @@ class SafeCreationService {
       const recoveryModuleSetupData = sdkService.walletSDK.encodeParams(
         RecoveryModule.abi,
         'setup',
-        [
-          [GUARDIAN_ADDRESS || relayerWalletService.wallet.address],
-          RECOVERY_PERIOD
-        ]
+        [[relayerWalletService.wallet.address], RECOVERY_PERIOD]
       )
       logger.debug(`recoveryModuleSetupData: ${recoveryModuleSetupData}`)
 
@@ -178,13 +174,14 @@ class SafeCreationService {
       })
       logger.debug(`Computed linkdrop module address: ${linkdropModule}`)
 
-      // const recoveryModule = sdkService.walletSDK.computeReModuleAddress({
-      //   owner,
-      //   saltNonce,
-      //   linkdropModuleMasterCopy: LINKDROP_MODULE_MASTERCOPY_ADDRESS,
-      //   deployer: safe
-      // })
-      // logger.debug(`Computed linkdrop module address: ${linkdropModule}`)
+      const recoveryModule = sdkService.walletSDK.computeRecoveryModuleAddress({
+        guardians: [relayerWalletService.wallet.address],
+        recoveryPeriod: RECOVERY_PERIOD,
+        saltNonce,
+        recoveryModuleMasterCopy: RECOVERY_MODULE_MASTERCOPY_ADDRESS,
+        deployer: safe
+      })
+      logger.debug(`Computed recovery module address: ${recoveryModule}`)
 
       const gnosisSafeData = sdkService.walletSDK.encodeParams(
         GnosisSafe.abi,
@@ -253,8 +250,17 @@ class SafeCreationService {
         gasLimit: 6500000
       })
 
-      logger.json({ txHash: tx.hash, safe, linkdropModule }, 'info')
-      return { success: true, txHash: tx.hash, linkdropModule, safe }
+      logger.json(
+        { txHash: tx.hash, safe, linkdropModule, recoveryModule },
+        'info'
+      )
+      return {
+        success: true,
+        txHash: tx.hash,
+        linkdropModule,
+        recoveryModule,
+        safe
+      }
     } catch (err) {
       logger.error(err)
       return { success: false, errors: err.message || err }
@@ -306,8 +312,26 @@ class SafeCreationService {
       )
       logger.debug(`linkdropModuleCreationData: ${linkdropModuleCreationData}`)
 
+      const recoveryModuleSetupData = sdkService.walletSDK.encodeParams(
+        RecoveryModule.abi,
+        'setup',
+        [[relayerWalletService.wallet.address], RECOVERY_PERIOD]
+      )
+      logger.debug(`recoveryModuleSetupData: ${recoveryModuleSetupData}`)
+
+      const recoveryModuleCreationData = sdkService.walletSDK.encodeParams(
+        ProxyFactory.abi,
+        'createProxyWithNonce',
+        [
+          this.recoveryModuleMasterCopy.address,
+          recoveryModuleSetupData,
+          saltNonce
+        ]
+      )
+      logger.debug(`recoveryModuleCreationData: ${recoveryModuleCreationData}`)
+
       const modulesCreationData = sdkService.walletSDK.encodeDataForCreateAndAddModules(
-        [linkdropModuleCreationData]
+        [linkdropModuleCreationData, recoveryModuleCreationData]
       )
       logger.debug(`modulesCreationData: ${modulesCreationData}`)
 
@@ -355,6 +379,15 @@ class SafeCreationService {
         deployer: safe
       })
       logger.debug(`Computed linkdrop module address: ${linkdropModule}`)
+
+      const recoveryModule = sdkService.walletSDK.computeRecoveryModuleAddress({
+        guardians: [relayerWalletService.wallet.address],
+        recoveryPeriod: RECOVERY_PERIOD,
+        saltNonce,
+        recoveryModuleMasterCopy: RECOVERY_MODULE_MASTERCOPY_ADDRESS,
+        deployer: safe
+      })
+      logger.debug(`Computed recovery module address: ${recoveryModule}`)
 
       const gnosisSafeData = sdkService.walletSDK.encodeParams(
         GnosisSafe.abi,
@@ -453,8 +486,17 @@ class SafeCreationService {
         gasLimit: 6950000
       })
 
-      logger.json({ txHash: tx.hash, safe, linkdropModule }, 'info')
-      return { success: true, txHash: tx.hash, linkdropModule, safe }
+      logger.json(
+        { txHash: tx.hash, safe, linkdropModule, recoveryModule },
+        'info'
+      )
+      return {
+        success: true,
+        txHash: tx.hash,
+        linkdropModule,
+        recoveryModule,
+        safe
+      }
     } catch (err) {
       logger.error(err)
       return { success: false, errors: err.message || err }
