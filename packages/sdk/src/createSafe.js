@@ -35,11 +35,20 @@ export const create = async ({ owner, name, apiHost }) => {
     name,
     saltNonce
   })
-  const { success, txHash, safe, errors } = response.data
+  const {
+    success,
+    txHash,
+    linkdropModule,
+    recoveryModule,
+    safe,
+    errors
+  } = response.data
 
   return {
     success,
     txHash,
+    linkdropModule,
+    recoveryModule,
     safe,
     errors
   }
@@ -146,7 +155,7 @@ export const claimAndCreate = async ({
 
   const multiSendData = encodeParams(MultiSend.abi, 'multiSend', [nestedTxData])
 
-  const safe = computeSafeAddress({
+  let safe = computeSafeAddress({
     owner,
     saltNonce,
     gnosisSafeMasterCopy,
@@ -174,11 +183,19 @@ export const claimAndCreate = async ({
     saltNonce
   })
 
-  const { success, txHash, errors } = response.data
+  const {
+    success,
+    txHash,
+    linkdropModule,
+    recoveryModule,
+    errors
+  } = response.data
 
   return {
     success,
     txHash,
+    linkdropModule,
+    recoveryModule,
     safe,
     errors
   }
