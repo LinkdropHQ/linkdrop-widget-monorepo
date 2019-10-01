@@ -23,6 +23,8 @@ var _computeSafeAddress2 = require("./computeSafeAddress");
 
 var _computeLinkdropModuleAddress2 = require("./computeLinkdropModuleAddress");
 
+var _computeRecoveryModuleAddress2 = require("./computeRecoveryModuleAddress");
+
 var _createSafe = require("./createSafe");
 
 var _signTx2 = require("./signTx");
@@ -58,7 +60,11 @@ function () {
         _ref$createAndAddModu = _ref.createAndAddModules,
         createAndAddModules = _ref$createAndAddModu === void 0 ? '0x40Ba7DF971BBdE476517B7d6B908113f71583183' : _ref$createAndAddModu,
         _ref$multiSend = _ref.multiSend,
-        multiSend = _ref$multiSend === void 0 ? '0x0CE1BBc1BbbF65C3953A3f1f80344b42C084FA0c' : _ref$multiSend;
+        multiSend = _ref$multiSend === void 0 ? '0x0CE1BBc1BbbF65C3953A3f1f80344b42C084FA0c' : _ref$multiSend,
+        _ref$recoveryModuleMa = _ref.recoveryModuleMasterCopy,
+        recoveryModuleMasterCopy = _ref$recoveryModuleMa === void 0 ? '0xfE7bCFd529eB16e0793a7c4ee9cb157F2501d474' : _ref$recoveryModuleMa,
+        _ref$recoveryPeriod = _ref.recoveryPeriod,
+        recoveryPeriod = _ref$recoveryPeriod === void 0 ? 259200 : _ref$recoveryPeriod;
     (0, _classCallCheck2["default"])(this, WalletSDK);
     this.chain = chain;
     this.jsonRpcUrl = jsonRpcUrl || "https://".concat(chain, ".infura.io");
@@ -69,6 +75,8 @@ function () {
     this.linkdropModuleMasterCopy = linkdropModuleMasterCopy;
     this.createAndAddModules = createAndAddModules;
     this.multiSend = multiSend;
+    this.recoveryModuleMasterCopy = recoveryModuleMasterCopy;
+    this.recoveryPeriod = recoveryPeriod;
   }
   /**
    * @dev Function to get encoded params data from contract abi
@@ -442,6 +450,34 @@ function () {
       });
     }
     /**
+     * Function to calculate the recovery module address based on given params
+     * @param {Array<String>} guardians Guardians addresses
+     * @param {Number} recoveryPeriod Recovery period duration in atomic value (seconds)
+     * @param {Number} saltNonce Random salt nonce
+     * @param {String} recoveryModuleMasterCopy Deployed recovery module mastercopy address
+     * @param {String} deployer Deployer address
+     */
+
+  }, {
+    key: "computeRecoveryModuleAddress",
+    value: function computeRecoveryModuleAddress(_ref9) {
+      var guardians = _ref9.guardians,
+          _ref9$recoveryPeriod = _ref9.recoveryPeriod,
+          recoveryPeriod = _ref9$recoveryPeriod === void 0 ? this.recoveryPeriod : _ref9$recoveryPeriod,
+          saltNonce = _ref9.saltNonce,
+          _ref9$recoveryModuleM = _ref9.recoveryModuleMasterCopy,
+          recoveryModuleMasterCopy = _ref9$recoveryModuleM === void 0 ? this.recoveryModuleMasterCopy : _ref9$recoveryModuleM,
+          _ref9$deployer = _ref9.deployer,
+          deployer = _ref9$deployer === void 0 ? this.proxyFactory : _ref9$deployer;
+      return (0, _computeRecoveryModuleAddress2.computeRecoveryModuleAddress)({
+        guardians: guardians,
+        recoveryPeriod: recoveryPeriod,
+        saltNonce: saltNonce,
+        recoveryModuleMasterCopy: recoveryModuleMasterCopy,
+        deployer: deployer
+      });
+    }
+    /**
      * Function to get encoded data to use in CreateAndAddModules library
      * @param {String} dataArray Data array concatenated
      */
@@ -466,13 +502,13 @@ function () {
     value: function () {
       var _generateLink2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee6(_ref9) {
+      _regenerator["default"].mark(function _callee6(_ref10) {
         var signingKeyOrWallet, linkdropModuleAddress, weiAmount, tokenAddress, tokenAmount, expirationTime;
         return _regenerator["default"].wrap(function _callee6$(_context6) {
           while (1) {
             switch (_context6.prev = _context6.next) {
               case 0:
-                signingKeyOrWallet = _ref9.signingKeyOrWallet, linkdropModuleAddress = _ref9.linkdropModuleAddress, weiAmount = _ref9.weiAmount, tokenAddress = _ref9.tokenAddress, tokenAmount = _ref9.tokenAmount, expirationTime = _ref9.expirationTime;
+                signingKeyOrWallet = _ref10.signingKeyOrWallet, linkdropModuleAddress = _ref10.linkdropModuleAddress, weiAmount = _ref10.weiAmount, tokenAddress = _ref10.tokenAddress, tokenAmount = _ref10.tokenAmount, expirationTime = _ref10.expirationTime;
                 return _context6.abrupt("return", (0, _generateLink3.generateLink)({
                   claimHost: this.claimHost,
                   linkdropModuleAddress: linkdropModuleAddress,
@@ -512,13 +548,13 @@ function () {
     value: function () {
       var _generateLinkERC2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee7(_ref10) {
+      _regenerator["default"].mark(function _callee7(_ref11) {
         var signingKeyOrWallet, linkdropModuleAddress, weiAmount, nftAddress, tokenId, expirationTime;
         return _regenerator["default"].wrap(function _callee7$(_context7) {
           while (1) {
             switch (_context7.prev = _context7.next) {
               case 0:
-                signingKeyOrWallet = _ref10.signingKeyOrWallet, linkdropModuleAddress = _ref10.linkdropModuleAddress, weiAmount = _ref10.weiAmount, nftAddress = _ref10.nftAddress, tokenId = _ref10.tokenId, expirationTime = _ref10.expirationTime;
+                signingKeyOrWallet = _ref11.signingKeyOrWallet, linkdropModuleAddress = _ref11.linkdropModuleAddress, weiAmount = _ref11.weiAmount, nftAddress = _ref11.nftAddress, tokenId = _ref11.tokenId, expirationTime = _ref11.expirationTime;
                 return _context7.abrupt("return", (0, _generateLink3.generateLinkERC721)({
                   claimHost: this.claimHost,
                   signingKeyOrWallet: signingKeyOrWallet,
@@ -560,13 +596,13 @@ function () {
     value: function () {
       var _claim2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee8(_ref11) {
+      _regenerator["default"].mark(function _callee8(_ref12) {
         var weiAmount, tokenAddress, tokenAmount, expirationTime, linkKey, linkdropModuleAddress, linkdropSignerSignature, receiverAddress;
         return _regenerator["default"].wrap(function _callee8$(_context8) {
           while (1) {
             switch (_context8.prev = _context8.next) {
               case 0:
-                weiAmount = _ref11.weiAmount, tokenAddress = _ref11.tokenAddress, tokenAmount = _ref11.tokenAmount, expirationTime = _ref11.expirationTime, linkKey = _ref11.linkKey, linkdropModuleAddress = _ref11.linkdropModuleAddress, linkdropSignerSignature = _ref11.linkdropSignerSignature, receiverAddress = _ref11.receiverAddress;
+                weiAmount = _ref12.weiAmount, tokenAddress = _ref12.tokenAddress, tokenAmount = _ref12.tokenAmount, expirationTime = _ref12.expirationTime, linkKey = _ref12.linkKey, linkdropModuleAddress = _ref12.linkdropModuleAddress, linkdropSignerSignature = _ref12.linkdropSignerSignature, receiverAddress = _ref12.receiverAddress;
                 return _context8.abrupt("return", (0, _claim3.claim)({
                   apiHost: this.apiHost,
                   weiAmount: weiAmount,
@@ -610,13 +646,13 @@ function () {
     value: function () {
       var _claimERC2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee9(_ref12) {
+      _regenerator["default"].mark(function _callee9(_ref13) {
         var weiAmount, nftAddress, tokenId, expirationTime, linkKey, linkdropModuleAddress, linkdropSignerSignature, receiverAddress;
         return _regenerator["default"].wrap(function _callee9$(_context9) {
           while (1) {
             switch (_context9.prev = _context9.next) {
               case 0:
-                weiAmount = _ref12.weiAmount, nftAddress = _ref12.nftAddress, tokenId = _ref12.tokenId, expirationTime = _ref12.expirationTime, linkKey = _ref12.linkKey, linkdropModuleAddress = _ref12.linkdropModuleAddress, linkdropSignerSignature = _ref12.linkdropSignerSignature, receiverAddress = _ref12.receiverAddress;
+                weiAmount = _ref13.weiAmount, nftAddress = _ref13.nftAddress, tokenId = _ref13.tokenId, expirationTime = _ref13.expirationTime, linkKey = _ref13.linkKey, linkdropModuleAddress = _ref13.linkdropModuleAddress, linkdropSignerSignature = _ref13.linkdropSignerSignature, receiverAddress = _ref13.receiverAddress;
                 return _context9.abrupt("return", (0, _claim3.claimERC721)({
                   apiHost: this.apiHost,
                   weiAmount: weiAmount,

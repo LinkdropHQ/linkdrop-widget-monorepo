@@ -17,9 +17,9 @@ var _assertJs = _interopRequireDefault(require("assert-js"));
 
 var _computeSafeAddress = require("./computeSafeAddress");
 
-var _utils = require("./utils");
-
 var _ethers = require("ethers");
+
+var _utils = require("./utils");
 
 var _ProxyFactory = _interopRequireDefault(require("@gnosis.pm/safe-contracts/build/contracts/ProxyFactory"));
 
@@ -45,7 +45,7 @@ function () {
   var _ref2 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
   _regenerator["default"].mark(function _callee(_ref) {
-    var owner, name, apiHost, saltNonce, response, _response$data, success, txHash, safe, errors;
+    var owner, name, apiHost, saltNonce, response, _response$data, success, txHash, linkdropModule, recoveryModule, safe, errors;
 
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) {
@@ -67,10 +67,12 @@ function () {
 
           case 6:
             response = _context.sent;
-            _response$data = response.data, success = _response$data.success, txHash = _response$data.txHash, safe = _response$data.safe, errors = _response$data.errors;
+            _response$data = response.data, success = _response$data.success, txHash = _response$data.txHash, linkdropModule = _response$data.linkdropModule, recoveryModule = _response$data.recoveryModule, safe = _response$data.safe, errors = _response$data.errors;
             return _context.abrupt("return", {
               success: success,
               txHash: txHash,
+              linkdropModule: linkdropModule,
+              recoveryModule: recoveryModule,
               safe: safe,
               errors: errors
             });
@@ -117,7 +119,7 @@ function () {
   var _ref4 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
   _regenerator["default"].mark(function _callee2(_ref3) {
-    var weiAmount, tokenAddress, tokenAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature, campaignId, gnosisSafeMasterCopy, proxyFactory, owner, name, linkdropModuleMasterCopy, createAndAddModules, multiSend, apiHost, saltNonce, linkdropModuleSetupData, linkdropModuleCreationData, modulesCreationData, createAndAddModulesData, createAndAddModulesMultiSendData, nestedTxData, multiSendData, safe, receiverSignature, linkId, response, _response$data2, success, txHash, errors;
+    var weiAmount, tokenAddress, tokenAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature, campaignId, gnosisSafeMasterCopy, proxyFactory, owner, name, linkdropModuleMasterCopy, createAndAddModules, multiSend, apiHost, saltNonce, linkdropModuleSetupData, linkdropModuleCreationData, modulesCreationData, createAndAddModulesData, createAndAddModulesMultiSendData, nestedTxData, multiSendData, safe, receiverSignature, linkId, response, _response$data2, success, txHash, linkdropModule, recoveryModule, errors;
 
     return _regenerator["default"].wrap(function _callee2$(_context2) {
       while (1) {
@@ -198,10 +200,12 @@ function () {
 
           case 32:
             response = _context2.sent;
-            _response$data2 = response.data, success = _response$data2.success, txHash = _response$data2.txHash, errors = _response$data2.errors;
+            _response$data2 = response.data, success = _response$data2.success, txHash = _response$data2.txHash, linkdropModule = _response$data2.linkdropModule, recoveryModule = _response$data2.recoveryModule, errors = _response$data2.errors;
             return _context2.abrupt("return", {
               success: success,
               txHash: txHash,
+              linkdropModule: linkdropModule,
+              recoveryModule: recoveryModule,
               safe: safe,
               errors: errors
             });
