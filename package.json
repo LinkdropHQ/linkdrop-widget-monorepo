@@ -18,6 +18,7 @@
   "scripts": {
     "build": "yarn wsrun --stages --exclude-missing build",
     "build:contracts": "cd packages/contracts && yarn build",
+    "build:sdk": "cd packages/sdk && yarn build",
     "test": "yarn wsrun --stages --exclude-missing test",
     "test:contracts": "cd packages/contracts && yarn test",
     "relayer": "npx babel-node packages/relayer/index"
