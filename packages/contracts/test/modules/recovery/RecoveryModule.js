@@ -38,7 +38,13 @@ const RECOVERY_PERIOD_IN_SECONDS = 3
 
 const provider = createMockProvider()
 
-const [deployer, firstOwner, secondOwner, guardian] = getWallets(provider)
+const [
+  deployer,
+  firstOwner,
+  secondOwner,
+  guardian,
+  secondGuardian
+] = getWallets(provider)
 
 let gnosisSafe, recoveryModule, modules
 
@@ -233,7 +239,113 @@ describe('Recovery Module Tests', () => {
       ).to.be.revertedWith('Recovery period is not over')
     })
 
+    it('should fail to remove guardian with any account', async () => {
+      await expect(
+        recoveryModule.removeGuardian(guardian.address)
+      ).to.be.revertedWith('Method can only be called from manager')
+
+      expect(await recoveryModule.isGuardian(guardian.address)).to.be.true
+    })
+
+    it('should be able to remove guardian via Safe transaction', async () => {
+      gnosisSafe = gnosisSafe.connect(deployer)
+
+      const to = recoveryModule.address
+      const value = 0
+      const data = encodeParams(RecoveryModule.abi, 'removeGuardian', [
+        guardian.address
+      ])
+      const operation = 0
+      const safeTxGas = 0
+      const baseGas = 0
+      const gasPrice = 0
+      const gasToken = ADDRESS_ZERO
+      const refundReceiver = ADDRESS_ZERO
+      const nonce = await gnosisSafe.nonce()
+
+      const signature = await signTx({
+        safe: gnosisSafe.address,
+        privateKey: firstOwner.privateKey,
+        to,
+        value,
+        data,
+        operation,
+        safeTxGas,
+        baseGas,
+        gasPrice,
+        gasToken,
+        refundReceiver,
+        nonce: nonce.toNumber()
+      })
+
+      await gnosisSafe.execTransaction(
+        to,
+        value,
+        data,
+        operation,
+        safeTxGas,
+        baseGas,
+        gasPrice,
+        gasToken,
+        refundReceiver,
+        signature
+      )
+
+      expect(await recoveryModule.isGuardian(guardian.address)).to.be.false
+      expect(await gnosisSafe.nonce()).to.eq(nonce.add(1))
+    })
+
+    it('should be able to add new guardian via Safe transaction', async () => {
+      gnosisSafe = gnosisSafe.connect(deployer)
+
+      const to = recoveryModule.address
+      const value = 0
+      const data = encodeParams(RecoveryModule.abi, 'addGuardian', [
+        secondGuardian.address
+      ])
+      const operation = 0
+      const safeTxGas = 0
+      const baseGas = 0
+      const gasPrice = 0
+      const gasToken = ADDRESS_ZERO
+      const refundReceiver = ADDRESS_ZERO
+      const nonce = await gnosisSafe.nonce()
+
+      const signature = await signTx({
+        safe: gnosisSafe.address,
+        privateKey: firstOwner.privateKey,
+        to,
+        value,
+        data,
+        operation,
+        safeTxGas,
+        baseGas,
+        gasPrice,
+        gasToken,
+        refundReceiver,
+        nonce: nonce.toNumber()
+      })
+
+      await gnosisSafe.execTransaction(
+        to,
+        value,
+        data,
+        operation,
+        safeTxGas,
+        baseGas,
+        gasPrice,
+        gasToken,
+        refundReceiver,
+        signature
+      )
+
+      expect(await recoveryModule.isGuardian(guardian.address)).to.be.false
+      expect(await recoveryModule.isGuardian(secondGuardian.address)).to.be.true
+      expect(await gnosisSafe.nonce()).to.eq(nonce.add(1))
+    })
+
     it('should be able to recover access after recovery period is over', async () => {
+      recoveryModule = recoveryModule.connect(secondGuardian)
       console.log('\n      Waiting for recovery period to be over...\n')
 
       setTimeout(async () => {
