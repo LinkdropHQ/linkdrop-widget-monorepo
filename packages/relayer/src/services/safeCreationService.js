@@ -2,7 +2,8 @@ import GnosisSafe from '@gnosis.pm/safe-contracts/build/contracts/GnosisSafe'
 import ProxyFactory from '@gnosis.pm/safe-contracts/build/contracts/ProxyFactory'
 import MultiSend from '@gnosis.pm/safe-contracts/build/contracts/MultiSend'
 import CreateAndAddModules from '@gnosis.pm/safe-contracts/build/contracts/CreateAndAddModules'
-import LinkdropModule from '@linkdrop/safe-module-contracts/build/LinkdropModule'
+import LinkdropModule from '../../../contracts/build/LinkdropModule'
+import RecoveryModule from '../../../contracts/build/RecoveryModule.json'
 import { ethers } from 'ethers'
 import assert from 'assert-js'
 import relayerWalletService from './relayerWalletService'
@@ -18,7 +19,10 @@ import {
   MULTISEND_LIBRARY_ADDRESS,
   CREATE_AND_ADD_MODULES_LIBRARY_ADDRESS,
   LINKDROP_MODULE_MASTERCOPY_ADDRESS,
-  MULTISEND_WITH_REFUND_ADDRESS
+  MULTISEND_WITH_REFUND_ADDRESS,
+  RECOVERY_MODULE_MASTERCOPY_ADDRESS,
+  GUARDIAN_ADDRESS,
+  RECOVERY_PERIOD
 } from '../../config/config.json'
 
 const ADDRESS_ZERO = ethers.constants.AddressZero
@@ -64,6 +68,12 @@ class SafeCreationService {
       LinkdropModule.abi,
       relayerWalletService.provider
     )
+
+    this.recoveryModuleMasterCopy = new ethers.Contract(
+      RECOVERY_MODULE_MASTERCOPY_ADDRESS,
+      RecoveryModule.abi,
+      relayerWalletService.provider
+    )
   }
 
   async create ({ owner, name, saltNonce }) {
@@ -97,8 +107,29 @@ class SafeCreationService {
       )
       logger.debug(`linkdropModuleCreationData: ${linkdropModuleCreationData}`)
 
+      const recoveryModuleSetupData = sdkService.walletSDK.encodeParams(
+        RecoveryModule.abi,
+        'setup',
+        [
+          [GUARDIAN_ADDRESS || relayerWalletService.wallet.address],
+          RECOVERY_PERIOD
+        ]
+      )
+      logger.debug(`recoveryModuleSetupData: ${recoveryModuleSetupData}`)
+
+      const recoveryModuleCreationData = sdkService.walletSDK.encodeParams(
+        ProxyFactory.abi,
+        'createProxyWithNonce',
+        [
+          this.recoveryModuleMasterCopy.address,
+          recoveryModuleSetupData,
+          saltNonce
+        ]
+      )
+      logger.debug(`recoveryModuleCreationData: ${recoveryModuleCreationData}`)
+
       const modulesCreationData = sdkService.walletSDK.encodeDataForCreateAndAddModules(
-        [linkdropModuleCreationData]
+        [linkdropModuleCreationData, recoveryModuleCreationData]
       )
       logger.debug(`modulesCreationData: ${modulesCreationData}`)
 
@@ -146,6 +177,14 @@ class SafeCreationService {
         deployer: safe
       })
       logger.debug(`Computed linkdrop module address: ${linkdropModule}`)
+
+      // const recoveryModule = sdkService.walletSDK.computeReModuleAddress({
+      //   owner,
+      //   saltNonce,
+      //   linkdropModuleMasterCopy: LINKDROP_MODULE_MASTERCOPY_ADDRESS,
+      //   deployer: safe
+      // })
+      // logger.debug(`Computed linkdrop module address: ${linkdropModule}`)
 
       const gnosisSafeData = sdkService.walletSDK.encodeParams(
         GnosisSafe.abi,
