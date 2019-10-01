@@ -90,4 +90,29 @@ contract RecoveryModule is Module {
         delete recoveryInitiated;
     }
 
+    /**
+    * @dev Function to add new guardian. Can only be called via Safe transaction
+    * @param _guardian Guardian address to be added
+    */
+    function addGuardian(address _guardian)
+    public
+    authorized
+    {
+        require(_guardian != address(0), "Invalid guardian address");
+        require(!isGuardian[_guardian], "Duplicate guardian address");
+        isGuardian[_guardian] = true;
+    }
+
+    /**
+    * @dev Function to remove existing guardian. Can only be called via Safe transaction
+    * @param _guardian Guardian address to be removed
+    */
+    function removeGuardian(address _guardian)
+    public
+    authorized
+    {
+        require(isGuardian[_guardian], "Invalid guardian address");
+        delete isGuardian[_guardian];
+    }
+
 }
