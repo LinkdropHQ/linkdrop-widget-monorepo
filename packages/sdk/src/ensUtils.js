@@ -4,24 +4,35 @@ import assert from 'assert-js'
 
 /**
  * Function to get owner of ENS identifier
- * @param {String} name ENS identifier (e.g 'alice.eth')
- * @param {String} chain Chain identifier
+ * @param {String} ensName ENS name (e.g 'alice')
+ * @param {String} ensDomain ENS domain (e.g. 'domain.eth')
+ * @param {String} ensAddress ENS address
  * @param {String} jsonRpcUrl JSON RPC URL
  * @return {String} ENS identifier owner's address
  */
-export const getEnsOwner = async ({ name, chain, jsonRpcUrl }) => {
-  assert.string(name, 'Name is required')
-  assert.string(chain, 'Chain is required')
+export const getEnsOwner = async ({
+  ensName,
+  ensDomain,
+  ensAddress,
+  jsonRpcUrl
+}) => {
+  assert.string(ensDomain, 'Ens domain is required')
   assert.url(jsonRpcUrl, 'Json rpc url is required')
 
-  const ensAddress = getEnsAddress(chain)
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
-  const ensContract = new ethers.Contract(ensAddress, ENS.abi, provider)
-  const node = ethers.utils.namehash(name)
-  return ensContract.owner(node)
+
+  if (!ensAddress) {
+    ensAddress = (await provider.getNetwork()).ensAddress
+  }
+
+  assert.string(ensAddress, 'Ens address is required')
+
+  const ens = new ethers.Contract(ensAddress, ENS.abi, provider)
+  const node = ethers.utils.namehash(`${ensName}${ensDomain}`)
+  return ens.owner(node)
 }
 
-const getEnsAddress = chain => {
+export const getEnsAddress = chain => {
   assert.string(chain, 'Chain is required')
 
   switch (chain) {

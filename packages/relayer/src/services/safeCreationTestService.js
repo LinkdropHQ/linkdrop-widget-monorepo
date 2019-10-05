@@ -72,13 +72,6 @@ class SafeCreationService {
 
   async create ({ owner, name, saltNonce }) {
     try {
-      const safe = sdkService.walletSDK.computeSafeAddress({
-        owner,
-        saltNonce,
-        gnosisSafeMasterCopy: GNOSIS_SAFE_MASTERCOPY_ADDRESS
-      })
-      logger.debug(`Computed safe address: ${safe}`)
-
       let gnosisSafeData = sdkService.walletSDK.encodeParams(
         GnosisSafe.abi,
         'setup',
@@ -88,7 +81,7 @@ class SafeCreationService {
           ADDRESS_ZERO, // to
           '0x', // data,
           ADDRESS_ZERO, // payment token address
-          12, // payment amount
+          0, // payment amount
           ADDRESS_ZERO // payment receiver address
         ]
       )
@@ -101,17 +94,46 @@ class SafeCreationService {
       )
       logger.debug(`createSafeData: ${createSafeData}`)
 
-      // const rawTx = {
-      //   to: this.proxyFactory.address,
-      //   data: createSafeData,
-      //   gasPrice: ethers.utils.parseUnits('20', 'gwei'),
-      //   gasLimit: 6500000
-      // }
+      const rawTx = {
+        to: this.proxyFactory.address,
+        data: createSafeData,
+        gasPrice: ethers.utils.parseUnits('20', 'gwei'),
+        gasLimit: 6500000
+      }
+      const gasPrice = ethers.utils.parseUnits('20', 'gwei')
+      const estim = (await relayerWalletService.provider.estimateGas(
+        rawTx
+      )).add(9000)
+      console.log('estim: ', +estim)
+      const userCosts = estim.mul(gasPrice) // .mul(gasPrice)
+      console.log('userCosts: ', +userCosts, 'wei')
 
-      // const estim = await relayerWalletService.provider.estimateGas(rawTx)
-      // console.log('estim: ', +estim)
-      // const userCosts = estim.mul(20)
-      // console.log('userCosts: ', +userCosts, 'wei')
+      gnosisSafeData = sdkService.walletSDK.encodeParams(
+        GnosisSafe.abi,
+        'setup',
+        [
+          [owner], // owners
+          1, // threshold
+          ADDRESS_ZERO, // to
+          '0x', // data,
+          ADDRESS_ZERO, // payment token address
+          userCosts, // payment amount
+          ADDRESS_ZERO // payment receiver address
+        ]
+      )
+
+      const safe = sdkService.walletSDK.computeSafeAddress({
+        owner,
+        saltNonce,
+        gnosisSafeMasterCopy: GNOSIS_SAFE_MASTERCOPY_ADDRESS,
+        paymentAmount: userCosts.toNumber()
+      })
+      logger.debug(`Computed safe address: ${safe}`)
+
+      relayerWalletService.provider.on(safe, balance => {
+        logger.info('BALANCE CHANGES 1')
+        logger.info(+balance)
+      })
 
       let bal = await relayerWalletService.provider.getBalance(safe)
       bal = bal.toNumber()
@@ -120,22 +142,22 @@ class SafeCreationService {
         console.log('Funding safe...')
         const ttx = await relayerWalletService.wallet.sendTransaction({
           to: safe,
-          value: 1234033423423,
+          value: userCosts,
           gasPrice: ethers.utils.parseUnits('20', 'gwei')
         })
 
-        await relayerWalletService.provider.waitForTransaction(ttx.hash, 2)
+        await relayerWalletService.provider.waitForTransaction(ttx.hash, 3)
 
         bal = await relayerWalletService.provider.getBalance(safe)
         console.log('bal: ', +bal)
       }
 
-      const tx = await this.proxyFactory.createProxyWithNonce(
-        this.gnosisSafeMasterCopy.address,
-        gnosisSafeData,
-        saltNonce,
-        { gasLimit: 6500000 }
-      )
+      // const tx = await this.proxyFactory.createProxyWithNonce(
+      //   this.gnosisSafeMasterCopy.address,
+      //   gnosisSafeData,
+      //   saltNonce,
+      //   { gasLimit: 6500000, gasPrice: ethers.utils.parseUnits('20', 'gwei') }
+      // )
 
       // const tx = await relayerWalletService.wallet.sendTransaction({
       //   to: this.multiSendWithRefund.address,

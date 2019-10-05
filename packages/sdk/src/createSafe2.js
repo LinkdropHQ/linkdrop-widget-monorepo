@@ -9,13 +9,165 @@ import {
   signReceiverAddress
 } from './utils'
 
+import GnosisSafe from '@gnosis.pm/safe-contracts/build/contracts/GnosisSafe'
 import ProxyFactory from '@gnosis.pm/safe-contracts/build/contracts/ProxyFactory'
 import MultiSend from '@gnosis.pm/safe-contracts/build/contracts/MultiSend'
 import CreateAndAddModules from '@gnosis.pm/safe-contracts/build/contracts/CreateAndAddModules'
-import LinkdropModule from '@linkdrop/safe-module-contracts/build/LinkdropModule'
+import LinkdropModule from '../../contracts/build/LinkdropModule'
+import RecoveryModule from '../../contracts/build/RecoveryModule.json'
+
+import { computeLinkdropModuleAddress } from './computeLinkdropModuleAddress'
+import { computeRecoveryModuleAddress } from './computeRecoveryModuleAddress'
 
 const CALL_OP = 0
 const DELEGATECALL_OP = 1
+
+const ADDRESS_ZERO = ethers.constants.AddressZero
+
+export const createFutureWallet = async ({
+  owner,
+  name,
+  saltNonce,
+  guardian,
+  recoveryPeriod,
+  jsonRpcUrl,
+  gnosisSafeMasterCopy,
+  proxyFactory,
+  linkdropModuleMasterCopy,
+  recoveryModuleMasterCopy,
+  multiSend,
+  createAndAddModules,
+  apiHost,
+  gasPrice
+}) => {
+  const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
+
+  const linkdropModuleSetupData = encodeParams(LinkdropModule.abi, 'setup', [
+    [owner]
+  ])
+
+  const linkdropModuleCreationData = encodeParams(
+    ProxyFactory.abi,
+    'createProxyWithNonce',
+    [linkdropModuleMasterCopy, linkdropModuleSetupData, saltNonce]
+  )
+
+  const recoveryModuleSetupData = encodeParams(RecoveryModule.abi, 'setup', [
+    [guardian],
+    recoveryPeriod
+  ])
+
+  const recoveryModuleCreationData = encodeParams(
+    ProxyFactory.abi,
+    'createProxyWithNonce',
+    [recoveryModuleMasterCopy, recoveryModuleSetupData, saltNonce]
+  )
+
+  const modulesCreationData = encodeDataForCreateAndAddModules([
+    linkdropModuleCreationData,
+    recoveryModuleCreationData
+  ])
+
+  const createAndAddModulesData = encodeParams(
+    CreateAndAddModules.abi,
+    'createAndAddModules',
+    [proxyFactory, modulesCreationData]
+  )
+
+  const createAndAddModulesMultiSendData = encodeDataForMultiSend(
+    DELEGATECALL_OP,
+    createAndAddModules,
+    0,
+    createAndAddModulesData
+  )
+
+  const nestedTxData = '0x' + createAndAddModulesMultiSendData
+
+  const multiSendData = encodeParams(MultiSend.abi, 'multiSend', [nestedTxData])
+
+  let gnosisSafeData = encodeParams(GnosisSafe.abi, 'setup', [
+    [owner], // owners
+    1, // threshold
+    multiSend, // to
+    multiSendData, // data,
+    ADDRESS_ZERO, // payment token address
+    0, // payment amount
+    ADDRESS_ZERO // payment receiver address
+  ])
+
+  const createSafeData = encodeParams(
+    ProxyFactory.abi,
+    'createProxyWithNonce',
+    [gnosisSafeMasterCopy, gnosisSafeData, saltNonce]
+  )
+
+  gasPrice = gasPrice || (await provider.getGasPrice())
+
+  const estimate = (await provider.estimateGas({
+    to: proxyFactory,
+    data: createSafeData,
+    gasPrice
+  })).add(9000)
+
+  const userCosts = estimate.mul(gasPrice)
+
+  gnosisSafeData = encodeParams(GnosisSafe.abi, 'setup', [
+    [owner], // owners
+    1, // threshold
+    multiSend, // to
+    multiSendData, // data,
+    ADDRESS_ZERO, // payment token address
+    userCosts, // payment amount
+    ADDRESS_ZERO // payment receiver address
+  ])
+
+  const safe = computeSafeAddress({
+    owner,
+    saltNonce,
+    gnosisSafeMasterCopy: gnosisSafeMasterCopy,
+    deployer: proxyFactory,
+    to: multiSend,
+    data: multiSendData,
+    paymentAmount: userCosts.toNumber()
+  })
+
+  const linkdropModule = computeLinkdropModuleAddress({
+    owner,
+    saltNonce,
+    linkdropModuleMasterCopy,
+    deployer: safe
+  })
+
+  const recoveryModule = computeRecoveryModuleAddress({
+    guardians: [guardian],
+    recoveryPeriod,
+    saltNonce,
+    recoveryModuleMasterCopy,
+    deployer: safe
+  })
+
+  const waitForBalance = async () => {
+    const balance = await provider.getBalance(safe)
+
+    return new Promise(resolve => {
+      if (balance.gte(userCosts)) {
+        resolve()
+      }
+      provider.on(safe, balance => {
+        if (balance.gte(userCosts)) {
+          resolve()
+        }
+      })
+    })
+  }
+
+  const deploy = async () => {}
+
+  return { safe, waitForBalance, userCosts }
+  // return safeAddress, linkdropModule, recoveryModule
+  // return waitForBalance
+  // return deploy function
+}
 
 /**
  * Function to create new safe
