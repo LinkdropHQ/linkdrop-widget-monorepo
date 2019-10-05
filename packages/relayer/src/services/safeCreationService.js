@@ -75,191 +75,20 @@ class SafeCreationService {
     )
   }
 
-  async create ({ owner, name, saltNonce }) {
+  async create ({ data, gasPrice }) {
     try {
-      logger.info('Creating new safe with ENS...')
-
-      const ensOwner = await ensService.getOwner(
-        `${name}.${ensService.ensDomain}`
-      )
-
-      assert.true(
-        ensOwner === ADDRESS_ZERO,
-        'Provided name already has an owner'
-      )
-
-      const linkdropModuleSetupData = sdkService.walletSDK.encodeParams(
-        LinkdropModule.abi,
-        'setup',
-        [[owner]]
-      )
-      logger.debug(`linkdropModuleSetupData: ${linkdropModuleSetupData}`)
-
-      const linkdropModuleCreationData = sdkService.walletSDK.encodeParams(
-        ProxyFactory.abi,
-        'createProxyWithNonce',
-        [
-          this.linkdropModuleMasterCopy.address,
-          linkdropModuleSetupData,
-          saltNonce
-        ]
-      )
-      logger.debug(`linkdropModuleCreationData: ${linkdropModuleCreationData}`)
-
-      const recoveryModuleSetupData = sdkService.walletSDK.encodeParams(
-        RecoveryModule.abi,
-        'setup',
-        [[relayerWalletService.wallet.address], RECOVERY_PERIOD]
-      )
-      logger.debug(`recoveryModuleSetupData: ${recoveryModuleSetupData}`)
-
-      const recoveryModuleCreationData = sdkService.walletSDK.encodeParams(
-        ProxyFactory.abi,
-        'createProxyWithNonce',
-        [
-          this.recoveryModuleMasterCopy.address,
-          recoveryModuleSetupData,
-          saltNonce
-        ]
-      )
-      logger.debug(`recoveryModuleCreationData: ${recoveryModuleCreationData}`)
-
-      const modulesCreationData = sdkService.walletSDK.encodeDataForCreateAndAddModules(
-        [linkdropModuleCreationData, recoveryModuleCreationData]
-      )
-      logger.debug(`modulesCreationData: ${modulesCreationData}`)
-
-      const createAndAddModulesData = sdkService.walletSDK.encodeParams(
-        CreateAndAddModules.abi,
-        'createAndAddModules',
-        [this.proxyFactory.address, modulesCreationData]
-      )
-      logger.debug(`createAndAddModulesData: ${createAndAddModulesData}`)
-
-      const createAndAddModulesMultiSendData = sdkService.walletSDK.encodeDataForMultiSend(
-        DELEGATECALL_OP,
-        this.createAndAddModules.address,
-        0,
-        createAndAddModulesData
-      )
-      logger.debug(
-        `createAndAddModulesMultiSendData: ${createAndAddModulesMultiSendData}`
-      )
-
-      let nestedTxData = '0x' + createAndAddModulesMultiSendData
-      logger.debug(`nestedTxData: ${nestedTxData}`)
-
-      let multiSendData = sdkService.walletSDK.encodeParams(
-        MultiSend.abi,
-        'multiSend',
-        [nestedTxData]
-      )
-      logger.debug(`multiSendData: ${multiSendData}`)
-
-      const safe = sdkService.walletSDK.computeSafeAddress({
-        owner,
-        saltNonce,
-        gnosisSafeMasterCopy: GNOSIS_SAFE_MASTERCOPY_ADDRESS,
-        deployer: PROXY_FACTORY_ADDRESS,
-        to: this.multiSend.address,
-        data: multiSendData
-      })
-      logger.debug(`Computed safe address: ${safe}`)
-
-      const linkdropModule = sdkService.walletSDK.computeLinkdropModuleAddress({
-        owner,
-        saltNonce,
-        linkdropModuleMasterCopy: LINKDROP_MODULE_MASTERCOPY_ADDRESS,
-        deployer: safe
-      })
-      logger.debug(`Computed linkdrop module address: ${linkdropModule}`)
-
-      const recoveryModule = sdkService.walletSDK.computeRecoveryModuleAddress({
-        guardians: [relayerWalletService.wallet.address],
-        recoveryPeriod: RECOVERY_PERIOD,
-        saltNonce,
-        recoveryModuleMasterCopy: RECOVERY_MODULE_MASTERCOPY_ADDRESS,
-        deployer: safe
-      })
-      logger.debug(`Computed recovery module address: ${recoveryModule}`)
-
-      const gnosisSafeData = sdkService.walletSDK.encodeParams(
-        GnosisSafe.abi,
-        'setup',
-        [
-          [owner], // owners
-          1, // threshold
-          this.multiSend.address, // to
-          multiSendData, // data,
-          ADDRESS_ZERO, // payment token address
-          0, // payment amount
-          ADDRESS_ZERO // payment receiver address
-        ]
-      )
-      logger.debug(`gnosisSafeData: ${gnosisSafeData}`)
-
-      const createSafeData = sdkService.walletSDK.encodeParams(
-        ProxyFactory.abi,
-        'createProxyWithNonce',
-        [this.gnosisSafeMasterCopy.address, gnosisSafeData, saltNonce]
-      )
-      logger.debug(`createSafeData: ${createSafeData}`)
-
-      const createSafeMultiSendData = sdkService.walletSDK.encodeDataForMultiSend(
-        CALL_OP,
-        this.proxyFactory.address,
-        0,
-        createSafeData
-      )
-      logger.debug(`createSafeMultiSendData: ${createSafeMultiSendData}`)
-
-      const registrar = await ensService.getRegistrarContract()
-
-      const label = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(name))
-      logger.debug(`label: ${label}`)
-
-      const registerEnsData = sdkService.walletSDK.encodeParams(
-        FIFSRegistrar.abi,
-        'register',
-        [label, safe]
-      )
-      logger.debug(`registerEnsData: ${registerEnsData}`)
-
-      const registerEnsMultiSendData = sdkService.walletSDK.encodeDataForMultiSend(
-        CALL_OP,
-        registrar.address,
-        0,
-        registerEnsData
-      )
-      logger.debug(`registerEnsMultiSendData: ${registerEnsMultiSendData}`)
-
-      nestedTxData = '0x' + createSafeMultiSendData + registerEnsMultiSendData
-      logger.debug(`nestedTxData: ${nestedTxData}`)
-
-      multiSendData = sdkService.walletSDK.encodeParams(
-        MultiSend.abi,
-        'multiSend',
-        [nestedTxData]
-      )
-      logger.debug(`multiSendData: ${multiSendData}`)
-
       const tx = await relayerWalletService.wallet.sendTransaction({
         to: this.multiSendWithRefund.address,
-        data: multiSendData,
-        gasPrice: ethers.utils.parseUnits('20', 'gwei'),
+        data,
+        gasPrice,
         gasLimit: 6500000
       })
 
-      logger.json(
-        { txHash: tx.hash, safe, linkdropModule, recoveryModule },
-        'info'
-      )
+      logger.json({ txHash: tx.hash }, 'info')
+
       return {
         success: true,
-        txHash: tx.hash,
-        linkdropModule,
-        recoveryModule,
-        safe
+        txHash: tx.hash
       }
     } catch (err) {
       logger.error(err)
@@ -267,235 +96,22 @@ class SafeCreationService {
     }
   }
 
-  async claimAndCreate ({
-    weiAmount,
-    tokenAddress,
-    tokenAmount,
-    expirationTime,
-    linkId,
-    linkdropMasterAddress,
-    linkdropSignerSignature,
-    campaignId,
-    receiverAddress,
-    receiverSignature,
-    owner,
-    name,
-    saltNonce
-  }) {
+  async claimAndCreate ({ data, gasPrice }) {
     try {
       logger.info('Creating new safe with ENS and claiming linkdrop...')
 
-      const ensOwner = await ensService.getOwner(
-        `${name}.${ensService.ensDomain}`
-      )
-
-      assert.true(
-        ensOwner === ADDRESS_ZERO,
-        'Provided name already has an owner'
-      )
-
-      const linkdropModuleSetupData = sdkService.walletSDK.encodeParams(
-        LinkdropModule.abi,
-        'setup',
-        [[owner]]
-      )
-      logger.debug(`linkdropModuleSetupData: ${linkdropModuleSetupData}`)
-
-      const linkdropModuleCreationData = sdkService.walletSDK.encodeParams(
-        ProxyFactory.abi,
-        'createProxyWithNonce',
-        [
-          this.linkdropModuleMasterCopy.address,
-          linkdropModuleSetupData,
-          saltNonce
-        ]
-      )
-      logger.debug(`linkdropModuleCreationData: ${linkdropModuleCreationData}`)
-
-      const recoveryModuleSetupData = sdkService.walletSDK.encodeParams(
-        RecoveryModule.abi,
-        'setup',
-        [[relayerWalletService.wallet.address], RECOVERY_PERIOD]
-      )
-      logger.debug(`recoveryModuleSetupData: ${recoveryModuleSetupData}`)
-
-      const recoveryModuleCreationData = sdkService.walletSDK.encodeParams(
-        ProxyFactory.abi,
-        'createProxyWithNonce',
-        [
-          this.recoveryModuleMasterCopy.address,
-          recoveryModuleSetupData,
-          saltNonce
-        ]
-      )
-      logger.debug(`recoveryModuleCreationData: ${recoveryModuleCreationData}`)
-
-      const modulesCreationData = sdkService.walletSDK.encodeDataForCreateAndAddModules(
-        [linkdropModuleCreationData, recoveryModuleCreationData]
-      )
-      logger.debug(`modulesCreationData: ${modulesCreationData}`)
-
-      const createAndAddModulesData = sdkService.walletSDK.encodeParams(
-        CreateAndAddModules.abi,
-        'createAndAddModules',
-        [this.proxyFactory.address, modulesCreationData]
-      )
-      logger.debug(`createAndAddModulesData: ${createAndAddModulesData}`)
-
-      const createAndAddModulesMultiSendData = sdkService.walletSDK.encodeDataForMultiSend(
-        DELEGATECALL_OP,
-        this.createAndAddModules.address,
-        0,
-        createAndAddModulesData
-      )
-      logger.debug(
-        `createAndAddModulesMultiSendData: ${createAndAddModulesMultiSendData}`
-      )
-
-      let nestedTxData = '0x' + createAndAddModulesMultiSendData
-      logger.debug(`nestedTxData: ${nestedTxData}`)
-
-      let multiSendData = sdkService.walletSDK.encodeParams(
-        MultiSend.abi,
-        'multiSend',
-        [nestedTxData]
-      )
-      logger.debug(`multiSendData: ${multiSendData}`)
-
-      const safe = sdkService.walletSDK.computeSafeAddress({
-        owner,
-        saltNonce,
-        gnosisSafeMasterCopy: GNOSIS_SAFE_MASTERCOPY_ADDRESS,
-        deployer: PROXY_FACTORY_ADDRESS,
-        to: this.multiSend.address,
-        data: multiSendData
-      })
-      logger.debug(`Computed safe address: ${safe}`)
-
-      const linkdropModule = sdkService.walletSDK.computeLinkdropModuleAddress({
-        owner,
-        saltNonce,
-        linkdropModuleMasterCopy: LINKDROP_MODULE_MASTERCOPY_ADDRESS,
-        deployer: safe
-      })
-      logger.debug(`Computed linkdrop module address: ${linkdropModule}`)
-
-      const recoveryModule = sdkService.walletSDK.computeRecoveryModuleAddress({
-        guardians: [relayerWalletService.wallet.address],
-        recoveryPeriod: RECOVERY_PERIOD,
-        saltNonce,
-        recoveryModuleMasterCopy: RECOVERY_MODULE_MASTERCOPY_ADDRESS,
-        deployer: safe
-      })
-      logger.debug(`Computed recovery module address: ${recoveryModule}`)
-
-      const gnosisSafeData = sdkService.walletSDK.encodeParams(
-        GnosisSafe.abi,
-        'setup',
-        [
-          [owner], // owners
-          1, // threshold
-          this.multiSend.address, // to
-          multiSendData, // data,
-          ADDRESS_ZERO, // payment token address
-          0, // payment amount
-          ADDRESS_ZERO // payment receiver address
-        ]
-      )
-      logger.debug(`gnosisSafeData: ${gnosisSafeData}`)
-
-      const createSafeData = sdkService.walletSDK.encodeParams(
-        ProxyFactory.abi,
-        'createProxyWithNonce',
-        [this.gnosisSafeMasterCopy.address, gnosisSafeData, saltNonce]
-      )
-      logger.debug(`createSafeData: ${createSafeData}`)
-
-      const createSafeMultiSendData = sdkService.walletSDK.encodeDataForMultiSend(
-        CALL_OP,
-        this.proxyFactory.address,
-        0,
-        createSafeData
-      )
-      logger.debug(`createSafeMultiSendData: ${createSafeMultiSendData}`)
-
-      const registrar = await ensService.getRegistrarContract()
-
-      const label = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(name))
-      logger.debug(`label: ${label}`)
-
-      const registerEnsData = sdkService.walletSDK.encodeParams(
-        FIFSRegistrar.abi,
-        'register',
-        [label, safe]
-      )
-      logger.debug(`registerEnsData: ${registerEnsData}`)
-
-      const registerEnsMultiSendData = sdkService.walletSDK.encodeDataForMultiSend(
-        CALL_OP,
-        registrar.address,
-        0,
-        registerEnsData
-      )
-      logger.debug(`registerEnsMultiSendData: ${registerEnsMultiSendData}`)
-
-      const claimData = sdkService.walletSDK.encodeParams(
-        linkdropFactoryService.abi,
-        'claim',
-        [
-          weiAmount,
-          tokenAddress,
-          tokenAddress,
-          expirationTime,
-          linkId,
-          linkdropMasterAddress,
-          campaignId,
-          linkdropSignerSignature,
-          receiverAddress,
-          receiverSignature
-        ]
-      )
-      logger.debug(`claimData: ${claimData}`)
-
-      const claimMultiSendData = sdkService.walletSDK.encodeDataForMultiSend(
-        CALL_OP,
-        linkdropFactoryService.linkdropFactory.address,
-        0,
-        claimData
-      )
-      logger.debug(`claimMultiSendData: ${claimMultiSendData}`)
-
-      nestedTxData =
-        '0x' +
-        claimMultiSendData +
-        createSafeMultiSendData +
-        registerEnsMultiSendData
-      logger.debug(`nestedTxData: ${nestedTxData}`)
-
-      multiSendData = sdkService.walletSDK.encodeParams(
-        MultiSend.abi,
-        'multiSend',
-        [nestedTxData]
-      )
-      logger.debug(`multiSendData: ${multiSendData}`)
-
       const tx = await relayerWalletService.wallet.sendTransaction({
         to: this.multiSendWithRefund.address,
-        data: multiSendData,
-        gasPrice: ethers.utils.parseUnits('30', 'gwei'),
+        data,
+        gasPrice,
         gasLimit: 6950000
       })
 
-      logger.json(
-        { txHash: tx.hash, safe, linkdropModule, recoveryModule },
-        'info'
-      )
+      logger.json({ txHash: tx.hash }, 'info')
+
       return {
         success: true,
-        txHash: tx.hash,
-        linkdropModule,
-        recoveryModule,
-        safe
+        txHash: tx.hash
       }
     } catch (err) {
       logger.error(err)

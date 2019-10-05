@@ -41,7 +41,7 @@ export const computeSafeAddress = ({
   assert.string(data, 'Data is required')
   assert.integer(threshold, 'Threshold is required')
   assert.string(paymentToken, 'Payment token is required')
-  assert.integer(paymentAmount, 'Payment amount is required')
+  // assert.integer(paymentAmount, 'Payment amount is required')
   assert.string(paymentReceiver, 'Payment receiver is required')
 
   const gnosisSafeData = encodeParams(GnosisSafe.abi, 'setup', [
