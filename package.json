@@ -21,7 +21,7 @@
     "build:sdk": "cd packages/sdk && yarn build",
     "test": "yarn wsrun --stages --exclude-missing test",
     "test:contracts": "cd packages/contracts && yarn test",
-    "relayer": "npx babel-node packages/relayer/index"
+    "server": "npx babel-node packages/server/index"
   },
   "dependencies": {
     "wsrun": "^5.0.2"
