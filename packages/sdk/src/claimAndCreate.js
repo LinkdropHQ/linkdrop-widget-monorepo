@@ -42,11 +42,20 @@ const ADDRESS_ZERO = ethers.constants.AddressZero
  * @param {String} gnosisSafeMasterCopy Deployed gnosis safe mastercopy address
  * @param {String} proxyFactory Deployed proxy factory address
  * @param {String} owner Safe owner address
- * @param {String} name ENS name to register for safe
  * @param {String} linkdropModuleMasterCopy Deployed linkdrop module master copy address
  * @param {String} createAndAddModules Deployed createAndAddModules library address
  * @param {String} multiSend Deployed multiSend library address
  * @param {String} apiHost API host
+ * @param {String} saltNonce Random salt nonce
+ * @param {String} guardian Guardian address
+ * @param {String} recoveryPeriod Recovery period
+ * @param {String} recoveryModuleMasterCopy Deployed recovery moduel mastercopy address
+ * @param {String} gasPrice Gas price in wei
+ * @param {String} ensName ENS name (e.g. 'alice')
+ * @param {String} ensDomain ENS domain (e.g. 'my-domain.eth)
+ * @param {String} ensAddress ENS address
+ * @param {String} jsonRpcUrl JSON RPC URL
+ * @param {String} linkdropFactory Deployed linkdrop factory address
  * @returns {Object} {success, txHash, safe, errors}
  */
 export const claimAndCreate = async ({
@@ -76,6 +85,53 @@ export const claimAndCreate = async ({
   jsonRpcUrl,
   linkdropFactory
 }) => {
+  assert.string(weiAmount, 'Wei amount is required')
+  assert.string(tokenAddress, 'Token address is required')
+  assert.string(tokenAmount, 'Token amount is required')
+  assert.string(expirationTime, 'Expiration time is required')
+  assert.string(linkKey, 'Link key is required')
+  assert.string(linkdropMasterAddress, 'Linkdrop master address is requred')
+  assert.string(
+    linkdropSignerSignature,
+    'Linkdrop signer signature is required'
+  )
+  assert.string(campaignId, 'Campaign id is required')
+  assert.string(
+    gnosisSafeMasterCopy,
+    'Gnosis safe mastercopy address is required'
+  )
+  assert.string(proxyFactory, 'Proxy factory address is required')
+  assert.string(owner, 'Owner is required')
+  assert.string(apiHost, 'Api host is required')
+  assert.string(ensName, 'Ens name is required')
+  assert.string(saltNonce, 'Salt nonce is required')
+  assert.string(gasPrice, 'Gas price is required')
+  assert.string(guardian, 'Guardian address is required')
+  assert.string(recoveryPeriod, 'Recovery period is required')
+  assert.string(ensAddress, 'Ens address is required')
+  assert.string(ensDomain, 'Ens domain is required')
+  assert.string(
+    gnosisSafeMasterCopy,
+    'Gnosis safe mastercopy address is required'
+  )
+
+  assert.string(
+    linkdropModuleMasterCopy,
+    'Linkdrop module mastercopy address is required'
+  )
+  assert.string(
+    recoveryModuleMasterCopy,
+    'Recovery module mastercopy address is required'
+  )
+  assert.string(multiSend, 'MultiSend library address is required')
+  assert.string(
+    createAndAddModules,
+    'CreateAndAddModules library address is required'
+  )
+  assert.string(jsonRpcUrl, 'Json rpc url is required')
+  assert.string(apiHost, 'Api host is required')
+  assert.string(linkdropFactory, 'Linkdrop factory address is required')
+
   const ensOwner = await getEnsOwner({
     ensName,
     ensDomain,

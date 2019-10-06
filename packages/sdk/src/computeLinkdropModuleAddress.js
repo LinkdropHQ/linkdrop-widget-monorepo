@@ -23,7 +23,7 @@ export const computeLinkdropModuleAddress = ({
   deployer
 }) => {
   assert.string(owner, 'Owner address is required')
-  assert.integer(saltNonce, 'Salt nonce is required')
+  assert.string(saltNonce, 'Salt nonce is required')
   assert.string(
     linkdropModuleMasterCopy,
     'Linkdrop module mastercopy address is required'

@@ -7,8 +7,8 @@ import { ethers } from 'ethers'
  * @param {String} apiHost API host
  * @param {String} weiAmount Wei amount
  * @param {String} tokenAddress Token address
- * @param {Number} tokenAmount Amount of tokens
- * @param {Number} expirationTime Link expiration timestamp
+ * @param {String} tokenAmount Amount of tokens
+ * @param {String} expirationTime Link expiration timestamp
  * @param {String} linkKey Ephemeral key attached to link
  * @param {String} linkdropModuleAddress Address of linkdrop module
  * @param {String} linkdropSignerSignature Linkdrop signer signature
@@ -82,8 +82,8 @@ export const claim = async ({
  * @param {String} apiHost API host
  * @param {String} weiAmount Wei amount
  * @param {String} nftAddress NFT address
- * @param {Number} tokenId Token id
- * @param {Number} expirationTime Link expiration timestamp
+ * @param {String} tokenId Token id
+ * @param {String} expirationTime Link expiration timestamp
  * @param {String} linkKey Ephemeral key attached to link
  * @param {String} linkdropModuleAddress Address of linkdrop module
  * @param {String} linkdropSignerSignature Linkdrop signer signature
