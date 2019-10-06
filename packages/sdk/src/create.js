@@ -28,11 +28,29 @@ const DELEGATECALL_OP = 1
 
 const ADDRESS_ZERO = ethers.constants.AddressZero
 
+/**
+ * @param  {String} owner Owner address
+ * @param  {String} ensName Ens name
+ * @param  {String} saltNonce Random salt nonce
+ * @param  {String} recoveryPeriod Recovery period in atomic units (seconds)
+ * @param  {String} gasPrice Gas price in wei
+ * @param  {String} guardian Guardian address
+ * @param  {String} ensAddress Ens address
+ * @param  {String} ensDomain Ens domain (e.g. 'my-domain.eth)
+ * @param  {String} jsonRpcUrl JSON RPC URL
+ * @param  {String} apiHost API host
+ * @param  {String} gnosisSafeMasterCopy Deployed Gnosis Safe mastercopy address
+ * @param  {String} proxyFactory Deployed proxy factory address
+ * @param  {String} linkdropModuleMasterCopy Deployed linkdrop module mastercopy address
+ * @param  {String} recoveryModuleMasterCopy Deployed recovery module mastercopy address
+ * @param  {String} multiSend Deployed MultiSend library address
+ * @param  {String} createAndAddModules Deployed CreateAndAddModules library address
+ */
 export const create = async ({
   owner,
-  ensName, // ens name
-  ensAddress, // ens address
-  ensDomain, // ens domain
+  ensName,
+  ensAddress,
+  ensDomain,
   saltNonce,
   guardian,
   recoveryPeriod,
@@ -44,8 +62,37 @@ export const create = async ({
   recoveryModuleMasterCopy,
   multiSend,
   createAndAddModules,
-  gasPrice // in wei
+  gasPrice
 }) => {
+  assert.string(owner, 'Owner is required')
+  assert.string(ensName, 'Ens name is required')
+  assert.string(saltNonce, 'Salt nonce is required')
+  assert.string(gasPrice, 'Gas price is required')
+  assert.string(guardian, 'Guardian address is required')
+  assert.string(recoveryPeriod, 'Recovery period is required')
+  assert.string(ensAddress, 'Ens address is required')
+  assert.string(ensDomain, 'Ens domain is required')
+  assert.string(
+    gnosisSafeMasterCopy,
+    'Gnosis safe mastercopy address is required'
+  )
+  assert.string(proxyFactory, 'Proxy factory address is required')
+  assert.string(
+    linkdropModuleMasterCopy,
+    'Linkdrop module mastercopy address is required'
+  )
+  assert.string(
+    recoveryModuleMasterCopy,
+    'Recovery module mastercopy address is required'
+  )
+  assert.string(multiSend, 'MultiSend library address is required')
+  assert.string(
+    createAndAddModules,
+    'CreateAndAddModules library address is required'
+  )
+  assert.string(jsonRpcUrl, 'Json rpc url is required')
+  assert.string(apiHost, 'Api host is required')
+
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
 
   const linkdropModuleSetupData = encodeParams(LinkdropModule.abi, 'setup', [
@@ -107,7 +154,7 @@ export const create = async ({
     saltNonce
   ])
 
-  gasPrice = gasPrice || (await provider.getGasPrice()).toNumber()
+  gasPrice = gasPrice || (await provider.getGasPrice()).toString()
 
   const estimate = (await provider.estimateGas({
     to: proxyFactory,
@@ -147,7 +194,7 @@ export const create = async ({
     deployer: proxyFactory,
     to: multiSend,
     data: multiSendData,
-    paymentAmount: creationCosts.toNumber()
+    paymentAmount: creationCosts.toString()
   })
 
   const registerEnsData = encodeParams(FIFSRegistrar.abi, 'register', [
@@ -220,24 +267,28 @@ export const create = async ({
   }
 }
 
-// const saltNonce = new Date().getTime()
-
 /**
  * Function to deploy new safe
- * @param {String} owner Safe owner's address
- * @param {String} name ENS name to register for safe
+ * @param {String} ensName ENS name to register
+ * @param {String} ensDomain ENS domain (e.g. 'my-domain.eth')
+ * @param {String} ensAddress ENS address
+ * @param {String} data Creation data
+ * @param {String} gasPrice Gas price in wei
  * @param {String} apiHost API host
- * @returns {Object} {success, txHash, safe, errors}
+ * @param {String} jsonRpcUrl JSON RPC URL
+ * @returns {Object} {success, txHash, errors}
  */
-export const deployWallet = async ({
+const deployWallet = async ({
   ensName,
   ensDomain,
   ensAddress,
-  jsonRpcUrl,
   data,
   gasPrice,
-  apiHost
+  apiHost,
+  jsonRpcUrl
 }) => {
+  assert.string(data, 'Creation data is required')
+
   try {
     const ensOwner = await getEnsOwner({
       ensName,
@@ -261,151 +312,5 @@ export const deployWallet = async ({
     }
   } catch (err) {
     return { success: false, errors: err.message || err }
-  }
-}
-
-/**
- * Function to create new safe and claim linkdrop
- * @param {String} weiAmount Wei amount
- * @param {String} tokenAddress Token address
- * @param {String} tokenAmount Token amount
- * @param {String} expirationTime Link expiration timestamp
- * @param {String} linkKey Ephemeral key assigned to link
- * @param {String} linkdropMasterAddress Linkdrop master address
- * @param {String} linkdropSignerSignature Linkdrop signer signature
- * @param {String} campaignId Campaign id
- * @param {String} gnosisSafeMasterCopy Deployed gnosis safe mastercopy address
- * @param {String} proxyFactory Deployed proxy factory address
- * @param {String} owner Safe owner address
- * @param {String} name ENS name to register for safe
- * @param {String} linkdropModuleMasterCopy Deployed linkdrop module master copy address
- * @param {String} createAndAddModules Deployed createAndAddModules library address
- * @param {String} multiSend Deployed multiSend library address
- * @param {String} apiHost API host
- * @returns {Object} {success, txHash, safe, errors}
- */
-export const claimAndCreate = async ({
-  weiAmount,
-  tokenAddress,
-  tokenAmount,
-  expirationTime,
-  linkKey,
-  linkdropMasterAddress,
-  linkdropSignerSignature,
-  campaignId,
-  gnosisSafeMasterCopy,
-  proxyFactory,
-  owner,
-  name,
-  linkdropModuleMasterCopy,
-  createAndAddModules,
-  multiSend,
-  apiHost,
-  saltNonce
-}) => {
-  assert.string(weiAmount, 'Wei amount is required')
-  assert.string(tokenAddress, 'Token address is required')
-  assert.string(tokenAmount, 'Token amount is required')
-  assert.string(expirationTime, 'Expiration time is required')
-  assert.string(linkKey, 'Link key is required')
-  assert.string(linkdropMasterAddress, 'Linkdrop master address is requred')
-  assert.string(
-    linkdropSignerSignature,
-    'Linkdrop signer signature is required'
-  )
-  assert.string(campaignId, 'Campaign id is required')
-  assert.string(
-    gnosisSafeMasterCopy,
-    'Gnosis safe mastercopy address is required'
-  )
-  assert.string(proxyFactory, 'Proxy factory address is required')
-  assert.string(owner, 'Owner is required')
-  assert.string(name, 'Name is required')
-  assert.string(apiHost, 'Api host is required')
-
-  assert.string(
-    linkdropModuleMasterCopy,
-    'Linkdrop module mastercopy address is required'
-  )
-  assert.string(
-    createAndAddModules,
-    'CreateAndAddModules library address is required'
-  )
-  assert.string(multiSend, 'MultiSend library address is required')
-
-  const linkdropModuleSetupData = encodeParams(LinkdropModule.abi, 'setup', [
-    [owner]
-  ])
-
-  const linkdropModuleCreationData = encodeParams(
-    ProxyFactory.abi,
-    'createProxyWithNonce',
-    [linkdropModuleMasterCopy, linkdropModuleSetupData, saltNonce]
-  )
-
-  const modulesCreationData = encodeDataForCreateAndAddModules([
-    linkdropModuleCreationData
-  ])
-
-  const createAndAddModulesData = encodeParams(
-    CreateAndAddModules.abi,
-    'createAndAddModules',
-    [proxyFactory, modulesCreationData]
-  )
-
-  const createAndAddModulesMultiSendData = encodeDataForMultiSend(
-    DELEGATECALL_OP,
-    createAndAddModules,
-    0,
-    createAndAddModulesData
-  )
-
-  const nestedTxData = '0x' + createAndAddModulesMultiSendData
-
-  const multiSendData = encodeParams(MultiSend.abi, 'multiSend', [nestedTxData])
-
-  let safe = computeSafeAddress({
-    owner,
-    saltNonce,
-    gnosisSafeMasterCopy,
-    deployer: proxyFactory,
-    to: multiSend,
-    data: multiSendData
-  })
-
-  const receiverSignature = await signReceiverAddress(linkKey, safe)
-  const linkId = new ethers.Wallet(linkKey).address
-
-  const response = await axios.post(`${apiHost}/api/v1/safes/claimAndCreate`, {
-    weiAmount,
-    tokenAddress,
-    tokenAmount,
-    expirationTime,
-    linkId,
-    linkdropMasterAddress,
-    campaignId,
-    linkdropSignerSignature,
-    receiverAddress: safe,
-    receiverSignature,
-    owner,
-    name,
-    saltNonce
-  })
-
-  const {
-    success,
-    txHash,
-    linkdropModule,
-    recoveryModule,
-    errors
-  } = response.data
-
-  return {
-    success,
-    txHash,
-    linkdropModule,
-    recoveryModule,
-    safe,
-    errors
   }
 }

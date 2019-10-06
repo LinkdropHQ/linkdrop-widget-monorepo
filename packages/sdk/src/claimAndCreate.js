@@ -185,7 +185,7 @@ export const claimAndCreate = async ({
     deployer: proxyFactory,
     to: multiSend,
     data: multiSendData,
-    paymentAmount: creationCosts
+    paymentAmount: creationCosts.toString()
   })
 
   const registerEnsData = encodeParams(FIFSRegistrar.abi, 'register', [
