@@ -17,6 +17,9 @@ const BYTES_ZERO = '0x'
  * @param {String} owner Safe owner's address
  * @param {String} to To
  * @param {String} data Data
+ * @param {String} paymentToken Payment token (0x0 for ether)
+ * @param {String} paymentAmount Payment amount
+ * @param {String} paymentReceiver Payment receiver
  */
 export const computeSafeAddress = ({
   saltNonce,
@@ -25,12 +28,12 @@ export const computeSafeAddress = ({
   owner,
   to,
   data,
-  threshold = 1,
+  threshold = '1',
   paymentToken = ADDRESS_ZERO,
-  paymentAmount = 0,
+  paymentAmount = '0',
   paymentReceiver = ADDRESS_ZERO
 }) => {
-  assert.integer(saltNonce, 'Salt nonce is required')
+  assert.string(saltNonce, 'Salt nonce is required')
   assert.string(deployer, 'Deployer address is required')
   assert.string(
     gnosisSafeMasterCopy,
@@ -39,9 +42,9 @@ export const computeSafeAddress = ({
   assert.string(owner, 'Owner address is required')
   assert.string(to, 'To is required')
   assert.string(data, 'Data is required')
-  assert.integer(threshold, 'Threshold is required')
+  assert.string(threshold, 'Threshold is required')
   assert.string(paymentToken, 'Payment token is required')
-  // assert.integer(paymentAmount, 'Payment amount is required')
+  assert.string(paymentAmount, 'Payment amount is required')
   assert.string(paymentReceiver, 'Payment receiver is required')
 
   const gnosisSafeData = encodeParams(GnosisSafe.abi, 'setup', [

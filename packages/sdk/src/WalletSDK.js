@@ -31,7 +31,7 @@ class WalletSDK {
     createAndAddModules = '0x40Ba7DF971BBdE476517B7d6B908113f71583183', // from https://safe-relay.gnosis.pm/api/v1/about/
     multiSend = '0x0CE1BBc1BbbF65C3953A3f1f80344b42C084FA0c',
     recoveryModuleMasterCopy = '0xfE7bCFd529eB16e0793a7c4ee9cb157F2501d474',
-    recoveryPeriod = 259200,
+    recoveryPeriod = '259200', // 3 days
     ensAddress = getEnsAddress(chain),
     ensDomain = 'linkdrop.test',
     guardian = '0x9b5FEeE3B220eEdd3f678efa115d9a4D91D5cf0A',
@@ -65,6 +65,13 @@ class WalletSDK {
     return encodeParams(abi, method, params)
   }
 
+  /**
+   * Function to get encoded data to use in MultiSend library
+   * @param {Number} operation
+   * @param {String} to
+   * @param {Number} value
+   * @param {String} data
+   */
   encodeDataForMultiSend (operation, to, value, data) {
     return encodeDataForMultiSend(operation, to, value, data)
   }
@@ -89,6 +96,9 @@ class WalletSDK {
    * @param {String} owner Safe owner address
    * @param {String} to To (optional)
    * @param {String} data Data (optional)
+   * @param {String} paymentToken Payment token (0x0 for ether) (optional)
+   * @param {String} paymentAmount Payment amount (optional)
+   * @param {String} paymentReceiver Payment receiver (optional)
    */
   computeSafeAddress ({
     saltNonce,
@@ -116,57 +126,57 @@ class WalletSDK {
 
   /**
    * @param  {String} owner Owner address
-   * @param  {String} ensName
-   * @param  {Number} saltNonce
-   * @param  {Number} recoveryPeriod
-   * @param  {Number} gasPrice
-   * @param  {String} guardian
-   * @param  {String} ensAddress
-   * @param  {String} ensDomain
-   * @param  {String} jsonRpcUrl
-   * @param  {String} apiHost
-   * @param  {String} gnosisSafeMasterCopy
-   * @param  {String} proxyFactory
-   * @param  {String} linkdropModuleMasterCopy
-   * @param  {String} recoveryModuleMasterCopy
-   * @param  {String} multiSend
-   * @param  {String} createAndAddModules
+   * @param  {String} ensName Ens name
+   * @param  {Number} saltNonce Random salt nonce
+   * @param  {Number} recoveryPeriod Recovery period in atomic units (seconds) (optional)
+   * @param  {Number} gasPrice Gas price in wei (optional)
+   * @param  {String} guardian Guardian address
+   * @param  {String} ensAddress Ens address
+   * @param  {String} ensDomain Ens domain (e.g. 'my-domain.eth)
+   * @param  {String} jsonRpcUrl JSON RPC URL
+   * @param  {String} apiHost API host
+   * @param  {String} gnosisSafeMasterCopy Deployed Gnosis Safe mastercopy address
+   * @param  {String} proxyFactory Deployed proxy factory address
+   * @param  {String} linkdropModuleMasterCopy Deployed linkdrop module mastercopy address
+   * @param  {String} recoveryModuleMasterCopy Deployed recovery module mastercopy address
+   * @param  {String} multiSend Deployed MultiSend library address
+   * @param  {String} createAndAddModules Deployed CreateAndAddModules library address
    */
   async create ({
     owner,
     ensName,
     saltNonce,
-    gasPrice, // optional
+    gasPrice,
     recoveryPeriod = this.recoveryPeriod,
     guardian = this.guardian,
     ensAddress = this.ensAddress,
     ensDomain = this.ensDomain,
-    jsonRpcUrl = this.jsonRpcUrl,
-    apiHost = this.apiHost,
     gnosisSafeMasterCopy = this.gnosisSafeMasterCopy,
     proxyFactory = this.proxyFactory,
     linkdropModuleMasterCopy = this.linkdropModuleMasterCopy,
     recoveryModuleMasterCopy = this.recoveryModuleMasterCopy,
     multiSend = this.multiSend,
-    createAndAddModules = this.createAndAddModules
+    createAndAddModules = this.createAndAddModules,
+    jsonRpcUrl = this.jsonRpcUrl,
+    apiHost = this.apiHost
   }) {
     return create({
       owner,
       ensName,
+      saltNonce,
+      gasPrice,
+      recoveryPeriod,
+      guardian,
       ensAddress,
       ensDomain,
-      saltNonce,
-      guardian,
-      recoveryPeriod,
-      jsonRpcUrl,
-      apiHost,
       gnosisSafeMasterCopy,
       proxyFactory,
       linkdropModuleMasterCopy,
       recoveryModuleMasterCopy,
       multiSend,
       createAndAddModules,
-      gasPrice
+      jsonRpcUrl,
+      apiHost
     })
   }
 
@@ -261,22 +271,23 @@ class WalletSDK {
 
   /**
    * Function to get owner of ENS identifier
-   * @param {String} name ENS identifier (e.g 'alice.domain.eth')
-   * @param {String} ens ENS address (optional)
+   * @param {String} ensName ENS name (e.g 'alice')
+   * @param {String} ensDomain ENS domain (e.g. 'my-domain.eth') (optional)
+   * @param {String} ensAddress ENS address (optional)
    * @param {String} jsonRpcUrl JSON RPC URL (optional)
    * @return {String} ENS identifier owner's address
    */
   async getEnsOwner ({
     ensName,
-    ensAddress,
-    ensDomain,
+    ensDomain = this.ensDomain,
+    ensAddress = this.ensAddress,
     jsonRpcUrl = this.jsonRpcUrl
   }) {
     return getEnsOwner({ ensName, ensDomain, ensAddress, jsonRpcUrl })
   }
 
   /**
-   *
+   * Function to create new safe and claim linkdrop
    * @param {String} weiAmount Wei amount
    * @param {String} tokenAddress Token address
    * @param {String} tokenAmount Token amount
@@ -285,17 +296,24 @@ class WalletSDK {
    * @param {String} linkdropMasterAddress Linkdrop master address
    * @param {String} linkdropSignerSignature Linkdrop signer signature
    * @param {String} campaignId Campaign id
+   * @param {String} gnosisSafeMasterCopy Deployed gnosis safe mastercopy address
+   * @param {String} proxyFactory Deployed proxy factory address
    * @param {String} owner Safe owner address
-   * @param {String} ensName ENS name to register for safe
-   * @param {Number} saltNonce Random salt nonce
-   * @param {Number} gasPrice Gas price (in wei)
-   * @param {String} gnosisSafeMasterCopy Deployed gnosis safe mastercopy address (optional)
-   * @param {String} proxyFactory Deployed proxy factory address (optional)
-   * @param {String} linkdropModuleMasterCopy Deployed linkdrop module master copy address (optional)
-   * @param {String} createAndAddModules Deployed createAndAddModules library address (optional)
-   * @param {String} multiSend Deployed multiSend library address (optional)
-   * @param {String} apiHost API host (optional)
-   * @returns {Object} {success, txHash, safe, errors}
+   * @param {String} linkdropModuleMasterCopy Deployed linkdrop module master copy address
+   * @param {String} createAndAddModules Deployed createAndAddModules library address
+   * @param {String} multiSend Deployed multiSend library address
+   * @param {String} apiHost API host
+   * @param {String} saltNonce Random salt nonce
+   * @param {String} guardian Guardian address
+   * @param {String} recoveryPeriod Recovery period
+   * @param {String} recoveryModuleMasterCopy Deployed recovery moduel mastercopy address
+   * @param {String} gasPrice Gas price in wei
+   * @param {String} ensName ENS name (e.g. 'alice')
+   * @param {String} ensDomain ENS domain (e.g. 'my-domain.eth)
+   * @param {String} ensAddress ENS address
+   * @param {String} jsonRpcUrl JSON RPC URL
+   * @param {String} linkdropFactory Deployed linkdrop factory address
+   * @returns {Object} {success, txHash,safe, linkdropModule, recoveryModule, errors}
    */
   async claimAndCreate ({
     weiAmount,
@@ -356,7 +374,7 @@ class WalletSDK {
   /**
    * Function to calculate the linkdrop module address based on given params
    * @param {String} owner Safe owner address
-   * @param {String | Number} saltNonce Random salt nonce
+   * @param {String} saltNonce Random salt nonce
    * @param {String} linkdropModuleMasterCopy Deployed linkdrop module mastercopy address
    * @param {String} deployer Deployer address
    */
@@ -376,21 +394,21 @@ class WalletSDK {
 
   /**
    * Function to calculate the recovery module address based on given params
-   * @param {Array<String>} guardians Guardians addresses
-   * @param {Number} recoveryPeriod Recovery period duration in atomic value (seconds)
-   * @param {Number} saltNonce Random salt nonce
+   * @param {String} guardians Guardian address
+   * @param {String} recoveryPeriod Recovery period duration in atomic value (seconds)
+   * @param {String} saltNonce Random salt nonce
    * @param {String} recoveryModuleMasterCopy Deployed recovery module mastercopy address
    * @param {String} deployer Deployer address
    */
   computeRecoveryModuleAddress ({
-    guardians,
+    guardian,
     recoveryPeriod = this.recoveryPeriod,
     saltNonce,
     recoveryModuleMasterCopy = this.recoveryModuleMasterCopy,
     deployer = this.proxyFactory
   }) {
     return computeRecoveryModuleAddress({
-      guardians,
+      guardian,
       recoveryPeriod,
       saltNonce,
       recoveryModuleMasterCopy,
@@ -412,8 +430,8 @@ class WalletSDK {
    * @param {String} linkdropModuleAddress Address of linkdrop module
    * @param {String} weiAmount Wei amount
    * @param {String} tokenAddress Token address
-   * @param {Number} tokenAmount Amount of tokens
-   * @param {Number} expirationTime Link expiration timestamp
+   * @param {String} tokenAmount Amount of tokens
+   * @param {String} expirationTime Link expiration timestamp
    */
   async generateLink ({
     signingKeyOrWallet,
@@ -440,8 +458,8 @@ class WalletSDK {
    * @param {String} linkdropModuleAddress Address of linkdrop module
    * @param {String} weiAmount Wei amount
    * @param {String} nftAddress NFT address
-   * @param {Number} tokenId Token id
-   * @param {Number} expirationTime Link expiration timestamp
+   * @param {String} tokenId Token id
+   * @param {String} expirationTime Link expiration timestamp
    */
   async generateLinkERC721 ({
     signingKeyOrWallet,
@@ -466,8 +484,8 @@ class WalletSDK {
    * @description Function to claim ETH and/or ERC20 tokens
    * @param {String} weiAmount Wei amount
    * @param {String} tokenAddress Token address
-   * @param {Number} tokenAmount Amount of tokens
-   * @param {Number} expirationTime Link expiration timestamp
+   * @param {String} tokenAmount Amount of tokens
+   * @param {String} expirationTime Link expiration timestamp
    * @param {String} linkKey Ephemeral key attached to link
    * @param {String} linkdropModuleAddress Address of linkdrop module
    * @param {String} linkdropSignerSignature Linkdrop signer signature
@@ -500,8 +518,8 @@ class WalletSDK {
    * @description Function to claim ETH and/or ERC721 tokens
    * @param {String} weiAmount Wei amount
    * @param {String} nftAddress NFT address
-   * @param {Number} tokenId Token id
-   * @param {Number} expirationTime Link expiration timestamp
+   * @param {String} tokenId Token id
+   * @param {String} expirationTime Link expiration timestamp
    * @param {String} linkKey Ephemeral key attached to link
    * @param {String} linkdropModuleAddress Address of linkdrop module
    * @param {String} linkdropSignerSignature Linkdrop signer signature

@@ -12,7 +12,7 @@ export const create = wrapAsync(async (req, res, next) => {
 
     const { data, gasPrice } = req.body
     assert.string(data, 'Creation data is required')
-    assert.integer(gasPrice, 'Gas price is required')
+    assert.string(gasPrice, 'Gas price is required')
 
     const { success, txHash, errors } = await safeCreationService.create({
       data,
@@ -36,7 +36,7 @@ export const claimAndCreate = wrapAsync(async (req, res, next) => {
 
     const { data, gasPrice } = req.body
     assert.string(data, 'Creation data is required')
-    assert.integer(gasPrice, 'Gas price is required')
+    assert.string(gasPrice, 'Gas price is required')
 
     const {
       success,

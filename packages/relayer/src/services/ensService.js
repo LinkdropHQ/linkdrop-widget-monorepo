@@ -18,16 +18,17 @@ class ENSService {
     this.ensDomain = ENS_DOMAIN
   }
 
-  async getOwner (name) {
+  async getOwner (ensName) {
     return sdkService.walletSDK.getEnsOwner({
-      name,
-      chain: relayerWalletService.chain,
+      ensName,
+      ensAddress: this.ens.address,
+      ensDomain: this.ensDomain,
       jsonRpcUrl: relayerWalletService.jsonRpcUrl
     })
   }
 
   async getRegistrarContract () {
-    const registrar = await this.getOwner(ENS_DOMAIN)
+    const registrar = await this.getOwner(this.ensDomain)
     return new ethers.Contract(
       registrar,
       FIFSRegistrar.abi,
