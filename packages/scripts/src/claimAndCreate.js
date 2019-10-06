@@ -30,7 +30,7 @@ const main = async () => {
     .toString(36)
     .substring(2, 15)
 
-  const saltNonce = Math.floor(Math.random() * 30000)
+  const saltNonce = new Date().getTime().toString()
   console.log('ensName: ', ensName)
   console.log('saltNonce: ', saltNonce)
 
@@ -54,7 +54,7 @@ const main = async () => {
     owner: '0x9b5FEeE3B220eEdd3f678efa115d9a4D91D5cf0A',
     ensName,
     saltNonce,
-    gasPrice: 4000000000 // 4 gwei
+    gasPrice: '4000000000' // 4 gwei
   })
 
   console.log({

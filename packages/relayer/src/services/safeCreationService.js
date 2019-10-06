@@ -80,7 +80,7 @@ class SafeCreationService {
       const tx = await relayerWalletService.wallet.sendTransaction({
         to: this.multiSendWithRefund.address,
         data,
-        gasPrice,
+        gasPrice: ethers.utils.parseUnits(gasPrice, 'wei'),
         gasLimit: 6500000
       })
 
@@ -103,7 +103,7 @@ class SafeCreationService {
       const tx = await relayerWalletService.wallet.sendTransaction({
         to: this.multiSendWithRefund.address,
         data,
-        gasPrice,
+        gasPrice: ethers.utils.parseUnits(gasPrice, 'wei'),
         gasLimit: 6950000
       })
 

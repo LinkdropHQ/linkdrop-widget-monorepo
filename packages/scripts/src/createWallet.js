@@ -22,8 +22,9 @@ const walletSDK = new WalletSDK({})
     owner: '0x2C5641c0075b7E9D25C5f597b4D80B7A5a53Cea1',
     ensName,
     saltNonce,
-    gasPrice: ethers.utils.parseUnits('10', 'gwei').toString()
+    gasPrice: ethers.utils.parseUnits('5', 'gwei').toString()
   })
+
   console.log({
     safe,
     linkdropModule,
