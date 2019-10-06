@@ -28,12 +28,12 @@ export const computeSafeAddress = ({
   owner,
   to,
   data,
-  threshold = 1,
+  threshold = '1',
   paymentToken = ADDRESS_ZERO,
-  paymentAmount = 0,
+  paymentAmount = '0',
   paymentReceiver = ADDRESS_ZERO
 }) => {
-  assert.integer(saltNonce, 'Salt nonce is required')
+  assert.string(saltNonce, 'Salt nonce is required')
   assert.string(deployer, 'Deployer address is required')
   assert.string(
     gnosisSafeMasterCopy,
@@ -42,7 +42,7 @@ export const computeSafeAddress = ({
   assert.string(owner, 'Owner address is required')
   assert.string(to, 'To is required')
   assert.string(data, 'Data is required')
-  assert.integer(threshold, 'Threshold is required')
+  assert.string(threshold, 'Threshold is required')
   assert.string(paymentToken, 'Payment token is required')
   assert.string(paymentAmount, 'Payment amount is required')
   assert.string(paymentReceiver, 'Payment receiver is required')

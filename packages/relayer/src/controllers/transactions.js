@@ -23,7 +23,7 @@ export const executeTx = wrapAsync(async (req, res, next) => {
 
     assert.string(safe, 'Safe address is required')
     assert.string(to, 'To is required')
-    assert.number(value, 'Value is required')
+    assert.string(value, 'Value is required')
     assert.string(data, 'Data is required')
     assert.string(gasToken, 'Gas token is required')
     assert.string(refundReceiver, 'Refund receiver address is required')

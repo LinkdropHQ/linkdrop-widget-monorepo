@@ -297,7 +297,7 @@ export const claimAndCreate = async ({
   })
 
   const recoveryModule = computeRecoveryModuleAddress({
-    guardians: [guardian],
+    guardian,
     recoveryPeriod,
     saltNonce,
     recoveryModuleMasterCopy,
@@ -316,7 +316,7 @@ export const claimAndCreate = async ({
     linkdropModule,
     recoveryModule,
     safe,
-    creationCosts,
+    creationCosts: creationCosts.toString(),
     errors
   }
 }
