@@ -394,21 +394,21 @@ class WalletSDK {
 
   /**
    * Function to calculate the recovery module address based on given params
-   * @param {Array<String>} guardians Guardians addresses
+   * @param {String} guardians Guardian address
    * @param {String} recoveryPeriod Recovery period duration in atomic value (seconds)
-   * @param {Number} saltNonce Random salt nonce
+   * @param {String} saltNonce Random salt nonce
    * @param {String} recoveryModuleMasterCopy Deployed recovery module mastercopy address
    * @param {String} deployer Deployer address
    */
   computeRecoveryModuleAddress ({
-    guardians,
+    guardian,
     recoveryPeriod = this.recoveryPeriod,
     saltNonce,
     recoveryModuleMasterCopy = this.recoveryModuleMasterCopy,
     deployer = this.proxyFactory
   }) {
     return computeRecoveryModuleAddress({
-      guardians,
+      guardian,
       recoveryPeriod,
       saltNonce,
       recoveryModuleMasterCopy,

@@ -11,22 +11,22 @@ const BYTES_ZERO = '0x'
 
 /**
  * Function to precompute recovery module address
- * @param {Array<String>} guardians Guardians addresses
- * @param {Number} recoveryPeriod Recovery period duration in atomic value (seconds)
- * @param {Number} saltNonce Random salt nonce
+ * @param {String} guardian Guardians address
+ * @param {String} recoveryPeriod Recovery period duration in atomic value (seconds)
+ * @param {String} saltNonce Random salt nonce
  * @param {String} recoveryModuleMasterCopy Deployed recovery module mastercopy address
  * @param {String} deployer Deployer address
  */
 export const computeRecoveryModuleAddress = ({
-  guardians,
+  guardian,
   recoveryPeriod,
   saltNonce,
   recoveryModuleMasterCopy,
   deployer
 }) => {
-  assert.array(guardians, 'Guardian addresses is required')
-  assert.integer(recoveryPeriod, 'Recovery period is required')
-  assert.integer(saltNonce, 'Salt nonce is required')
+  assert.string(guardian, 'Guardian address is required')
+  assert.string(recoveryPeriod, 'Recovery period is required')
+  assert.string(saltNonce, 'Salt nonce is required')
   assert.string(
     recoveryModuleMasterCopy,
     'Recovery module mastercopy address is required'
@@ -34,7 +34,7 @@ export const computeRecoveryModuleAddress = ({
   assert.string(deployer, 'Deployer address is required')
 
   const recoveryModuleData = encodeParams(RecoveryModule.abi, 'setup', [
-    guardians,
+    [guardian],
     recoveryPeriod
   ])
 
