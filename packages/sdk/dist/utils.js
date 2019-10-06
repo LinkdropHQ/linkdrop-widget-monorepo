@@ -45,15 +45,7 @@ exports.encodeDataForCreateAndAddModules = encodeDataForCreateAndAddModules;
 
 var encodeParams = function encodeParams(abi, method, params) {
   return new _ethers.ethers.utils.Interface(abi).functions[method].encode((0, _toConsumableArray2["default"])(params));
-};
-/**
- * Function to get encoded data to use in MultiSend library
- * @param {Number} operation
- * @param {String} to
- * @param {Number} value
- * @param {String} data
- */
-// export const encodeDataForMultiSend = (operation, to, value, data) => {
+}; // export const encodeDataForMultiSend = (operation, to, value, data) => {
 //   const dataBuffer = Buffer.from(util.stripHexPrefix(data), 'hex')
 //   const encoded = abi.solidityPack(
 //     ['uint8', 'address', 'uint256', 'uint256', 'bytes'],
@@ -61,6 +53,14 @@ var encodeParams = function encodeParams(abi, method, params) {
 //   )
 //   return encoded.toString('hex')
 // }
+
+/**
+ * Function to get encoded data to use in MultiSend library
+ * @param {String} operation
+ * @param {String} to
+ * @param {String} value
+ * @param {String} data
+ */
 
 
 exports.encodeParams = encodeParams;
@@ -134,8 +134,8 @@ var buildCreate2Address = function buildCreate2Address(creatorAddress, saltHex, 
  * @param {String} linkdropModuleAddress Address of linkdrop module
  * @param {String} weiAmount Wei amount
  * @param {String} tokenAddress Token address
- * @param {Number} tokenAmount Amount of tokens
- * @param {Number} expirationTime Link expiration timestamp
+ * @param {String} tokenAmount Amount of tokens
+ * @param {String} expirationTime Link expiration timestamp
  * @return {Object}
  */
 
@@ -195,10 +195,10 @@ function () {
  * @description Function to sign link
  * @param {String | Object} signingKeyOrWallet Signing key or wallet instance
  * @param {String} linkdropModuleAddress Address of linkdrop module
- * @param {Number} weiAmount Amount of wei
+ * @param {String} weiAmount Amount of wei
  * @param {String} tokenAddress Address of token contract
- * @param {Number} tokenAmount Amount of tokens
- * @param {Number} expirationTime Link expiration timestamp
+ * @param {String} tokenAmount Amount of tokens
+ * @param {String} expirationTime Link expiration timestamp
  * @param {String} linkId Link id
  * @return {String} signature
  */
@@ -245,8 +245,8 @@ function () {
  * @param {String} linkdropModuleAddress Address of linkdrop module
  * @param {String} weiAmount Wei amount
  * @param {String} nftAddress NFT address
- * @param {Number} tokenId Token id
- * @param {Number} expirationTime Link expiration timestamp
+ * @param {String} tokenId Token id
+ * @param {String} expirationTime Link expiration timestamp
  * @return {Object}
  */
 
@@ -304,10 +304,10 @@ function () {
  * @description Function to sign link for ERC721
  * @param {String | Object} signingKeyOrWallet Signing key or wallet instance
  * @param {String} linkdropModuleAddress Address of linkdrop module
- * @param {Number} weiAmount Amount of wei
+ * @param {String} weiAmount Amount of wei
  * @param {String} nftAddresss Address of NFT
- * @param {Number} tokenId Token id
- * @param {Number} expirationTime Link expiration timestamp
+ * @param {String} tokenId Token id
+ * @param {String} expirationTime Link expiration timestamp
  * @param {String} linkId Link id
  * @return {String} signature
  */

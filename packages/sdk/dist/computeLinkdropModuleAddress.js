@@ -35,7 +35,7 @@ var computeLinkdropModuleAddress = function computeLinkdropModuleAddress(_ref) {
 
   _assertJs["default"].string(owner, 'Owner address is required');
 
-  _assertJs["default"].integer(saltNonce, 'Salt nonce is required');
+  _assertJs["default"].string(saltNonce, 'Salt nonce is required');
 
   _assertJs["default"].string(linkdropModuleMasterCopy, 'Linkdrop module mastercopy address is required');
 

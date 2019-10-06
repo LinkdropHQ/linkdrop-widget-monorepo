@@ -27,6 +27,9 @@ var BYTES_ZERO = '0x';
  * @param {String} owner Safe owner's address
  * @param {String} to To
  * @param {String} data Data
+ * @param {String} paymentToken Payment token (0x0 for ether)
+ * @param {String} paymentAmount Payment amount
+ * @param {String} paymentReceiver Payment receiver
  */
 
 var computeSafeAddress = function computeSafeAddress(_ref) {
@@ -37,15 +40,15 @@ var computeSafeAddress = function computeSafeAddress(_ref) {
       to = _ref.to,
       data = _ref.data,
       _ref$threshold = _ref.threshold,
-      threshold = _ref$threshold === void 0 ? 1 : _ref$threshold,
+      threshold = _ref$threshold === void 0 ? '1' : _ref$threshold,
       _ref$paymentToken = _ref.paymentToken,
       paymentToken = _ref$paymentToken === void 0 ? ADDRESS_ZERO : _ref$paymentToken,
       _ref$paymentAmount = _ref.paymentAmount,
-      paymentAmount = _ref$paymentAmount === void 0 ? 0 : _ref$paymentAmount,
+      paymentAmount = _ref$paymentAmount === void 0 ? '0' : _ref$paymentAmount,
       _ref$paymentReceiver = _ref.paymentReceiver,
       paymentReceiver = _ref$paymentReceiver === void 0 ? ADDRESS_ZERO : _ref$paymentReceiver;
 
-  _assertJs["default"].integer(saltNonce, 'Salt nonce is required');
+  _assertJs["default"].string(saltNonce, 'Salt nonce is required');
 
   _assertJs["default"].string(deployer, 'Deployer address is required');
 
@@ -57,11 +60,11 @@ var computeSafeAddress = function computeSafeAddress(_ref) {
 
   _assertJs["default"].string(data, 'Data is required');
 
-  _assertJs["default"].integer(threshold, 'Threshold is required');
+  _assertJs["default"].string(threshold, 'Threshold is required');
 
   _assertJs["default"].string(paymentToken, 'Payment token is required');
 
-  _assertJs["default"].integer(paymentAmount, 'Payment amount is required');
+  _assertJs["default"].string(paymentAmount, 'Payment amount is required');
 
   _assertJs["default"].string(paymentReceiver, 'Payment receiver is required');
 

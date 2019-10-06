@@ -25,7 +25,9 @@ var _computeLinkdropModuleAddress2 = require("./computeLinkdropModuleAddress");
 
 var _computeRecoveryModuleAddress2 = require("./computeRecoveryModuleAddress");
 
-var _createSafe = require("./createSafe");
+var _create3 = require("./create");
+
+var _claimAndCreate3 = require("./claimAndCreate");
 
 var _signTx2 = require("./signTx");
 
@@ -64,7 +66,15 @@ function () {
         _ref$recoveryModuleMa = _ref.recoveryModuleMasterCopy,
         recoveryModuleMasterCopy = _ref$recoveryModuleMa === void 0 ? '0xfE7bCFd529eB16e0793a7c4ee9cb157F2501d474' : _ref$recoveryModuleMa,
         _ref$recoveryPeriod = _ref.recoveryPeriod,
-        recoveryPeriod = _ref$recoveryPeriod === void 0 ? 259200 : _ref$recoveryPeriod;
+        recoveryPeriod = _ref$recoveryPeriod === void 0 ? '259200' : _ref$recoveryPeriod,
+        _ref$ensAddress = _ref.ensAddress,
+        ensAddress = _ref$ensAddress === void 0 ? (0, _ensUtils.getEnsAddress)(chain) : _ref$ensAddress,
+        _ref$ensDomain = _ref.ensDomain,
+        ensDomain = _ref$ensDomain === void 0 ? 'linkdrop.test' : _ref$ensDomain,
+        _ref$guardian = _ref.guardian,
+        guardian = _ref$guardian === void 0 ? '0x9b5FEeE3B220eEdd3f678efa115d9a4D91D5cf0A' : _ref$guardian,
+        _ref$linkdropFactory = _ref.linkdropFactory,
+        linkdropFactory = _ref$linkdropFactory === void 0 ? '0xBa051891B752ecE3670671812486fe8dd34CC1c8' : _ref$linkdropFactory;
     (0, _classCallCheck2["default"])(this, WalletSDK);
     this.chain = chain;
     this.jsonRpcUrl = jsonRpcUrl || "https://".concat(chain, ".infura.io");
@@ -77,6 +87,10 @@ function () {
     this.multiSend = multiSend;
     this.recoveryModuleMasterCopy = recoveryModuleMasterCopy;
     this.recoveryPeriod = recoveryPeriod;
+    this.ensAddress = ensAddress;
+    this.ensDomain = ensDomain;
+    this.guardian = guardian;
+    this.linkdropFactory = linkdropFactory;
   }
   /**
    * @dev Function to get encoded params data from contract abi
@@ -92,6 +106,14 @@ function () {
     value: function encodeParams(abi, method, params) {
       return (0, _utils.encodeParams)(abi, method, params);
     }
+    /**
+     * Function to get encoded data to use in MultiSend library
+     * @param {Number} operation
+     * @param {String} to
+     * @param {Number} value
+     * @param {String} data
+     */
+
   }, {
     key: "encodeDataForMultiSend",
     value: function encodeDataForMultiSend(operation, to, value, data) {
@@ -140,6 +162,9 @@ function () {
      * @param {String} owner Safe owner address
      * @param {String} to To (optional)
      * @param {String} data Data (optional)
+     * @param {String} paymentToken Payment token (0x0 for ether) (optional)
+     * @param {String} paymentAmount Payment amount (optional)
+     * @param {String} paymentReceiver Payment receiver (optional)
      */
 
   }, {
@@ -154,22 +179,42 @@ function () {
           _ref2$to = _ref2.to,
           to = _ref2$to === void 0 ? ADDRESS_ZERO : _ref2$to,
           _ref2$data = _ref2.data,
-          data = _ref2$data === void 0 ? BYTES_ZERO : _ref2$data;
+          data = _ref2$data === void 0 ? BYTES_ZERO : _ref2$data,
+          _ref2$paymentToken = _ref2.paymentToken,
+          paymentToken = _ref2$paymentToken === void 0 ? ADDRESS_ZERO : _ref2$paymentToken,
+          _ref2$paymentAmount = _ref2.paymentAmount,
+          paymentAmount = _ref2$paymentAmount === void 0 ? 0 : _ref2$paymentAmount,
+          _ref2$paymentReceiver = _ref2.paymentReceiver,
+          paymentReceiver = _ref2$paymentReceiver === void 0 ? ADDRESS_ZERO : _ref2$paymentReceiver;
       return (0, _computeSafeAddress2.computeSafeAddress)({
         owner: owner,
         saltNonce: saltNonce,
         gnosisSafeMasterCopy: gnosisSafeMasterCopy,
         deployer: deployer,
         to: to,
-        data: data
+        data: data,
+        paymentToken: paymentToken,
+        paymentAmount: paymentAmount,
+        paymentReceiver: paymentReceiver
       });
     }
     /**
-     * Function to create new safe
-     * @param {String} owner Safe owner's address
-     * @param {String} name ENS name to register for safe
-     * @param {String} apiHost API host (optional)
-     * @returns {Object} {success, txHash, safe, errors}
+     * @param  {String} owner Owner address
+     * @param  {String} ensName Ens name
+     * @param  {Number} saltNonce Random salt nonce
+     * @param  {Number} recoveryPeriod Recovery period in atomic units (seconds) (optional)
+     * @param  {Number} gasPrice Gas price in wei (optional)
+     * @param  {String} guardian Guardian address
+     * @param  {String} ensAddress Ens address
+     * @param  {String} ensDomain Ens domain (e.g. 'my-domain.eth)
+     * @param  {String} jsonRpcUrl JSON RPC URL
+     * @param  {String} apiHost API host
+     * @param  {String} gnosisSafeMasterCopy Deployed Gnosis Safe mastercopy address
+     * @param  {String} proxyFactory Deployed proxy factory address
+     * @param  {String} linkdropModuleMasterCopy Deployed linkdrop module mastercopy address
+     * @param  {String} recoveryModuleMasterCopy Deployed recovery module mastercopy address
+     * @param  {String} multiSend Deployed MultiSend library address
+     * @param  {String} createAndAddModules Deployed CreateAndAddModules library address
      */
 
   }, {
@@ -178,16 +223,29 @@ function () {
       var _create2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
       _regenerator["default"].mark(function _callee2(_ref3) {
-        var owner, name, _ref3$apiHost, apiHost;
+        var owner, ensName, saltNonce, gasPrice, _ref3$recoveryPeriod, recoveryPeriod, _ref3$guardian, guardian, _ref3$ensAddress, ensAddress, _ref3$ensDomain, ensDomain, _ref3$gnosisSafeMaste, gnosisSafeMasterCopy, _ref3$proxyFactory, proxyFactory, _ref3$linkdropModuleM, linkdropModuleMasterCopy, _ref3$recoveryModuleM, recoveryModuleMasterCopy, _ref3$multiSend, multiSend, _ref3$createAndAddMod, createAndAddModules, _ref3$jsonRpcUrl, jsonRpcUrl, _ref3$apiHost, apiHost;
 
         return _regenerator["default"].wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                owner = _ref3.owner, name = _ref3.name, _ref3$apiHost = _ref3.apiHost, apiHost = _ref3$apiHost === void 0 ? this.apiHost : _ref3$apiHost;
-                return _context2.abrupt("return", (0, _createSafe.create)({
+                owner = _ref3.owner, ensName = _ref3.ensName, saltNonce = _ref3.saltNonce, gasPrice = _ref3.gasPrice, _ref3$recoveryPeriod = _ref3.recoveryPeriod, recoveryPeriod = _ref3$recoveryPeriod === void 0 ? this.recoveryPeriod : _ref3$recoveryPeriod, _ref3$guardian = _ref3.guardian, guardian = _ref3$guardian === void 0 ? this.guardian : _ref3$guardian, _ref3$ensAddress = _ref3.ensAddress, ensAddress = _ref3$ensAddress === void 0 ? this.ensAddress : _ref3$ensAddress, _ref3$ensDomain = _ref3.ensDomain, ensDomain = _ref3$ensDomain === void 0 ? this.ensDomain : _ref3$ensDomain, _ref3$gnosisSafeMaste = _ref3.gnosisSafeMasterCopy, gnosisSafeMasterCopy = _ref3$gnosisSafeMaste === void 0 ? this.gnosisSafeMasterCopy : _ref3$gnosisSafeMaste, _ref3$proxyFactory = _ref3.proxyFactory, proxyFactory = _ref3$proxyFactory === void 0 ? this.proxyFactory : _ref3$proxyFactory, _ref3$linkdropModuleM = _ref3.linkdropModuleMasterCopy, linkdropModuleMasterCopy = _ref3$linkdropModuleM === void 0 ? this.linkdropModuleMasterCopy : _ref3$linkdropModuleM, _ref3$recoveryModuleM = _ref3.recoveryModuleMasterCopy, recoveryModuleMasterCopy = _ref3$recoveryModuleM === void 0 ? this.recoveryModuleMasterCopy : _ref3$recoveryModuleM, _ref3$multiSend = _ref3.multiSend, multiSend = _ref3$multiSend === void 0 ? this.multiSend : _ref3$multiSend, _ref3$createAndAddMod = _ref3.createAndAddModules, createAndAddModules = _ref3$createAndAddMod === void 0 ? this.createAndAddModules : _ref3$createAndAddMod, _ref3$jsonRpcUrl = _ref3.jsonRpcUrl, jsonRpcUrl = _ref3$jsonRpcUrl === void 0 ? this.jsonRpcUrl : _ref3$jsonRpcUrl, _ref3$apiHost = _ref3.apiHost, apiHost = _ref3$apiHost === void 0 ? this.apiHost : _ref3$apiHost;
+                return _context2.abrupt("return", (0, _create3.create)({
                   owner: owner,
-                  name: name,
+                  ensName: ensName,
+                  saltNonce: saltNonce,
+                  gasPrice: gasPrice,
+                  recoveryPeriod: recoveryPeriod,
+                  guardian: guardian,
+                  ensAddress: ensAddress,
+                  ensDomain: ensDomain,
+                  gnosisSafeMasterCopy: gnosisSafeMasterCopy,
+                  proxyFactory: proxyFactory,
+                  linkdropModuleMasterCopy: linkdropModuleMasterCopy,
+                  recoveryModuleMasterCopy: recoveryModuleMasterCopy,
+                  multiSend: multiSend,
+                  createAndAddModules: createAndAddModules,
+                  jsonRpcUrl: jsonRpcUrl,
                   apiHost: apiHost
                 }));
 
@@ -319,8 +377,9 @@ function () {
     }
     /**
      * Function to get owner of ENS identifier
-     * @param {String} name ENS identifier (e.g 'alice.eth')
-     * @param {String} chain Chain identifier (optional)
+     * @param {String} ensName ENS name (e.g 'alice')
+     * @param {String} ensDomain ENS domain (e.g. 'my-domain.eth') (optional)
+     * @param {String} ensAddress ENS address (optional)
      * @param {String} jsonRpcUrl JSON RPC URL (optional)
      * @return {String} ENS identifier owner's address
      */
@@ -331,16 +390,17 @@ function () {
       var _getEnsOwner2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
       _regenerator["default"].mark(function _callee4(_ref6) {
-        var name, _ref6$chain, chain, _ref6$jsonRpcUrl, jsonRpcUrl;
+        var ensName, _ref6$ensDomain, ensDomain, _ref6$ensAddress, ensAddress, _ref6$jsonRpcUrl, jsonRpcUrl;
 
         return _regenerator["default"].wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
               case 0:
-                name = _ref6.name, _ref6$chain = _ref6.chain, chain = _ref6$chain === void 0 ? this.chain : _ref6$chain, _ref6$jsonRpcUrl = _ref6.jsonRpcUrl, jsonRpcUrl = _ref6$jsonRpcUrl === void 0 ? this.jsonRpcUrl : _ref6$jsonRpcUrl;
+                ensName = _ref6.ensName, _ref6$ensDomain = _ref6.ensDomain, ensDomain = _ref6$ensDomain === void 0 ? this.ensDomain : _ref6$ensDomain, _ref6$ensAddress = _ref6.ensAddress, ensAddress = _ref6$ensAddress === void 0 ? this.ensAddress : _ref6$ensAddress, _ref6$jsonRpcUrl = _ref6.jsonRpcUrl, jsonRpcUrl = _ref6$jsonRpcUrl === void 0 ? this.jsonRpcUrl : _ref6$jsonRpcUrl;
                 return _context4.abrupt("return", (0, _ensUtils.getEnsOwner)({
-                  name: name,
-                  chain: chain,
+                  ensName: ensName,
+                  ensDomain: ensDomain,
+                  ensAddress: ensAddress,
                   jsonRpcUrl: jsonRpcUrl
                 }));
 
@@ -359,7 +419,7 @@ function () {
       return getEnsOwner;
     }()
     /**
-     *
+     * Function to create new safe and claim linkdrop
      * @param {String} weiAmount Wei amount
      * @param {String} tokenAddress Token address
      * @param {String} tokenAmount Token amount
@@ -368,15 +428,24 @@ function () {
      * @param {String} linkdropMasterAddress Linkdrop master address
      * @param {String} linkdropSignerSignature Linkdrop signer signature
      * @param {String} campaignId Campaign id
-     * @param {String} gnosisSafeMasterCopy Deployed gnosis safe mastercopy address (optional)
-     * @param {String} proxyFactory Deployed proxy factory address (optional)
+     * @param {String} gnosisSafeMasterCopy Deployed gnosis safe mastercopy address
+     * @param {String} proxyFactory Deployed proxy factory address
      * @param {String} owner Safe owner address
-     * @param {String} name ENS name to register for safe
-     * @param {String} linkdropModuleMasterCopy Deployed linkdrop module master copy address (optional)
-     * @param {String} createAndAddModules Deployed createAndAddModules library address (optional)
-     * @param {String} multiSend Deployed multiSend library address (optional)
-     * @param {String} apiHost API host (optional)
-     * @returns {Object} {success, txHash, safe, errors}
+     * @param {String} linkdropModuleMasterCopy Deployed linkdrop module master copy address
+     * @param {String} createAndAddModules Deployed createAndAddModules library address
+     * @param {String} multiSend Deployed multiSend library address
+     * @param {String} apiHost API host
+     * @param {String} saltNonce Random salt nonce
+     * @param {String} guardian Guardian address
+     * @param {String} recoveryPeriod Recovery period
+     * @param {String} recoveryModuleMasterCopy Deployed recovery moduel mastercopy address
+     * @param {String} gasPrice Gas price in wei
+     * @param {String} ensName ENS name (e.g. 'alice')
+     * @param {String} ensDomain ENS domain (e.g. 'my-domain.eth)
+     * @param {String} ensAddress ENS address
+     * @param {String} jsonRpcUrl JSON RPC URL
+     * @param {String} linkdropFactory Deployed linkdrop factory address
+     * @returns {Object} {success, txHash,safe, linkdropModule, recoveryModule, errors}
      */
 
   }, {
@@ -385,14 +454,14 @@ function () {
       var _claimAndCreate2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
       _regenerator["default"].mark(function _callee5(_ref7) {
-        var weiAmount, tokenAddress, tokenAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature, campaignId, _ref7$gnosisSafeMaste, gnosisSafeMasterCopy, owner, name, _ref7$proxyFactory, proxyFactory, _ref7$linkdropModuleM, linkdropModuleMasterCopy, _ref7$createAndAddMod, createAndAddModules, _ref7$multiSend, multiSend, _ref7$apiHost, apiHost;
+        var weiAmount, tokenAddress, tokenAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature, campaignId, owner, ensName, saltNonce, gasPrice, _ref7$gnosisSafeMaste, gnosisSafeMasterCopy, _ref7$proxyFactory, proxyFactory, _ref7$linkdropModuleM, linkdropModuleMasterCopy, _ref7$createAndAddMod, createAndAddModules, _ref7$multiSend, multiSend, _ref7$apiHost, apiHost, _ref7$guardian, guardian, _ref7$recoveryPeriod, recoveryPeriod, _ref7$recoveryModuleM, recoveryModuleMasterCopy, _ref7$ensDomain, ensDomain, _ref7$ensAddress, ensAddress, _ref7$jsonRpcUrl, jsonRpcUrl, _ref7$linkdropFactory, linkdropFactory;
 
         return _regenerator["default"].wrap(function _callee5$(_context5) {
           while (1) {
             switch (_context5.prev = _context5.next) {
               case 0:
-                weiAmount = _ref7.weiAmount, tokenAddress = _ref7.tokenAddress, tokenAmount = _ref7.tokenAmount, expirationTime = _ref7.expirationTime, linkKey = _ref7.linkKey, linkdropMasterAddress = _ref7.linkdropMasterAddress, linkdropSignerSignature = _ref7.linkdropSignerSignature, campaignId = _ref7.campaignId, _ref7$gnosisSafeMaste = _ref7.gnosisSafeMasterCopy, gnosisSafeMasterCopy = _ref7$gnosisSafeMaste === void 0 ? this.gnosisSafeMasterCopy : _ref7$gnosisSafeMaste, owner = _ref7.owner, name = _ref7.name, _ref7$proxyFactory = _ref7.proxyFactory, proxyFactory = _ref7$proxyFactory === void 0 ? this.proxyFactory : _ref7$proxyFactory, _ref7$linkdropModuleM = _ref7.linkdropModuleMasterCopy, linkdropModuleMasterCopy = _ref7$linkdropModuleM === void 0 ? this.linkdropModuleMasterCopy : _ref7$linkdropModuleM, _ref7$createAndAddMod = _ref7.createAndAddModules, createAndAddModules = _ref7$createAndAddMod === void 0 ? this.createAndAddModules : _ref7$createAndAddMod, _ref7$multiSend = _ref7.multiSend, multiSend = _ref7$multiSend === void 0 ? this.multiSend : _ref7$multiSend, _ref7$apiHost = _ref7.apiHost, apiHost = _ref7$apiHost === void 0 ? this.apiHost : _ref7$apiHost;
-                return _context5.abrupt("return", (0, _createSafe.claimAndCreate)({
+                weiAmount = _ref7.weiAmount, tokenAddress = _ref7.tokenAddress, tokenAmount = _ref7.tokenAmount, expirationTime = _ref7.expirationTime, linkKey = _ref7.linkKey, linkdropMasterAddress = _ref7.linkdropMasterAddress, linkdropSignerSignature = _ref7.linkdropSignerSignature, campaignId = _ref7.campaignId, owner = _ref7.owner, ensName = _ref7.ensName, saltNonce = _ref7.saltNonce, gasPrice = _ref7.gasPrice, _ref7$gnosisSafeMaste = _ref7.gnosisSafeMasterCopy, gnosisSafeMasterCopy = _ref7$gnosisSafeMaste === void 0 ? this.gnosisSafeMasterCopy : _ref7$gnosisSafeMaste, _ref7$proxyFactory = _ref7.proxyFactory, proxyFactory = _ref7$proxyFactory === void 0 ? this.proxyFactory : _ref7$proxyFactory, _ref7$linkdropModuleM = _ref7.linkdropModuleMasterCopy, linkdropModuleMasterCopy = _ref7$linkdropModuleM === void 0 ? this.linkdropModuleMasterCopy : _ref7$linkdropModuleM, _ref7$createAndAddMod = _ref7.createAndAddModules, createAndAddModules = _ref7$createAndAddMod === void 0 ? this.createAndAddModules : _ref7$createAndAddMod, _ref7$multiSend = _ref7.multiSend, multiSend = _ref7$multiSend === void 0 ? this.multiSend : _ref7$multiSend, _ref7$apiHost = _ref7.apiHost, apiHost = _ref7$apiHost === void 0 ? this.apiHost : _ref7$apiHost, _ref7$guardian = _ref7.guardian, guardian = _ref7$guardian === void 0 ? this.guardian : _ref7$guardian, _ref7$recoveryPeriod = _ref7.recoveryPeriod, recoveryPeriod = _ref7$recoveryPeriod === void 0 ? this.recoveryPeriod : _ref7$recoveryPeriod, _ref7$recoveryModuleM = _ref7.recoveryModuleMasterCopy, recoveryModuleMasterCopy = _ref7$recoveryModuleM === void 0 ? this.recoveryModuleMasterCopy : _ref7$recoveryModuleM, _ref7$ensDomain = _ref7.ensDomain, ensDomain = _ref7$ensDomain === void 0 ? this.ensDomain : _ref7$ensDomain, _ref7$ensAddress = _ref7.ensAddress, ensAddress = _ref7$ensAddress === void 0 ? this.ensAddress : _ref7$ensAddress, _ref7$jsonRpcUrl = _ref7.jsonRpcUrl, jsonRpcUrl = _ref7$jsonRpcUrl === void 0 ? this.jsonRpcUrl : _ref7$jsonRpcUrl, _ref7$linkdropFactory = _ref7.linkdropFactory, linkdropFactory = _ref7$linkdropFactory === void 0 ? this.linkdropFactory : _ref7$linkdropFactory;
+                return _context5.abrupt("return", (0, _claimAndCreate3.claimAndCreate)({
                   weiAmount: weiAmount,
                   tokenAddress: tokenAddress,
                   tokenAmount: tokenAmount,
@@ -404,11 +473,20 @@ function () {
                   gnosisSafeMasterCopy: gnosisSafeMasterCopy,
                   proxyFactory: proxyFactory,
                   owner: owner,
-                  name: name,
                   linkdropModuleMasterCopy: linkdropModuleMasterCopy,
                   createAndAddModules: createAndAddModules,
                   multiSend: multiSend,
-                  apiHost: apiHost
+                  apiHost: apiHost,
+                  saltNonce: saltNonce,
+                  guardian: guardian,
+                  recoveryPeriod: recoveryPeriod,
+                  recoveryModuleMasterCopy: recoveryModuleMasterCopy,
+                  gasPrice: gasPrice,
+                  ensName: ensName,
+                  ensDomain: ensDomain,
+                  ensAddress: ensAddress,
+                  jsonRpcUrl: jsonRpcUrl,
+                  linkdropFactory: linkdropFactory
                 }));
 
               case 2:
@@ -428,7 +506,7 @@ function () {
     /**
      * Function to calculate the linkdrop module address based on given params
      * @param {String} owner Safe owner address
-     * @param {String | Number} saltNonce Random salt nonce
+     * @param {String} saltNonce Random salt nonce
      * @param {String} linkdropModuleMasterCopy Deployed linkdrop module mastercopy address
      * @param {String} deployer Deployer address
      */
@@ -451,9 +529,9 @@ function () {
     }
     /**
      * Function to calculate the recovery module address based on given params
-     * @param {Array<String>} guardians Guardians addresses
-     * @param {Number} recoveryPeriod Recovery period duration in atomic value (seconds)
-     * @param {Number} saltNonce Random salt nonce
+     * @param {String} guardians Guardian address
+     * @param {String} recoveryPeriod Recovery period duration in atomic value (seconds)
+     * @param {String} saltNonce Random salt nonce
      * @param {String} recoveryModuleMasterCopy Deployed recovery module mastercopy address
      * @param {String} deployer Deployer address
      */
@@ -461,7 +539,7 @@ function () {
   }, {
     key: "computeRecoveryModuleAddress",
     value: function computeRecoveryModuleAddress(_ref9) {
-      var guardians = _ref9.guardians,
+      var guardian = _ref9.guardian,
           _ref9$recoveryPeriod = _ref9.recoveryPeriod,
           recoveryPeriod = _ref9$recoveryPeriod === void 0 ? this.recoveryPeriod : _ref9$recoveryPeriod,
           saltNonce = _ref9.saltNonce,
@@ -470,7 +548,7 @@ function () {
           _ref9$deployer = _ref9.deployer,
           deployer = _ref9$deployer === void 0 ? this.proxyFactory : _ref9$deployer;
       return (0, _computeRecoveryModuleAddress2.computeRecoveryModuleAddress)({
-        guardians: guardians,
+        guardian: guardian,
         recoveryPeriod: recoveryPeriod,
         saltNonce: saltNonce,
         recoveryModuleMasterCopy: recoveryModuleMasterCopy,
@@ -493,8 +571,8 @@ function () {
      * @param {String} linkdropModuleAddress Address of linkdrop module
      * @param {String} weiAmount Wei amount
      * @param {String} tokenAddress Token address
-     * @param {Number} tokenAmount Amount of tokens
-     * @param {Number} expirationTime Link expiration timestamp
+     * @param {String} tokenAmount Amount of tokens
+     * @param {String} expirationTime Link expiration timestamp
      */
 
   }, {
@@ -539,8 +617,8 @@ function () {
      * @param {String} linkdropModuleAddress Address of linkdrop module
      * @param {String} weiAmount Wei amount
      * @param {String} nftAddress NFT address
-     * @param {Number} tokenId Token id
-     * @param {Number} expirationTime Link expiration timestamp
+     * @param {String} tokenId Token id
+     * @param {String} expirationTime Link expiration timestamp
      */
 
   }, {
@@ -583,8 +661,8 @@ function () {
      * @description Function to claim ETH and/or ERC20 tokens
      * @param {String} weiAmount Wei amount
      * @param {String} tokenAddress Token address
-     * @param {Number} tokenAmount Amount of tokens
-     * @param {Number} expirationTime Link expiration timestamp
+     * @param {String} tokenAmount Amount of tokens
+     * @param {String} expirationTime Link expiration timestamp
      * @param {String} linkKey Ephemeral key attached to link
      * @param {String} linkdropModuleAddress Address of linkdrop module
      * @param {String} linkdropSignerSignature Linkdrop signer signature
@@ -633,8 +711,8 @@ function () {
      * @description Function to claim ETH and/or ERC721 tokens
      * @param {String} weiAmount Wei amount
      * @param {String} nftAddress NFT address
-     * @param {Number} tokenId Token id
-     * @param {Number} expirationTime Link expiration timestamp
+     * @param {String} tokenId Token id
+     * @param {String} expirationTime Link expiration timestamp
      * @param {String} linkKey Ephemeral key attached to link
      * @param {String} linkdropModuleAddress Address of linkdrop module
      * @param {String} linkdropSignerSignature Linkdrop signer signature

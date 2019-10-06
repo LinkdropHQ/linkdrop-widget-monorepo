@@ -21,31 +21,31 @@ var ADDRESS_ZERO = _ethers.ethers.constants.AddressZero;
 var BYTES_ZERO = '0x';
 /**
  * Function to precompute recovery module address
- * @param {Array<String>} guardians Guardians addresses
- * @param {Number} recoveryPeriod Recovery period duration in atomic value (seconds)
- * @param {Number} saltNonce Random salt nonce
+ * @param {String} guardian Guardians address
+ * @param {String} recoveryPeriod Recovery period duration in atomic value (seconds)
+ * @param {String} saltNonce Random salt nonce
  * @param {String} recoveryModuleMasterCopy Deployed recovery module mastercopy address
  * @param {String} deployer Deployer address
  */
 
 var computeRecoveryModuleAddress = function computeRecoveryModuleAddress(_ref) {
-  var guardians = _ref.guardians,
+  var guardian = _ref.guardian,
       recoveryPeriod = _ref.recoveryPeriod,
       saltNonce = _ref.saltNonce,
       recoveryModuleMasterCopy = _ref.recoveryModuleMasterCopy,
       deployer = _ref.deployer;
 
-  _assertJs["default"].array(guardians, 'Guardian addresses is required');
+  _assertJs["default"].string(guardian, 'Guardian address is required');
 
-  _assertJs["default"].integer(recoveryPeriod, 'Recovery period is required');
+  _assertJs["default"].string(recoveryPeriod, 'Recovery period is required');
 
-  _assertJs["default"].integer(saltNonce, 'Salt nonce is required');
+  _assertJs["default"].string(saltNonce, 'Salt nonce is required');
 
   _assertJs["default"].string(recoveryModuleMasterCopy, 'Recovery module mastercopy address is required');
 
   _assertJs["default"].string(deployer, 'Deployer address is required');
 
-  var recoveryModuleData = (0, _utils.encodeParams)(_RecoveryModule["default"].abi, 'setup', [guardians, recoveryPeriod]);
+  var recoveryModuleData = (0, _utils.encodeParams)(_RecoveryModule["default"].abi, 'setup', [[guardian], recoveryPeriod]);
 
   var constructorData = _ethers.ethers.utils.defaultAbiCoder.encode(['address'], [recoveryModuleMasterCopy]);
 

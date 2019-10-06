@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getEnsOwner = void 0;
+exports.getEnsAddress = exports.getEnsOwner = void 0;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 
@@ -19,8 +19,9 @@ var _assertJs = _interopRequireDefault(require("assert-js"));
 
 /**
  * Function to get owner of ENS identifier
- * @param {String} name ENS identifier (e.g 'alice.eth')
- * @param {String} chain Chain identifier
+ * @param {String} ensName ENS name (e.g 'alice')
+ * @param {String} ensDomain ENS domain (e.g. 'domain.eth')
+ * @param {String} ensAddress ENS address
  * @param {String} jsonRpcUrl JSON RPC URL
  * @return {String} ENS identifier owner's address
  */
@@ -30,26 +31,38 @@ function () {
   var _ref2 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
   _regenerator["default"].mark(function _callee(_ref) {
-    var name, chain, jsonRpcUrl, ensAddress, provider, ensContract, node;
+    var ensName, ensDomain, ensAddress, jsonRpcUrl, provider, ens, node;
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            name = _ref.name, chain = _ref.chain, jsonRpcUrl = _ref.jsonRpcUrl;
+            ensName = _ref.ensName, ensDomain = _ref.ensDomain, ensAddress = _ref.ensAddress, jsonRpcUrl = _ref.jsonRpcUrl;
 
-            _assertJs["default"].string(name, 'Name is required');
-
-            _assertJs["default"].string(chain, 'Chain is required');
+            _assertJs["default"].string(ensDomain, 'Ens domain is required');
 
             _assertJs["default"].url(jsonRpcUrl, 'Json rpc url is required');
 
-            ensAddress = getEnsAddress(chain);
             provider = new _ethers.ethers.providers.JsonRpcProvider(jsonRpcUrl);
-            ensContract = new _ethers.ethers.Contract(ensAddress, _ens.ENS.abi, provider);
-            node = _ethers.ethers.utils.namehash(name);
-            return _context.abrupt("return", ensContract.owner(node));
 
-          case 9:
+            if (ensAddress) {
+              _context.next = 8;
+              break;
+            }
+
+            _context.next = 7;
+            return provider.getNetwork();
+
+          case 7:
+            ensAddress = _context.sent.ensAddress;
+
+          case 8:
+            _assertJs["default"].string(ensAddress, 'Ens address is required');
+
+            ens = new _ethers.ethers.Contract(ensAddress, _ens.ENS.abi, provider);
+            node = _ethers.ethers.utils.namehash("".concat(ensName).concat(ensDomain));
+            return _context.abrupt("return", ens.owner(node));
+
+          case 12:
           case "end":
             return _context.stop();
         }
@@ -84,3 +97,5 @@ var getEnsAddress = function getEnsAddress(chain) {
       throw new Error('Unsupported chain');
   }
 };
+
+exports.getEnsAddress = getEnsAddress;
