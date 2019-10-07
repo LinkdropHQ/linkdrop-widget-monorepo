@@ -107,6 +107,24 @@ export const estimateGasCosts = async ({
 
   const gasCosts = []
 
+  gasCosts.push({
+    gasPrice: 0,
+    baseGas: estimateBaseGas({
+      safe,
+      to,
+      value,
+      data,
+      operation,
+      txGasEstimate,
+      gasToken,
+      gasPrice: 0,
+      refundReceiver,
+      signatureCount,
+      nonce
+    }),
+    safeTxGas: txGasEstimate
+  })
+
   for (
     let gasPriceGwei = currentGasPriceGwei;
     gasPriceGwei <= currentGasPriceGwei + 5;
@@ -136,5 +154,6 @@ export const estimateGasCosts = async ({
       safeTxGas: txGasEstimate
     })
   }
+
   return gasCosts
 }

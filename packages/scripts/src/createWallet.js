@@ -19,7 +19,7 @@ const walletSDK = new WalletSDK({})
     waitForBalance,
     deploy
   } = await walletSDK.create({
-    owner: '0x2C5641c0075b7E9D25C5f597b4D80B7A5a53Cea1',
+    owner: '0x9b5FEeE3B220eEdd3f678efa115d9a4D91D5cf0A',
     ensName,
     saltNonce,
     gasPrice: ethers.utils.parseUnits('5', 'gwei').toString()

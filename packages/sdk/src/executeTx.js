@@ -41,12 +41,12 @@ const getGasSpectrum = async ({
       value,
       data,
       operation,
-      safeTxGas: gasSpectrum[i].safeTxGas,
-      baseGas: gasSpectrum[i].baseGas,
-      gasPrice: gasSpectrum[i].gasPrice,
+      safeTxGas: gasSpectrum[i].safeTxGas.toString(),
+      baseGas: gasSpectrum[i].baseGas.toString(),
+      gasPrice: gasSpectrum[i].gasPrice.toString(),
       gasToken,
       refundReceiver,
-      nonce: parseInt(nonce)
+      nonce
     })
 
     // Estimate gas of paying transaction
@@ -82,12 +82,12 @@ const getGasSpectrum = async ({
  * @param {String} safe Safe address
  * @param {String} privateKey Safe owner's private key
  * @param {String} to To
- * @param {Number} value Value
+ * @param {String} value Value
  * @param {String} data Data
- * @param {Number} operation Operation
- * @param {Number} safeTxGas Safe tx gas
- * @param {Number} baseGas Base gas
- * @param {Number} gasPrice Gas price
+ * @param {String} operation Operation
+ * @param {String} safeTxGas Safe tx gas
+ * @param {String} baseGas Base gas
+ * @param {String} gasPrice Gas price
  * @param {String} gasToken Gas token
  * @param {String} refundReceiver Refund receiver
  * @returns {Object} {success, txHash, errors}
@@ -109,7 +109,7 @@ export const executeTx = async ({
   assert.string(safe, 'Safe address is required')
   assert.string(privateKey, 'Private key is required')
   assert.string(to, 'To is required')
-  assert.integer(value, 'Value is required')
+  assert.string(value, 'Value is required')
   assert.string(data, 'Data is required')
   assert.string(gasToken, 'Gas token is required')
   assert.string(refundReceiver, 'Refund receiver address is required')

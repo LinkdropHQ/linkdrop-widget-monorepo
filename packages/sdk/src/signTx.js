@@ -7,15 +7,15 @@ import assert from 'assert-js'
  * @param {String} safe Safe address
  * @param {String} privateKey Safe owner's private key
  * @param {String} to To
- * @param {Number} value Value
+ * @param {String} value Value
  * @param {String} data Data
- * @param {Number} operation Operation
- * @param {Number} safeTxGas Safe tx gas
- * @param {Number} baseGas Base gas
- * @param {Number} gasPrice Gas price
+ * @param {String} operation Operation
+ * @param {String} safeTxGas Safe tx gas
+ * @param {String} baseGas Base gas
+ * @param {String} gasPrice Gas price
  * @param {String} gasToken Gas token
  * @param {String} refundReceiver Refund receiver
- * @param {Number} nonce Safe's nonce
+ * @param {String} nonce Safe's nonce
  */
 export const signTx = ({
   safe,
@@ -34,14 +34,14 @@ export const signTx = ({
   assert.string(safe, 'Safe address is required')
   assert.string(privateKey, 'Private key is required')
   assert.string(to, 'To is required')
-  assert.integer(value, 'Value is required')
+  assert.string(value, 'Value is required')
   assert.string(data, 'Data is required')
-  assert.integer(safeTxGas, 'Safe tx gas is required')
-  assert.integer(baseGas, 'Base gas is required')
-  assert.integer(gasPrice, 'Gas price is required')
+  assert.string(safeTxGas, 'Safe tx gas is required')
+  assert.string(baseGas, 'Base gas is required')
+  assert.string(gasPrice, 'Gas price is required')
   assert.string(gasToken, 'Gas token is required')
   assert.string(refundReceiver, 'Refund receiver address is required')
-  assert.integer(nonce, 'Nonce is required')
+  assert.string(nonce, 'Nonce is required')
 
   if (privateKey.includes('0x')) {
     privateKey = privateKey.replace('0x', '')
