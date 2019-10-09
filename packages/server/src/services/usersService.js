@@ -12,6 +12,11 @@ class UsersService {
 
   async update ({
     email,
+    passwordHash,
+    passwordDerivedKeyHash,
+    encryptedEncryptionKey,
+    publicKey,
+    encryptedPrivateKey,
     chain,
     encryptedMnemonic,
     ens,
@@ -24,6 +29,11 @@ class UsersService {
 
   async create ({
     email,
+    passwordHash,
+    passwordDerivedKeyHash,
+    encryptedEncryptionKey,
+    publicKey,
+    encryptedPrivateKey,
     chain,
     encryptedMnemonic,
     ens,
@@ -56,7 +66,15 @@ class UsersService {
       // If user does not exist in database
       if (!user) {
         logger.debug('Creating new user..')
-        user = new User({ email, accounts: [account._id] })
+        user = new User({
+          email,
+          passwordHash,
+          passwordDerivedKeyHash,
+          encryptedEncryptionKey,
+          publicKey,
+          encryptedPrivateKey,
+          accounts: [account._id]
+        })
         logger.json(user)
         await user.save()
         return user
