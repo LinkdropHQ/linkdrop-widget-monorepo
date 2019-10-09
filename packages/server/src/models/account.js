@@ -5,6 +5,7 @@ const AccountSchema = new Schema(
   {
     chain: { type: String, required: true },
     encryptedMnemonic: { type: String, required: true },
+
     ens: { type: String, required: true },
     safe: { type: String, required: true },
     linkdropModule: { type: String },
