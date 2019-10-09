@@ -4,6 +4,7 @@ import express from 'express'
 import cors from 'cors'
 import safesRouter from './src/routes/safes'
 import transactionsRouter from './src/routes/transactions'
+import usersRouter from './src/routes/users'
 
 const app = express()
 
@@ -30,6 +31,7 @@ connectDB()
 app.get('/', (req, res) => res.send('Safe Relay Service'))
 app.use('/api/v1/safes', safesRouter)
 app.use('/api/v1/safes/execute', transactionsRouter)
+app.use('/api/v1/users', usersRouter)
 
 // Boom error handling middleware
 app.use((err, req, res, next) => {
