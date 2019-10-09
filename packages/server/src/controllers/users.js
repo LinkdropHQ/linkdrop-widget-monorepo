@@ -12,6 +12,11 @@ export const create = wrapAsync(async (req, res, next) => {
 
     const {
       email,
+      passwordHash,
+      passwordDerivedKeyHash,
+      encryptedEncryptionKey,
+      publicKey,
+      encryptedPrivateKey,
       chain,
       encryptedMnemonic,
       ens,
@@ -30,6 +35,11 @@ export const create = wrapAsync(async (req, res, next) => {
 
     user = await usersService.create({
       email,
+      passwordHash,
+      passwordDerivedKeyHash,
+      encryptedEncryptionKey,
+      publicKey,
+      encryptedPrivateKey,
       chain,
       encryptedMnemonic,
       ens,
