@@ -1,0 +1,33 @@
+{
+  "name": "@huskiapp/sdk",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "npx babel src -d dist"
+  },
+  "babel": {
+    "extends": "../../babel.config.js"
+  },
+  "dependencies": {
+    "@ensdomains/ens": "^0.3.11",
+    "@gnosis.pm/safe-contracts": "^1.0.0",
+    "@linkdrop/contracts": "^1.0.87",
+    "assert": "^2.0.0",
+    "assert-js": "^0.22.0",
+    "axios": "^0.18.1",
+    "bignumber.js": "^9.0.0",
+    "csvtojson": "^2.0.10",
+    "eth-sig-util": "^2.4.4",
+    "ethereumjs-abi": "^0.6.8",
+    "ethereumjs-util": "^6.1.0",
+    "ethers": "^4.0.27",
+    "query-string": "^6.8.3"
+  },
+  "devDependencies": {
+    "truffle": "4.1.14"
+  }
+}

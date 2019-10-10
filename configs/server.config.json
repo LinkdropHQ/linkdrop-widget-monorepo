@@ -1,0 +1,13 @@
+{
+    "CHAIN": "rinkeby",
+    "mongoURI": "mongodb://localhost:27017/linkdrop_db",
+    "jsonRpcUrl": "https://rinkeby.infura.io",
+    "INFURA_PROJECT_ID": "d4d1a2b933e048e28fb6fe1abe3e813a",
+    "relayerPrivateKey": "CA90DCD89716EE6FFCCE036B6AE6BCEE5C40AFA1D6373DF99FB59C9780CBFE2A",
+    "FACTORY_ADDRESS": "0x5AbdfcF089573C4E588E7278277E104E45B0fDa9",
+    "DEFAULT_GAS_PRICE": "auto",
+    "TRANSACTION_LOOP_TIME": 10000,
+    "TRANSACTION_RETRY_TIMEOUT": 60000,
+    "GWEI_ADDED_ON_RETRY": "1",
+    "MAX_GAS_PRICE": "20"
+}

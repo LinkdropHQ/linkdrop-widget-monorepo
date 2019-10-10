@@ -1,33 +1,45 @@
 {
-  "name": "@linkdrop/contracts",
-  "version": "1.0.83",
-  "main": "index.js",
-  "license": "MIT",
-  "scripts": {
-    "test": "mocha --require @babel/polyfill --require @babel/register",
-    "compile": "npx waffle .waffle"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "dependencies": {
-    "@linkdrop/sdk": "^1.0.83",
-    "ethereum-waffle": "^2.0.14",
-    "ethers": "^4.0.27",
-    "openzeppelin-solidity": "^2.2.0",
-    "solc": "^0.5.10"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.4.0",
-    "@babel/node": "^7.2.2",
-    "@babel/polyfill": "^7.4.3",
-    "@babel/preset-env": "^7.4.0",
-    "@babel/register": "^7.4.0",
-    "@universal-login/contracts": "^0.3.18"
-  },
-  "standard": {
-    "parser": "babel-eslint"
-  },
-  "gitHead": "6c4e548e132a4cda7e9dcb94db206b3f0b47cc5d"
+    "name": "@huskiapp/contracts",
+    "version": "0.0.1",
+    "description": "Smart contracts for Huski app",
+    "main": "index.js",
+    "author": "Amir Jumaniyazov <amir@linkdrop.io>",
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "build": "npx waffle",
+        "test": "mocha --file ./test/register.js --recursive"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/LinkdropHQ/huskiapp.git"
+    },
+    "bugs": {
+        "url": "https://github.com/LinkdropHQ/huskiapp/issues"
+    },
+    "dependencies": {
+        "@gnosis.pm/safe-contracts": "^1.0.0",
+        "ethereum-waffle": "^2.0.12",
+        "ethers": "^4.0.30",
+        "expect": "^24.9.0",
+        "openzeppelin-solidity": "^2.3.0",
+        "solc": "^0.5.9"
+    },
+    "devDependencies": {
+        "@babel/cli": "^7.4.4",
+        "@babel/core": "^7.4.5",
+        "@babel/node": "^7.4.5",
+        "@babel/polyfill": "^7.4.4",
+        "@babel/preset-env": "^7.4.5",
+        "@babel/register": "^7.6.2",
+        "chai": "^4.2.0",
+        "mocha": "^6.2.1",
+        "truffle": "4.1.15"
+    },
+    "babel": {
+        "extends": "../../babel.config.js"
+    },
+    "standard": {
+        "parser": "babel-eslint"
+    }
 }

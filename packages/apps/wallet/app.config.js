@@ -46,7 +46,9 @@ const initialBlockGoerli = INITIAL_BLOCK_GOERLI || config.initialBlockGoerli
 const infuraPk = INFURA_PK || config.infuraPk
 const authClientId = AUTH_CLIENT_ID || authConfig.clientId
 const authApiKey = AUTH_API_KEY || authConfig.apiKey
-const authDiscoveryDocs = (AUTH_DISCOVERY_DOCS !== undefined && JSON.parse(AUTH_DISCOVERY_DOCS)) || authConfig.discoveryDocs
+const authDiscoveryDocs =
+  (AUTH_DISCOVERY_DOCS !== undefined && JSON.parse(AUTH_DISCOVERY_DOCS)) ||
+  authConfig.discoveryDocs
 const authScopeContacts = AUTH_SCOPE_CONTACTS || authConfig.scopes.contacts
 const authScopeDrive = AUTH_SCOPE_DRIVE || authConfig.scopes.drive
 const defaultChainId = DEFAULT_CHAIN_ID || config.defaultChainId

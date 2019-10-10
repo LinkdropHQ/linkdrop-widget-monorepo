@@ -1,0 +1,22 @@
+{
+  "jsonRpcUrl":"https://rinkeby.infura.io",
+  "CHAIN":"rinkeby",
+  "chainId":"4",
+  "API_HOST":"http://localhost:5000",
+  "version":"1",
+  "linkdropMasterPrivateKey":"EEDFA6C63D0B44CE6C511C7A9425A8668DFADFC8F47FF24647A92489D5A913CC",
+  "masterCopy":"0x2f9Df93ebF334443c5719f01000f777749a3f99c",
+  "factory":"0x5AbdfcF089573C4E588E7278277E104E45B0fDa9",
+  "isApprove":"true",
+  "receiverAddress":"0xdb567a535d3da62F86938c30906f9e2e7376aEdc",
+  "weiAmount":"8",
+  "tokenAddress":"0xbE4aF20b64fb0eF24Aa2d76d2259C5AB68bF3063",
+  "tokenAmount":"4",
+  "linksNumber":"10",
+  "nftAddress":"0x2BCE5e4a89Db711afaB4c7582056026FF7B6D319",
+  "nftIds":"[0,1,2,3]",
+  "CAMPAIGN_ID":"0",
+  "REGISTRY_ADDRESS":"0xf6c66A9b3F53e31e67e05aAB9D37D238b7c603e5",
+  "RELAYER_ADDRESS":"0xA208969D8F9E443E2B497540d069a5d1a6878f4E",
+  "FACTORY_ADDRESS":"0x5AbdfcF089573C4E588E7278277E104E45B0fDa9"
+}

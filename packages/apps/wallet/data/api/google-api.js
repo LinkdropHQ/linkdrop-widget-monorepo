@@ -6,6 +6,7 @@ import EventEmitter from 'events'
 
 class GoogleApiService {
   constructor () {
+    console.log({ config })
     this.eventEmitter = new EventEmitter()
     this.auth2 = null
     this.loaded = false
@@ -162,6 +163,7 @@ class GoogleApiService {
   }
 
   _handleClientLoad () {
+    console.log({ config })
     gapi.load('client:auth2', _ => {
       this.auth2 = gapi.auth2.init({
         clientId: config.authClientId
