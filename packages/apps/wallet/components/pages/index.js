@@ -3,7 +3,7 @@ import Page from './page'
 import Claim from './claim'
 import Wallet from './wallet'
 import Confirm from './confirm'
-import GoogleAuthorization from './google-authorization'
+import Authorization from './authorization'
 import Send from './send'
 import Receive from './receive'
 import Common from './common'
@@ -16,7 +16,7 @@ export {
   Claim,
   Wallet,
   Confirm,
-  GoogleAuthorization,
+  Authorization,
   Send,
   Receive,
   Common,

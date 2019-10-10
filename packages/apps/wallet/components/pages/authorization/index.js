@@ -2,11 +2,12 @@ import React from 'react'
 import { Button, RetinaImage, Icons } from '@linkdrop/ui-kit'
 import styles from './styles.module'
 import { Page } from 'components/pages'
-import { getEns, getImages } from 'helpers'
+import { getEns, getImages, prepareRedirectUrl } from 'helpers'
 import { actions, translate } from 'decorators'
-import { getHashVariables } from '@linkdrop/commons'
 import classNames from 'classnames'
 import gapiService from 'data/api/google-api'
+import OtherWallet from './other-wallet'
+import SignInWithEmail from './sign-in-with-email'
 
 @actions(({ user: { sdk, privateKey, contractAddress, ens, loading, chainId } }) => ({
   loading,
@@ -38,6 +39,13 @@ class Authorization extends React.Component {
       // load google api
       this._loadGoogleApi()
     }
+  }
+
+  render () {
+    const { authorized } = this.state
+    return <Page dynamicHeader disableProfile>
+      {authorized ? this.renderGoogleDriveScreen() : this.renderAuthorizationScreen()}
+    </Page>
   }
 
   async _loadGoogleApi () {
@@ -114,22 +122,23 @@ class Authorization extends React.Component {
 
   renderAuthorizationScreen () {
     const { loading } = this.props
-    const { enableAuthorize } = this.state
+    const { enableAuthorize, otherWallet, signInWithWallet } = this.state
     return <div className={styles.container}>
       <h2 className={styles.title} dangerouslySetInnerHTML={{ __html: this.t('titles.signIn') }} />
+      <OtherWallet show={otherWallet} onClose={_ => this.setState({ otherWallet: false })} />
+      <SignInWithEmail show={signInWithWallet} onClose={_ => this.setState({ signInWithWallet: false })} />
       <Button loadingClassName={styles.buttonLoading} className={styles.button} inverted loading={!enableAuthorize || loading} onClick={e => this.handleAuthClick(e)}>
         <RetinaImage width={30} {...getImages({ src: 'google' })} />
         {this.t('titles.googleSignIn')}
       </Button>
+      <div
+        onClick={_ => { this.setState({ otherWallet: true }) }}
+        className={styles.link}
+      >
+        {this.t('titles.haveAnotherWallet')}
+      </div>
       <div className={styles.note} dangerouslySetInnerHTML={{ __html: this.t('texts.backup', { href: 'https://www.notion.so/linkdrop/Help-Center-9cf549af5f614e1caee6a660a93c489b#d0a28202100d4512bbeb52445e6db95b' }) }} />
     </div>
-  }
-
-  render () {
-    const { authorized } = this.state
-    return <Page dynamicHeader disableProfile>
-      {authorized ? this.renderGoogleDriveScreen() : this.renderAuthorizationScreen()}
-    </Page>
   }
 }
 export default Authorization

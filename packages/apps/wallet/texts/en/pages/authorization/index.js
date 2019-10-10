@@ -3,7 +3,10 @@ export default {
     signIn: 'Sign in to<br/>claim tokens',
     grantAccess: 'Grant access',
     googleSignIn: 'Sign in with Google',
-    grantGoogleDrive: 'Grant limited access<br>to Google Drive'
+    grantGoogleDrive: 'Grant limited access<br>to Google Drive',
+    haveAnotherWallet: 'Have another wallet?',
+    otherWallet: 'Open in other wallets',
+    otherWalletSubtitle: 'Copy the link and open in<br>any browser, follow instructions'
   },
   texts: {
     backup: 'You will access your wallet with your Google<br/>account on other devices <a target="_blank" href={{href}}>Learn more</a>',
@@ -12,5 +15,8 @@ export default {
       _2: 'This will not grant access to other files on Google Drive',
       _3: 'You can always see or remove access in your Google Account'
     }
+  },
+  buttons: {
+    copyLink: 'Copy link'
   }
 }
