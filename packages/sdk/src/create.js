@@ -62,7 +62,13 @@ export const create = async ({
   recoveryModuleMasterCopy,
   multiSend,
   createAndAddModules,
-  gasPrice
+  gasPrice,
+  email,
+  passwordHash,
+  passwordDerivedKeyHash,
+  encryptedEncryptionKey,
+  encryptedMnemonic,
+  chain
 }) => {
   assert.string(owner, 'Owner is required')
   assert.string(ensName, 'Ens name is required')
@@ -257,6 +263,22 @@ export const create = async ({
     })
   }
 
+  // Save user and account data to database
+  const response = await axios.post(`${apiHost}/api/v1/users`, {
+    email,
+    passwordHash,
+    passwordDerivedKeyHash,
+    encryptedEncryptionKey,
+    encryptedMnemonic, // object
+    chain,
+    ens: `${ensName}.${ensDomain}`,
+    safe,
+    linkdropModule,
+    recoveryModule,
+    saltNonce,
+    deployed: false
+  })
+
   return {
     safe,
     linkdropModule,
@@ -275,7 +297,7 @@ export const create = async ({
  * @param {String} data Creation data
  * @param {String} gasPrice Gas price in wei
  * @param {String} apiHost API host
- * @param {String} jsonRpcUrl JSON RPC URL
+ * @param {String} jsonRpcUrl JSON RPC URL,
  * @returns {Object} {success, txHash, errors}
  */
 const deployWallet = async ({
@@ -285,7 +307,10 @@ const deployWallet = async ({
   data,
   gasPrice,
   apiHost,
-  jsonRpcUrl
+  jsonRpcUrl,
+  email,
+  chain,
+  saltNonce
 }) => {
   assert.string(data, 'Creation data is required')
 
@@ -298,16 +323,28 @@ const deployWallet = async ({
     })
     assert.true(ensOwner === ADDRESS_ZERO, 'Provided name already has an owner')
 
-    const response = await axios.post(`${apiHost}/api/v1/safes`, {
+    let response = await axios.post(`${apiHost}/api/v1/safes`, {
       data,
       gasPrice
     })
 
     const { success, txHash, errors } = response.data
 
+    // Mark account as deployed in database
+    response = await axios.put(`${apiHost}/api/v1/users`, {
+      email,
+      chain,
+      saltNonce,
+      ens: `${ensName}.${ensDomain}`,
+      deployed: true
+    })
+
+    const user = response.data
+
     return {
       success,
       txHash,
+      user,
       errors
     }
   } catch (err) {

@@ -16,6 +16,8 @@ import { getEnsOwner, getEnsAddress } from './ensUtils'
 import { generateLink, generateLinkERC721 } from './generateLink'
 import { claim, claimERC721 } from './claim'
 
+import * as cryptoUtils from './cryptoUtils'
+
 const ADDRESS_ZERO = ethers.constants.AddressZero
 const BYTES_ZERO = '0x'
 
@@ -52,6 +54,7 @@ class WalletSDK {
     this.ensDomain = ensDomain
     this.guardian = guardian
     this.linkdropFactory = linkdropFactory
+    this.cryptoUtils = cryptoUtils
   }
 
   /**

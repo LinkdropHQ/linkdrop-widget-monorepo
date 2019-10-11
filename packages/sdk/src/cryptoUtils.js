@@ -21,22 +21,47 @@ export const generateIV = () => {
  * @param {String} email Email
  * @param {String} password Password
  * @param {String} encryptionKey Encryption key
- * @returm `{encryptedEncryptionKey, iv, algorithm}`
+ * @return `{encryptedEncryptionKey, iv, algorithm}`
  */
 export const getEncryptedEncryptionKey = async (
   email,
   password,
   encryptionKey
 ) => {
-  const algorithm = 'aes-256-cbc'
   const passwordDerivedKey = await getPasswordDerivedKey(email, password)
   const iv = generateIV()
-  const cipher = crypto.createCipheriv(algorithm, passwordDerivedKey, iv)
+  const cipher = crypto.createCipheriv('aes-256-cbc', passwordDerivedKey, iv)
 
   const encryptedEncryptionKey =
     cipher.update(encryptionKey, 'utf8', 'hex') + cipher.final('hex')
 
-  return { encryptedEncryptionKey, iv, algorithm }
+  return { encryptedEncryptionKey, iv }
+}
+
+/**
+ * Encrypts `mnemonic` using AES-CBC algorithm with `encryptionKey` as the secret and 16 bytes IV
+ * @param {String} mnemonic Mnemonic
+ * @return `{encryptedMnemonic, iv}`
+ */
+export const getEncryptedMnemonic = async (mnemonic, encryptionKey, iv) => {
+  const cipher = crypto.createCipheriv('aes-256-cbc', encryptionKey, iv)
+  return cipher.update(mnemonic, 'utf8', 'hex') + cipher.final('hex')
+}
+
+export const extractEncryptionKey = async (
+  encryptedEncryptionKey,
+  iv,
+  passwordDerivedKey
+) => {
+  const decipher = crypto.createDecipheriv(
+    'aes-256-cbc',
+    passwordDerivedKey,
+    iv
+  )
+  return (
+    decipher.update(encryptedEncryptionKey, 'utf8', 'hex') +
+    decipher.final('hex')
+  )
 }
 
 /**

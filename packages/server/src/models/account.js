@@ -3,14 +3,18 @@ const Schema = mongoose.Schema
 
 const AccountSchema = new Schema(
   {
+    email: { type: String, required: true, unique: true },
     chain: { type: String, required: true },
-    encryptedMnemonic: { type: String, required: true },
-
-    ens: { type: String, required: true },
-    safe: { type: String, required: true },
-    linkdropModule: { type: String },
-    recoveryModule: { type: String },
-    saltNonce: { type: String },
+    ens: { type: String, required: true, unique: true },
+    passwordHash: { type: String, required: true },
+    passwordDerivedKeyHash: { type: String, required: true },
+    encryptedEncryptionKey: { type: String, required: true },
+    encryptedMnemonicPhrase: { type: String, required: true, unique: true },
+    owner: { type: String, required: true, unique: true },
+    saltNonce: { type: String, required: true },
+    safe: { type: String, required: true, unique: true },
+    linkdropModule: { type: String, unique: true },
+    recoveryModule: { type: String, unique: true },
     deployed: { type: Boolean, required: true }
   },
   {
