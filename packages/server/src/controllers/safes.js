@@ -7,9 +7,6 @@ import safeCreationService from '../services/safeCreationService'
 
 export const create = wrapAsync(async (req, res, next) => {
   try {
-    logger.info('POST api/v1/safes/')
-    logger.json(req.body, 'info')
-
     const { data, gasPrice } = req.body
     assert.string(data, 'Creation data is required')
     assert.string(gasPrice, 'Gas price is required')
@@ -31,9 +28,6 @@ export const create = wrapAsync(async (req, res, next) => {
 
 export const claimAndCreate = wrapAsync(async (req, res, next) => {
   try {
-    logger.info('POST api/v1/safes/claimAndCreate')
-    logger.json(req.body, 'info')
-
     const { data, gasPrice } = req.body
     assert.string(data, 'Creation data is required')
     assert.string(gasPrice, 'Gas price is required')

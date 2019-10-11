@@ -7,9 +7,6 @@ import usersService from '../services/usersService'
 
 export const create = wrapAsync(async (req, res, next) => {
   try {
-    logger.info('POST api/v1/users/')
-    logger.json(req.body, 'info')
-
     const {
       email,
       passwordHash,
