@@ -24,6 +24,7 @@
     "ethers": "^4.0.37",
     "express-async-handler": "^1.1.4",
     "mongoose": "^5.7.1",
+    "morgan": "^1.9.1",
     "util": "^0.12.1",
     "web3": "^1.2.1",
     "winston": "^3.2.1"
