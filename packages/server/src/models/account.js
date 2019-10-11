@@ -15,6 +15,7 @@ const AccountSchema = new Schema(
     safe: { type: String, required: true, unique: true },
     linkdropModule: { type: String, unique: true },
     recoveryModule: { type: String, unique: true },
+    createSafeData: { type: String, required: true, unique: true },
     deployed: { type: Boolean, required: true }
   },
   {

@@ -13,7 +13,8 @@ const createUser = async ({
   encryptedPrivateKey,
   mnemonic,
   chain,
-  apiHost
+  apiHost,
+  ensAd
 }) => {
   const passwordHash = await getPasswordHash(email, password)
   const passwordDerivedKeyHash = await getPasswordDerivedKeyHash(

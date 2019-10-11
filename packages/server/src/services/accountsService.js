@@ -1,6 +1,8 @@
 import { User, Account } from '../models'
 import logger from '../utils/logger'
 import sdkService from './sdkService'
+import relayerWalletService from './relayerWalletService'
+const { PROXY_FACTORY_ADDRESS } = '../../config/config.json'
 
 class AccountsService {
   // Each email should have only one account per chain
@@ -47,7 +49,6 @@ class AccountsService {
 
   async create ({
     email,
-    chain,
     ens,
     passwordHash,
     passwordDerivedKeyHash,
@@ -58,12 +59,13 @@ class AccountsService {
     safe,
     linkdropModule,
     recoveryModule,
+    createSafeData,
     deployed
   }) {
     try {
       const account = new Account({
         email,
-        chain,
+        chain: relayerWalletService.chain,
         ens,
         passwordHash,
         passwordDerivedKeyHash,
@@ -74,6 +76,7 @@ class AccountsService {
         safe,
         linkdropModule,
         recoveryModule,
+        createSafeData,
         deployed
       })
 
@@ -97,7 +100,7 @@ class AccountsService {
         logger.json(user)
         await user.save()
         logger.info('User succesfully created')
-        return user
+        return account
       }
 
       // If user exists in database
@@ -111,6 +114,17 @@ class AccountsService {
       logger.error(err.message)
       throw new Error(err.message)
     }
+  }
+
+  async estimateCreationCosts ({ createSafeData, gasPrice }) {
+    const estimate = (await relayerWalletService.provider.estimateGas({
+      to: PROXY_FACTORY_ADDRESS,
+      data: createSafeData,
+      gasPrice
+    })).add(9000)
+
+    const creationCosts = estimate.mul(gasPrice)
+    return creationCosts
   }
 
   async update ({ email, chain, deployed }) {

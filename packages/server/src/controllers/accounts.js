@@ -4,6 +4,7 @@ import boom from '@hapi/boom'
 import assert from 'assert-js'
 import wrapAsync from '../utils/asyncWrapper'
 import accountsService from '../services/accountsService'
+import relayerWalletService from '../services/relayerWalletService'
 
 export const update = wrapAsync(async (req, res, next) => {
   try {
@@ -31,7 +32,6 @@ export const create = wrapAsync(async (req, res, next) => {
   try {
     const {
       email,
-      chain,
       ens,
       passwordHash,
       passwordDerivedKeyHash,
@@ -42,10 +42,14 @@ export const create = wrapAsync(async (req, res, next) => {
       safe,
       linkdropModule,
       recoveryModule,
+      createSafeData,
       deployed
     } = req.body
 
-    let account = await accountsService.findAccount({ email, chain })
+    let account = await accountsService.findAccount({
+      email,
+      chain: relayerWalletService.chain
+    })
 
     if (account) {
       return next(boom.badRequest('Account already exists'))
@@ -53,7 +57,6 @@ export const create = wrapAsync(async (req, res, next) => {
 
     account = await accountsService.create({
       email,
-      chain,
       ens,
       passwordHash,
       passwordDerivedKeyHash,
@@ -64,6 +67,7 @@ export const create = wrapAsync(async (req, res, next) => {
       safe,
       linkdropModule,
       recoveryModule,
+      createSafeData,
       deployed
     })
 
