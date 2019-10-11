@@ -85,7 +85,7 @@ class UsersService {
         `Created new account for ${account.email} on ${account.chain} network`
       )
 
-      let user = await this.findUse(email)
+      let user = await this.findUser(email)
 
       // If user does not exist in database
       if (!user) {
@@ -106,14 +106,14 @@ class UsersService {
       logger.json(user)
       await user.save()
       logger.info('User succesfully updated')
-      return user
+      return account
     } catch (err) {
       logger.error(err.message)
       throw new Error(err.message)
     }
   }
 
-  async updateAccount ({ email, chain, deployed }) {
+  async update ({ email, chain, deployed }) {
     const account = await this.findAccount({ email, chain })
 
     if (deployed) {

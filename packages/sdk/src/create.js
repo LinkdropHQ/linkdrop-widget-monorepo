@@ -279,13 +279,16 @@ export const create = async ({
     deployed: false
   })
 
+  const { account } = response.data
+
   return {
     safe,
     linkdropModule,
     recoveryModule,
     creationCosts: creationCosts.toString(),
     waitForBalance,
-    deploy
+    deploy,
+    account
   }
 }
 
@@ -334,17 +337,15 @@ const deployWallet = async ({
     response = await axios.put(`${apiHost}/api/v1/users`, {
       email,
       chain,
-      saltNonce,
-      ens: `${ensName}.${ensDomain}`,
       deployed: true
     })
 
-    const user = response.data
+    const account = response.data
 
     return {
       success,
       txHash,
-      user,
+      account,
       errors
     }
   } catch (err) {

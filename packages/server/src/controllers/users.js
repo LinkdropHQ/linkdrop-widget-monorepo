@@ -5,49 +5,69 @@ import assert from 'assert-js'
 import wrapAsync from '../utils/asyncWrapper'
 import usersService from '../services/usersService'
 
+export const update = wrapAsync(async (req, res, next) => {
+  try {
+    const { email, chain, deployed } = req.body
+
+    let account = await usersService.findAccount({ email, chain })
+
+    if (!account) {
+      return next(boom.badRequest('Account does not exist'))
+    }
+
+    account = await usersService.update({
+      email,
+      chain,
+      deployed
+    })
+
+    res.json({ account })
+  } catch (err) {
+    logger.error(err)
+  }
+})
+
 export const create = wrapAsync(async (req, res, next) => {
   try {
     const {
       email,
+      chain,
+      ens,
       passwordHash,
       passwordDerivedKeyHash,
       encryptedEncryptionKey,
-      publicKey,
-      encryptedPrivateKey,
-      chain,
-      encryptedMnemonic,
-      ens,
+      encryptedMnemonicPhrase,
+      owner,
+      saltNonce,
       safe,
       linkdropModule,
       recoveryModule,
-      saltNonce,
       deployed
     } = req.body
 
-    let user = await usersService.find({ email, chain, ens })
+    let account = await usersService.findAccount({ email, chain })
 
-    if (user) {
-      return next(boom.badRequest('User already exists'))
+    if (account) {
+      return next(boom.badRequest('Account already exists'))
     }
 
-    user = await usersService.create({
+    account = await usersService.create({
       email,
+      chain,
+      ens,
       passwordHash,
       passwordDerivedKeyHash,
       encryptedEncryptionKey,
-      publicKey,
-      encryptedPrivateKey,
-      chain,
-      encryptedMnemonic,
-      ens,
+      encryptedMnemonicPhrase,
+      owner,
+      saltNonce,
       safe,
       linkdropModule,
       recoveryModule,
-      saltNonce,
       deployed
     })
 
-    res.json({ user })
+    res.json({ account })
   } catch (err) {
     next(err)
   }

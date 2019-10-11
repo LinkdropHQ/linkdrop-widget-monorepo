@@ -5,10 +5,17 @@ const router = express.Router()
 
 /**
  * @route POST api/v1/users
- * @desc Create new user
+ * @desc Create new account
  * @access Public
  */
 router.post('/', usersController.create)
+
+/**
+ * @route PUT api/v1/users
+ * @desc Update existing account
+ * @access Public
+ */
+router.put('/', usersController.update)
 
 /**
  * @route POST api/v1/users/login
