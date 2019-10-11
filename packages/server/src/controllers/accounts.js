@@ -3,19 +3,19 @@ import logger from '../utils/logger'
 import boom from '@hapi/boom'
 import assert from 'assert-js'
 import wrapAsync from '../utils/asyncWrapper'
-import usersService from '../services/usersService'
+import accountsService from '../services/accountsService'
 
 export const update = wrapAsync(async (req, res, next) => {
   try {
     const { email, chain, deployed } = req.body
 
-    let account = await usersService.findAccount({ email, chain })
+    let account = await accountsService.findAccount({ email, chain })
 
     if (!account) {
       return next(boom.badRequest('Account does not exist'))
     }
 
-    account = await usersService.update({
+    account = await accountsService.update({
       email,
       chain,
       deployed
@@ -45,13 +45,13 @@ export const create = wrapAsync(async (req, res, next) => {
       deployed
     } = req.body
 
-    let account = await usersService.findAccount({ email, chain })
+    let account = await accountsService.findAccount({ email, chain })
 
     if (account) {
       return next(boom.badRequest('Account already exists'))
     }
 
-    account = await usersService.create({
+    account = await accountsService.create({
       email,
       chain,
       ens,

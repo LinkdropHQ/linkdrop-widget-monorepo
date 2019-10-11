@@ -264,7 +264,7 @@ export const create = async ({
   }
 
   // Save user and account data to database
-  const response = await axios.post(`${apiHost}/api/v1/users`, {
+  const response = await axios.post(`${apiHost}/api/v1/accounts`, {
     email,
     passwordHash,
     passwordDerivedKeyHash,
@@ -334,7 +334,7 @@ const deployWallet = async ({
     const { success, txHash, errors } = response.data
 
     // Mark account as deployed in database
-    response = await axios.put(`${apiHost}/api/v1/users`, {
+    response = await axios.put(`${apiHost}/api/v1/accounts`, {
       email,
       chain,
       deployed: true

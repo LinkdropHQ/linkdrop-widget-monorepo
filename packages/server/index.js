@@ -5,7 +5,7 @@ import morgan from 'morgan'
 import cors from 'cors'
 import safesRoutes from './src/routes/safes'
 import transactionsRoutes from './src/routes/transactions'
-import usersRoutes from './src/routes/users'
+import accountsRoutes from './src/routes/accounts'
 
 const app = express()
 
@@ -43,7 +43,7 @@ connectDB()
 app.get('/', (req, res) => res.send('Safe Relay Service'))
 app.use('/api/v1/safes', safesRoutes)
 app.use('/api/v1/safes/execute', transactionsRoutes)
-app.use('/api/v1/users', usersRoutes)
+app.use('/api/v1/accounts', accountsRoutes)
 
 // Boom error handling middleware
 app.use((err, req, res, next) => {

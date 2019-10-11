@@ -2,7 +2,7 @@ import { User, Account } from '../models'
 import logger from '../utils/logger'
 import sdkService from './sdkService'
 
-class UsersService {
+class AccountsService {
   // Each email should have only one account per chain
   async findUser (email) {
     return User.findOne({ email }).populate('accounts')
@@ -124,9 +124,9 @@ class UsersService {
     )
     await account.save()
 
-    logger.info('User successfully updated')
+    logger.info('Account successfully updated')
     return account
   }
 }
 
-export default new UsersService()
+export default new AccountsService()
