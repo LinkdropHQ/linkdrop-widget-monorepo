@@ -21,7 +21,7 @@ export const generateIV = () => {
  * @param {String} email Email
  * @param {String} password Password
  * @param {String} encryptionKey Encryption key
- * @return `{encryptedEncryptionKey, iv, algorithm}`
+ * @return `{encryptedEncryptionKey, iv}`
  */
 export const getEncryptedEncryptionKey = async (
   email,
@@ -45,7 +45,11 @@ export const getEncryptedEncryptionKey = async (
  */
 export const getEncryptedMnemonic = async (mnemonic, encryptionKey, iv) => {
   const cipher = crypto.createCipheriv('aes-256-cbc', encryptionKey, iv)
-  return cipher.update(mnemonic, 'utf8', 'hex') + cipher.final('hex')
+
+  const encryptedMnemonic =
+    cipher.update(mnemonic, 'utf8', 'hex') + cipher.final('hex')
+
+  return { encryptedMnemonic, iv }
 }
 
 export const extractEncryptionKey = async (
