@@ -22,6 +22,6 @@ router.put('/', accountsController.update)
  * @desc Login user
  * @access Public
  */
-// router.post('/login', accountsController.login)
+router.post('/login', accountsController.login)
 
 export default router

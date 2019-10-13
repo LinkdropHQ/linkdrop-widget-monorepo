@@ -150,6 +150,11 @@ class WalletSDK {
     ensName,
     saltNonce,
     gasPrice,
+    email,
+    passwordHash,
+    passwordDerivedKeyHash,
+    encryptedEncryptionKey,
+    encryptedMnemonicPhrase,
     recoveryPeriod = this.recoveryPeriod,
     guardian = this.guardian,
     ensAddress = this.ensAddress,
@@ -179,7 +184,12 @@ class WalletSDK {
       multiSend,
       createAndAddModules,
       jsonRpcUrl,
-      apiHost
+      apiHost,
+      email,
+      passwordHash,
+      passwordDerivedKeyHash,
+      encryptedEncryptionKey,
+      encryptedMnemonicPhrase
     })
   }
 

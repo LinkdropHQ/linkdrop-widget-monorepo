@@ -49,6 +49,7 @@ class AccountsService {
 
   async create ({
     email,
+    chain,
     ens,
     passwordHash,
     passwordDerivedKeyHash,
@@ -65,7 +66,7 @@ class AccountsService {
     try {
       const account = new Account({
         email,
-        chain: relayerWalletService.chain,
+        chain,
         ens,
         passwordHash,
         passwordDerivedKeyHash,

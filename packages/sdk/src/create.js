@@ -63,12 +63,12 @@ export const create = async ({
   multiSend,
   createAndAddModules,
   gasPrice,
+
   email,
   passwordHash,
   passwordDerivedKeyHash,
   encryptedEncryptionKey,
-  encryptedMnemonic,
-  chain
+  encryptedMnemonicPhrase
 }) => {
   assert.string(owner, 'Owner is required')
   assert.string(ensName, 'Ens name is required')
@@ -259,27 +259,29 @@ export const create = async ({
       jsonRpcUrl,
       data: multiSendData,
       apiHost,
-      gasPrice
+      gasPrice,
+      email
     })
   }
 
-  // Save user and account data to database
+  // Save user and account to database
   const response = await axios.post(`${apiHost}/api/v1/accounts`, {
     email,
+    ens: `${ensName}.${ensDomain}`,
     passwordHash,
     passwordDerivedKeyHash,
     encryptedEncryptionKey,
-    encryptedMnemonic, // object
-    chain,
-    ens: `${ensName}.${ensDomain}`,
+    encryptedMnemonicPhrase,
+    owner,
+    saltNonce,
     safe,
     linkdropModule,
     recoveryModule,
-    saltNonce,
+    createSafeData,
     deployed: false
   })
 
-  const { account } = response.data
+  const { account, token } = response.data
 
   return {
     safe,
@@ -288,7 +290,8 @@ export const create = async ({
     creationCosts: creationCosts.toString(),
     waitForBalance,
     deploy,
-    account
+    account,
+    token
   }
 }
 
@@ -311,9 +314,7 @@ const deployWallet = async ({
   gasPrice,
   apiHost,
   jsonRpcUrl,
-  email,
-  chain,
-  saltNonce
+  email
 }) => {
   assert.string(data, 'Creation data is required')
 
@@ -336,16 +337,16 @@ const deployWallet = async ({
     // Mark account as deployed in database
     response = await axios.put(`${apiHost}/api/v1/accounts`, {
       email,
-      chain,
       deployed: true
     })
 
-    const account = response.data
+    const { account, token } = response.data
 
     return {
       success,
       txHash,
       account,
+      token,
       errors
     }
   } catch (err) {

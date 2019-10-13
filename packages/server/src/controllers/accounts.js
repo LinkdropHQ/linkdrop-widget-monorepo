@@ -5,12 +5,17 @@ import assert from 'assert-js'
 import wrapAsync from '../utils/asyncWrapper'
 import accountsService from '../services/accountsService'
 import relayerWalletService from '../services/relayerWalletService'
+import transactionRelayService from '../services/transactionRelayService'
+import authService from '../services/authService'
 
 export const update = wrapAsync(async (req, res, next) => {
   try {
-    const { email, chain, deployed } = req.body
+    const { email, deployed } = req.body
 
-    let account = await accountsService.findAccount({ email, chain })
+    let account = await accountsService.findAccount({
+      email,
+      chain: relayerWalletService.chain
+    })
 
     if (!account) {
       return next(boom.badRequest('Account does not exist'))
@@ -18,11 +23,13 @@ export const update = wrapAsync(async (req, res, next) => {
 
     account = await accountsService.update({
       email,
-      chain,
+      chain: relayerWalletService.chain,
       deployed
     })
 
-    res.json({ account })
+    const token = await authService.getToken(email)
+
+    res.json({ account, token })
   } catch (err) {
     logger.error(err)
   }
@@ -57,6 +64,7 @@ export const create = wrapAsync(async (req, res, next) => {
 
     account = await accountsService.create({
       email,
+      chain: relayerWalletService.chain,
       ens,
       passwordHash,
       passwordDerivedKeyHash,
@@ -71,7 +79,37 @@ export const create = wrapAsync(async (req, res, next) => {
       deployed
     })
 
-    res.json({ account })
+    const token = await authService.getToken(email)
+
+    res.json({ account, token })
+  } catch (err) {
+    next(err)
+  }
+})
+
+export const login = wrapAsync(async (req, res, next) => {
+  try {
+    const { email, passwordHash } = req.body
+
+    const account = await accountsService.findAccount({
+      email,
+      chain: relayerWalletService.chain
+    })
+
+    if (!account) {
+      return next(boom.badRequest('No account found'))
+    }
+
+    if (account.passwordHash !== passwordHash) {
+      return next(boom.badRequest('Invalid password'))
+    }
+
+    console.log(account.passwordHash)
+    console.log(passwordHash)
+
+    const token = await authService.getToken(email)
+
+    return { account, token }
   } catch (err) {
     next(err)
   }
