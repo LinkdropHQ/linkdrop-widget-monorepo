@@ -2,7 +2,7 @@ import { User, Account } from '../models'
 import logger from '../utils/logger'
 import sdkService from './sdkService'
 import relayerWalletService from './relayerWalletService'
-const { PROXY_FACTORY_ADDRESS } = '../../config/config.json'
+import { PROXY_FACTORY_ADDRESS } from '../../config/config.json'
 
 class AccountsService {
   // Each email should have only one account per chain
