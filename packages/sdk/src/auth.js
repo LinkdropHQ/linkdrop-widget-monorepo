@@ -67,6 +67,7 @@ export const login = async ({ email, password, apiHost }) => {
     encryptedEncryptionKey,
     encryptedMnemonic,
     jwt,
+    sessionKey,
     success,
     error
   } = response.data
@@ -84,14 +85,12 @@ export const login = async ({ email, password, apiHost }) => {
   )
 
   const wallet = ethers.Wallet.fromMnemonic(mnemonic)
-  const privateKey = wallet.privateKey
 
-  console.log({
-    encryptedEncryptionKey,
-    encryptedMnemonic,
-    jwt,
+  const sessionKeyStore = await wallet.encrypt(sessionKey)
+
+  return {
     success,
-    privateKey,
+    data: { privateKey: wallet.privateKey, sessionKeyStore },
     error
-  })
+  }
 }
