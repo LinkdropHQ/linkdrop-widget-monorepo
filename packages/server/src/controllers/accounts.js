@@ -86,30 +86,29 @@ export const signup = wrapAsync(async (req, res, next) => {
   }
 })
 
-// export const login = wrapAsync(async (req, res, next) => {
-//   try {
-//     const { email, passwordHash } = req.body
+export const login = wrapAsync(async (req, res, next) => {
+  try {
+    const { email, passwordHash } = req.body
 
-//     const account = await accountsService.findAccount({
-//       email,
-//       chain: relayerWalletService.chain
-//     })
+    const account = await accountsService.findAccount(email)
 
-//     if (!account) {
-//       return next(boom.badRequest('No account found'))
-//     }
+    if (!account) {
+      return next(boom.badRequest('No account found'))
+    }
 
-//     if (account.passwordHash !== passwordHash) {
-//       return next(boom.badRequest('Invalid password'))
-//     }
+    if (account.passwordHash !== passwordHash) {
+      return next(boom.badRequest('Invalid password'))
+    }
 
-//     console.log(account.passwordHash)
-//     console.log(passwordHash)
+    const jwt = await authService.getToken(email)
 
-//     const token = await authService.getToken(email)
-
-//     return { account, token }
-//   } catch (err) {
-//     next(err)
-//   }
-// })
+    res.json({
+      encryptedEncryptionKey: account.encryptedEncryptionKey,
+      encryptedMnemonic: account.encryptedMnemonic,
+      jwt,
+      success: true
+    })
+  } catch (err) {
+    next(err)
+  }
+})

@@ -562,6 +562,10 @@ class WalletSDK {
   async signup (email, password) {
     return signup({ email, password, apiHost: this.apiHost })
   }
+
+  async login (email, password) {
+    return login({ email, password, apiHost: this.apiHost })
+  }
 }
 
 export default WalletSDK

@@ -2,7 +2,8 @@ import WalletSDK from '../../sdk/src/WalletSDK'
 const walletSDK = new WalletSDK({})
 
 const main = async () => {
-  console.log(await walletSDK.signup('email5', 'password'))
+  const res = await walletSDK.login('email5', 'password')
+  console.log('res: ', res)
 }
 
 main()
