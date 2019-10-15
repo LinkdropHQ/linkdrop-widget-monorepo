@@ -62,7 +62,7 @@ export const getEncryptedMnemonic = async (mnemonic, encryptionKey, iv) => {
 }
 
 /**
- * Extracts decrypted encryptionKey usin AES-CBC algorithm with 'passwordDerivedKey` as the key and 16 bytes IV
+ * Extracts decrypted encryption key using AES-CBC algorithm with 'passwordDerivedKey` as the key and 16 bytes IV
  * @param {String} encryptedEncryptionKey
  * @param {String} iv
  * @param {String} passwordDerivedKey
@@ -81,6 +81,24 @@ export const extractEncryptionKey = async (
   return (
     decipher.update(encryptedEncryptionKey, 'hex', 'hex') +
     decipher.final('hex')
+  )
+}
+
+/**
+ * Extracts decrypted mnemonic using AES-CBC algorithm with 'encryptionKey` as the key and 16 bytes IV
+ * @param {String} encryptedEncryptionKey
+ * @param {String} iv
+ * @param {String} passwordDerivedKey
+ * @return `mnemonic`
+ */
+export const extractMnemonic = async (encryptedMnemonic, iv, encryptionKey) => {
+  const decipher = crypto.createDecipheriv(
+    'aes-256-cbc',
+    Buffer.from(encryptionKey, 'hex'),
+    Buffer.from(iv, 'hex')
+  )
+  return (
+    decipher.update(encryptedMnemonic, 'utf8', 'hex') + decipher.final('hex')
   )
 }
 
