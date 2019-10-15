@@ -143,10 +143,10 @@ class WalletSDK {
    * @param  {String} createAndAddModules Deployed CreateAndAddModules library address
    */
   async create ({
-    owner,
-    ensName,
-    saltNonce,
-    gasPrice,
+    owner, // wallet (public key)
+    ensName, // {spacehaz}.bla..
+    saltNonce, // +(new Data) // ? string
+    gasPrice, // wei (atomic)
     recoveryPeriod = this.recoveryPeriod,
     guardian = this.guardian,
     ensAddress = this.ensAddress,

@@ -1,0 +1,31 @@
+@import "variables";
+
+.title {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.text {
+  font-size: 16px;
+  margin-bottom: 30px;
+  text-align: center;
+  span {
+    font-family: 'Inter-Bold';
+  }
+}
+
+.link {
+  text-align: center;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.linkBlocked {
+  cursor: not-allowed;
+  color: $textGreyColor;
+}
+
+.button {
+  margin-bottom: 20px;
+}

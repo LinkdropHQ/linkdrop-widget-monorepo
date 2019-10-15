@@ -1,0 +1,28 @@
+@import "variables";
+
+.title {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.email {
+  font-size: 16px;
+  color: $dbBlue;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.link {
+  text-align: center;
+  cursor: pointer;
+  transition: color .3s;
+
+  &:hover {
+    color: $dbBlue;
+  }
+}
+
+.button {
+  margin-bottom: 30px;
+}

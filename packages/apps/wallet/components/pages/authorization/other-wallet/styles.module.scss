@@ -11,9 +11,6 @@
   transition: margin-left .3s;
 }
 
-.content {
-
-}
 
 .button {
   background: $dbBlue;
@@ -23,7 +20,7 @@
 
 .close {
   position: absolute;
-  top: 30px;
+  top: 20px;
   left: 30px;
   cursor: pointer;
   z-index: 1;

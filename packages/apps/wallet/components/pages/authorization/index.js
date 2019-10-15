@@ -1,13 +1,13 @@
 import React from 'react'
-import { Button, RetinaImage, Icons } from '@linkdrop/ui-kit'
+import { RetinaImage } from '@linkdrop/ui-kit'
 import styles from './styles.module'
 import { Page } from 'components/pages'
-import { getEns, getImages, prepareRedirectUrl } from 'helpers'
+import { Button } from 'components/common'
+import { getEns, getImages } from 'helpers'
 import { actions, translate } from 'decorators'
-import classNames from 'classnames'
 import gapiService from 'data/api/google-api'
-import OtherWallet from './other-wallet'
 import SignInWithEmail from './sign-in-with-email'
+import GoogleDrivePermission from './google-drive-permission'
 
 @actions(({ user: { sdk, privateKey, contractAddress, ens, loading, chainId } }) => ({
   loading,
@@ -77,32 +77,24 @@ class Authorization extends React.Component {
     this.actions().user.setUserData({ privateKey, contractAddress, ens, avatar, chainId })
   }
 
-  async _enableDrivePermissions () {
-    try {
-      this.setState({ accessingDrive: true })
-      await gapiService.enableDrivePermissions()
-      await this._syncPrivateKeyWithDrive()
-      this.setState({ accessingDrive: false })
-    } catch (err) {
-      this.setState({ accessingDrive: false })
-      console.log('Error while enabling Drive permissions: ', err)
-    }
+  enableDrivePermissions () {
+    this.actions().authorization.enableGDrivePermissions()
+    // try {
+    //   this.setState({ accessingDrive: true })
+    //   await gapiService.enableDrivePermissions()
+    //   await this._syncPrivateKeyWithDrive()
+    //   this.setState({ accessingDrive: false })
+    // } catch (err) {
+    //   this.setState({ accessingDrive: false })
+    //   this.actions().authorization.setErrors({
+    //     errors: ['SOME_ERROR_OCCURED_WITH_GDRIVE']
+    //   })
+    // }
   }
 
   renderGoogleDriveScreen () {
     const { accessingDrive } = this.state
-    return <div className={styles.container}>
-      <h2 className={classNames(styles.title, styles.titleGrant)} dangerouslySetInnerHTML={{ __html: this.t('titles.grantGoogleDrive') }} />
-      <ul className={styles.list}>
-        <li className={styles.listItem}><Icons.CheckSmall />{this.t('texts.googelDrive._1')}</li>
-        <li className={styles.listItem}><Icons.CheckSmall />{this.t('texts.googelDrive._2')}</li>
-        <li className={styles.listItem}><Icons.CheckSmall />{this.t('texts.googelDrive._3')}</li>
-      </ul>
-      <Button className={styles.button} loading={accessingDrive} inverted onClick={_ => this._enableDrivePermissions()}>
-        <RetinaImage width={30} {...getImages({ src: 'gdrive' })} />
-        {this.t('titles.grantAccess')}
-      </Button>
-    </div>
+    return <GoogleDrivePermission accessingDrive={accessingDrive} enableDrivePermissions={_ => this.enableDrivePermissions()} />
   }
 
   async handleAuthClick () {
@@ -122,20 +114,26 @@ class Authorization extends React.Component {
 
   renderAuthorizationScreen () {
     const { loading } = this.props
-    const { enableAuthorize, otherWallet, signInWithWallet } = this.state
+    const { enableAuthorize, signInWithWallet, createWallet } = this.state
     return <div className={styles.container}>
       <h2 className={styles.title} dangerouslySetInnerHTML={{ __html: this.t('titles.signIn') }} />
-      <OtherWallet show={otherWallet} onClose={_ => this.setState({ otherWallet: false })} />
-      <SignInWithEmail show={signInWithWallet} onClose={_ => this.setState({ signInWithWallet: false })} />
+      <SignInWithEmail
+        show={signInWithWallet || createWallet}
+        title={this.t(`titles.${createWallet ? 'createWalletTitle' : 'signInTitle'}`)}
+        onClose={_ => this.setState({ signInWithWallet: false, createWallet: false })}
+      />
       <Button loadingClassName={styles.buttonLoading} className={styles.button} inverted loading={!enableAuthorize || loading} onClick={e => this.handleAuthClick(e)}>
         <RetinaImage width={30} {...getImages({ src: 'google' })} />
         {this.t('titles.googleSignIn')}
       </Button>
+      <Button className={styles.button} inverted onClick={e => { this.setState({ signInWithWallet: true }) }}>
+        {this.t('titles.emailSignIn')}
+      </Button>
       <div
-        onClick={_ => { this.setState({ otherWallet: true }) }}
+        onClick={_ => { this.setState({ createWallet: true }) }}
         className={styles.link}
       >
-        {this.t('titles.haveAnotherWallet')}
+        {this.t('titles.createWallet')}
       </div>
       <div className={styles.note} dangerouslySetInnerHTML={{ __html: this.t('texts.backup', { href: 'https://www.notion.so/linkdrop/Help-Center-9cf549af5f614e1caee6a660a93c489b#d0a28202100d4512bbeb52445e6db95b' }) }} />
     </div>
