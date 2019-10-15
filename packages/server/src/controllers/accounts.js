@@ -43,14 +43,7 @@ export const create = wrapAsync(async (req, res, next) => {
       passwordHash,
       passwordDerivedKeyHash,
       encryptedEncryptionKey,
-      encryptedMnemonicPhrase,
-      owner,
-      saltNonce,
-      safe,
-      linkdropModule,
-      recoveryModule,
-      createSafeData,
-      deployed
+      encryptedMnemonic
     } = req.body
 
     assert.string(email, 'Email is required')
@@ -64,6 +57,7 @@ export const create = wrapAsync(async (req, res, next) => {
       encryptedEncryptionKey,
       'Encrypted encryption key is required'
     )
+    assert.string(encryptedMnemonic, 'Encrypted mnemonic is required')
 
     let account = await accountsService.findAccount({
       email,
@@ -77,18 +71,10 @@ export const create = wrapAsync(async (req, res, next) => {
     account = await accountsService.create({
       email,
       chain: relayerWalletService.chain,
-      ens,
       passwordHash,
       passwordDerivedKeyHash,
       encryptedEncryptionKey,
-      encryptedMnemonicPhrase,
-      owner,
-      saltNonce,
-      safe,
-      linkdropModule,
-      recoveryModule,
-      createSafeData,
-      deployed
+      encryptedMnemonic
     })
 
     const token = await authService.getToken(email)
