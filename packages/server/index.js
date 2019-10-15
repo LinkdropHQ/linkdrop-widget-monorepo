@@ -1,9 +1,11 @@
 import connectDB from './config/db'
 import logger from './src/utils/logger'
 import express from 'express'
+import morgan from 'morgan'
 import cors from 'cors'
-import safesRouter from './src/routes/safes'
-import transactionsRouter from './src/routes/transactions'
+import safesRoutes from './src/routes/safes'
+import transactionsRoutes from './src/routes/transactions'
+import accountsRoutes from './src/routes/accounts'
 
 const app = express()
 
@@ -11,6 +13,17 @@ const app = express()
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json({ extended: false }))
 app.use(cors())
+
+morgan.token('body', function (req, res) {
+  return JSON.stringify(req.body, null, 2)
+})
+
+app.use(
+  morgan(
+    ':method :url :status :res[content-length] - :response-time ms \n:body',
+    { stream: logger.stream }
+  )
+)
 
 // connect to database
 connectDB()
@@ -28,8 +41,9 @@ connectDB()
 
 // Define routes
 app.get('/', (req, res) => res.send('Safe Relay Service'))
-app.use('/api/v1/safes', safesRouter)
-app.use('/api/v1/safes/execute', transactionsRouter)
+app.use('/api/v1/safes', safesRoutes)
+app.use('/api/v1/safes/execute', transactionsRoutes)
+app.use('/api/v1/accounts', accountsRoutes)
 
 // Boom error handling middleware
 app.use((err, req, res, next) => {

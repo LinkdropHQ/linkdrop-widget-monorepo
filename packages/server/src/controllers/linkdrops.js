@@ -7,9 +7,6 @@ import linkdropModuleService from '../services/linkdropModuleService'
 
 export const claim = wrapAsync(async (req, res, next) => {
   try {
-    logger.info('POST api/v1/linkdrops/claim')
-    logger.json(req.body, 'info')
-
     const {
       weiAmount,
       tokenAddress,
@@ -59,9 +56,6 @@ export const claim = wrapAsync(async (req, res, next) => {
 
 export const claimERC721 = wrapAsync(async (req, res, next) => {
   try {
-    logger.info('POST api/v1/linkdrops/claimERC721')
-    logger.json(req.body, 'info')
-
     const {
       weiAmount,
       nftAddress,

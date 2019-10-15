@@ -6,7 +6,6 @@ import EventEmitter from 'events'
 
 class GoogleApiService {
   constructor () {
-    console.log({ config })
     this.eventEmitter = new EventEmitter()
     this.auth2 = null
     this.loaded = false
@@ -83,17 +82,17 @@ class GoogleApiService {
     })
   }
 
-  getEmailAndAvatar () {
-    const authInstance = gapi.auth2.getAuthInstance()
-    const isSignedIn = authInstance.isSignedIn.get()
-    if (!isSignedIn) {
-      throw new Error('User not signed in')
-    }
-    const user = authInstance.currentUser.get()
-    const email = user.getBasicProfile().getEmail()
-    const avatar = user.getBasicProfile().getImageUrl()
-    return { email, avatar }
-  }
+  // getEmailAndAvatar () {
+  //   const authInstance = gapi.auth2.getAuthInstance()
+  //   const isSignedIn = authInstance.isSignedIn.get()
+  //   if (!isSignedIn) {
+  //     throw new Error('User not signed in')
+  //   }
+  //   const user = authInstance.currentUser.get()
+  //   const email = user.getBasicProfile().getEmail()
+  //   const avatar = user.getBasicProfile().getImageUrl()
+  //   return { email, avatar }
+  // }
 
   uploadFiles ({ ens, contractAddress, privateKey, chainId }) {
     return new Promise((resolve, reject) => {

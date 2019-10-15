@@ -24,7 +24,7 @@ const main = async () => {
     linkdropMasterAddress,
     linkdropSignerSignature,
     campaignId
-  } = await getUrlParams('eth', 0)
+  } = await getUrlParams('eth', 1)
 
   const ensName = Math.random()
     .toString(36)
