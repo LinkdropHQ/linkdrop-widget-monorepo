@@ -98,7 +98,7 @@ export const extractMnemonic = async (encryptedMnemonic, iv, encryptionKey) => {
     Buffer.from(iv, 'hex')
   )
   return (
-    decipher.update(encryptedMnemonic, 'utf8', 'hex') + decipher.final('hex')
+    decipher.update(encryptedMnemonic, 'hex', 'utf8') + decipher.final('utf8')
   )
 }
 
