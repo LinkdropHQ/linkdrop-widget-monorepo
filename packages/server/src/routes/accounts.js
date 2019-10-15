@@ -3,7 +3,7 @@ import * as accountsController from '../controllers/accounts'
 
 const router = express.Router()
 
-router.get('/exists/:email', accountsController.accountExists)
+router.get('/exists/:email', accountsController.exists)
 
 /**
  * @route POST api/v1/accounts
