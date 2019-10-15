@@ -12,7 +12,7 @@ export const exists = wrapAsync(async (req, res, next) => {
   try {
     const email = req.params.email
     const account = await accountsService.findAccount(email)
-    return !!account
+    res.send(!!account)
   } catch (err) {
     next(err)
   }
@@ -49,7 +49,6 @@ export const signup = wrapAsync(async (req, res, next) => {
   try {
     const {
       email,
-      ens,
       passwordHash,
       passwordDerivedKeyHash,
       encryptedEncryptionKey,
@@ -57,22 +56,18 @@ export const signup = wrapAsync(async (req, res, next) => {
     } = req.body
 
     assert.string(email, 'Email is required')
-    assert.string(ens, 'Ens name is required')
     assert.string(passwordHash, 'Password hash is required')
     assert.string(
       passwordDerivedKeyHash,
       'Password derived key hash is required'
     )
-    assert.string(
+    assert.object(
       encryptedEncryptionKey,
       'Encrypted encryption key is required'
     )
-    assert.string(encryptedMnemonic, 'Encrypted mnemonic is required')
+    assert.object(encryptedMnemonic, 'Encrypted mnemonic is required')
 
-    let account = await accountsService.findAccount({
-      email,
-      chain: relayerWalletService.chain
-    })
+    let account = await accountsService.findAccount(email)
 
     if (account) {
       return next(boom.badRequest('Account already exists'))
@@ -95,30 +90,30 @@ export const signup = wrapAsync(async (req, res, next) => {
   }
 })
 
-export const login = wrapAsync(async (req, res, next) => {
-  try {
-    const { email, passwordHash } = req.body
+// export const login = wrapAsync(async (req, res, next) => {
+//   try {
+//     const { email, passwordHash } = req.body
 
-    const account = await accountsService.findAccount({
-      email,
-      chain: relayerWalletService.chain
-    })
+//     const account = await accountsService.findAccount({
+//       email,
+//       chain: relayerWalletService.chain
+//     })
 
-    if (!account) {
-      return next(boom.badRequest('No account found'))
-    }
+//     if (!account) {
+//       return next(boom.badRequest('No account found'))
+//     }
 
-    if (account.passwordHash !== passwordHash) {
-      return next(boom.badRequest('Invalid password'))
-    }
+//     if (account.passwordHash !== passwordHash) {
+//       return next(boom.badRequest('Invalid password'))
+//     }
 
-    console.log(account.passwordHash)
-    console.log(passwordHash)
+//     console.log(account.passwordHash)
+//     console.log(passwordHash)
 
-    const token = await authService.getToken(email)
+//     const token = await authService.getToken(email)
 
-    return { account, token }
-  } catch (err) {
-    next(err)
-  }
-})
+//     return { account, token }
+//   } catch (err) {
+//     next(err)
+//   }
+// })

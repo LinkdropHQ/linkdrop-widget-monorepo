@@ -43,9 +43,6 @@ export const signup = async ({ email, password, apiHost }) => {
   })
 
   const { account, jwt, sessionKey, success, error } = response.data
-  console.log('sessionKey: ', sessionKey)
-  console.log('jwt: ', jwt)
-  console.log('account: ', account)
   const sessionKeyStore = await wallet.encrypt(sessionKey)
 
   return {

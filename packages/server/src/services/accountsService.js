@@ -32,7 +32,8 @@ class AccountsService {
         email,
         passwordHash,
         passwordDerivedKeyHash,
-        encryptedEncryptionKey
+        encryptedEncryptionKey,
+        encryptedMnemonic
       })
 
       logger.debug('Creating new account..')
