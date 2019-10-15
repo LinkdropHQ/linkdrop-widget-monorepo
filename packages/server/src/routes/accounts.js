@@ -6,11 +6,11 @@ const router = express.Router()
 router.get('/exists/:email', accountsController.exists)
 
 /**
- * @route POST api/v1/accounts/signup
+ * @route POST api/v1/accounts/register
  * @desc Signup new account
  * @access Public
  */
-router.post('/signup', accountsController.signup)
+router.post('/register', accountsController.register)
 
 /**
  * @route PUT api/v1/accounts/update

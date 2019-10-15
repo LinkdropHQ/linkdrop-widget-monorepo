@@ -41,7 +41,7 @@ export const update = wrapAsync(async (req, res, next) => {
   }
 })
 
-export const signup = wrapAsync(async (req, res, next) => {
+export const register = wrapAsync(async (req, res, next) => {
   try {
     const {
       email,

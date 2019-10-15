@@ -13,7 +13,7 @@ import {
 
 import { ethers } from 'ethers'
 
-export const signup = async ({ email, password, apiHost }) => {
+export const register = async ({ email, password, apiHost }) => {
   const encryptionKey = generateEncryptionKey()
   const encryptedEncryptionKey = await getEncryptedEncryptionKey(
     email,
