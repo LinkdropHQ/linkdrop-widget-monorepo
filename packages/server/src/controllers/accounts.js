@@ -53,6 +53,26 @@ export const create = wrapAsync(async (req, res, next) => {
       deployed
     } = req.body
 
+    assert.string(email, 'Email is required')
+    assert.string(ens, 'Ens name is required')
+    assert.string(passwordHash, 'Password hash is required')
+    assert.string(
+      passwordDerivedKeyHash,
+      'Password derived key hash is required'
+    )
+    assert.string(
+      encryptedEncryptionKey,
+      'Encrypted encryption key is required'
+    )
+
+    console.log(
+      'SHIt',
+      await accountsService.findAccount({
+        email: null,
+        chain: relayerWalletService.chain
+      })
+    )
+
     let account = await accountsService.findAccount({
       email,
       chain: relayerWalletService.chain

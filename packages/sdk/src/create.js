@@ -62,13 +62,7 @@ export const create = async ({
   recoveryModuleMasterCopy,
   multiSend,
   createAndAddModules,
-  gasPrice,
-
-  email,
-  passwordHash,
-  passwordDerivedKeyHash,
-  encryptedEncryptionKey,
-  encryptedMnemonicPhrase
+  gasPrice
 }) => {
   assert.string(owner, 'Owner is required')
   assert.string(ensName, 'Ens name is required')
@@ -253,35 +247,18 @@ export const create = async ({
 
   const deploy = async () => {
     return deployWallet({
+      owner,
+      saltNonce,
       ensName,
+      guardian,
+      recoveryPeriod,
+      gasPrice,
       ensDomain,
       ensAddress,
-      jsonRpcUrl,
-      data: multiSendData,
       apiHost,
-      gasPrice,
-      email
+      jsonRpcUrl
     })
   }
-
-  // Save user and account to database
-  const response = await axios.post(`${apiHost}/api/v1/accounts`, {
-    email,
-    ens: `${ensName}.${ensDomain}`,
-    passwordHash,
-    passwordDerivedKeyHash,
-    encryptedEncryptionKey,
-    encryptedMnemonicPhrase,
-    owner,
-    saltNonce,
-    safe,
-    linkdropModule,
-    recoveryModule,
-    createSafeData,
-    deployed: false
-  })
-
-  const { account, token } = response.data
 
   return {
     safe,
@@ -289,14 +266,13 @@ export const create = async ({
     recoveryModule,
     creationCosts: creationCosts.toString(),
     waitForBalance,
-    deploy,
-    account,
-    token
+    deploy
   }
 }
 
 /**
  * Function to deploy new safe
+ * @param {String} owner Safe owner address
  * @param {String} ensName ENS name to register
  * @param {String} ensDomain ENS domain (e.g. 'my-domain.eth')
  * @param {String} ensAddress ENS address
@@ -307,17 +283,17 @@ export const create = async ({
  * @returns {Object} {success, txHash, errors}
  */
 const deployWallet = async ({
+  owner,
+  saltNonce,
   ensName,
+  guardian,
+  recoveryPeriod,
+  gasPrice,
   ensDomain,
   ensAddress,
-  data,
-  gasPrice,
   apiHost,
-  jsonRpcUrl,
-  email
+  jsonRpcUrl
 }) => {
-  assert.string(data, 'Creation data is required')
-
   try {
     const ensOwner = await getEnsOwner({
       ensName,
@@ -327,26 +303,30 @@ const deployWallet = async ({
     })
     assert.true(ensOwner === ADDRESS_ZERO, 'Provided name already has an owner')
 
-    let response = await axios.post(`${apiHost}/api/v1/safes`, {
-      data,
+    const response = await axios.post(`${apiHost}/api/v1/safes`, {
+      owner,
+      saltNonce,
+      ensName,
+      guardian,
+      recoveryPeriod,
       gasPrice
     })
 
-    const { success, txHash, errors } = response.data
-
-    // Mark account as deployed in database
-    response = await axios.put(`${apiHost}/api/v1/accounts`, {
-      email,
-      deployed: true
-    })
-
-    const { account, token } = response.data
+    const {
+      success,
+      txHash,
+      safe,
+      linkdropModule,
+      recoveryModule,
+      errors
+    } = response.data
 
     return {
       success,
       txHash,
-      account,
-      token,
+      safe,
+      linkdropModule,
+      recoveryModule,
       errors
     }
   } catch (err) {

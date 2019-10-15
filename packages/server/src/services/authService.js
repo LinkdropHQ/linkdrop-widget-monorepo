@@ -14,7 +14,7 @@ class AuthService {
 
       if (!account) throw new Error('Account not found')
 
-      const payload = { account: { email } }
+      const payload = { account }
 
       const token = jwt.sign(payload, JWT_SECRET, {
         expiresIn: 360000

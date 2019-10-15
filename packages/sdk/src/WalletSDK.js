@@ -184,12 +184,7 @@ class WalletSDK {
       multiSend,
       createAndAddModules,
       jsonRpcUrl,
-      apiHost,
-      email,
-      passwordHash,
-      passwordDerivedKeyHash,
-      encryptedEncryptionKey,
-      encryptedMnemonicPhrase
+      apiHost
     })
   }
 

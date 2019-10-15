@@ -7,10 +7,16 @@ import { PROXY_FACTORY_ADDRESS } from '../../config/config.json'
 class AccountsService {
   // Each email should have only one account per chain
   async findUser (email) {
+    if (email == null) {
+      return
+    }
     return User.findOne({ email }).populate('accounts')
   }
 
   async findAccount ({ email, chain }) {
+    if (email == null) {
+      return
+    }
     return Account.findOne({ email, chain })
   }
 

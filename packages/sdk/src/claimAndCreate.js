@@ -264,7 +264,7 @@ export const claimAndCreate = async ({
   const claimData = encodeParams(LinkdropFactory.abi, 'claim', [
     weiAmount,
     tokenAddress,
-    tokenAddress,
+    tokenAmount,
     expirationTime,
     linkId,
     linkdropMasterAddress,
@@ -305,8 +305,21 @@ export const claimAndCreate = async ({
   })
 
   const response = await axios.post(`${apiHost}/api/v1/safes/claimAndCreate`, {
-    data: multiSendData,
-    gasPrice
+    owner,
+    saltNonce,
+    ensName,
+    guardian,
+    recoveryPeriod,
+    gasPrice,
+    weiAmount,
+    tokenAddress,
+    tokenAmount,
+    expirationTime,
+    linkId,
+    linkdropMasterAddress,
+    campaignId,
+    linkdropSignerSignature,
+    receiverSignature
   })
   const { success, txHash, errors } = response.data
 
