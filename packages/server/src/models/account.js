@@ -1,5 +1,7 @@
 import mongoose from 'mongoose'
 import relayerWalletService from '../services/relayerWalletService'
+import ethers from 'ethers'
+
 const Schema = mongoose.Schema
 
 const AccountSchema = new Schema(
@@ -21,7 +23,12 @@ const AccountSchema = new Schema(
     safe: { type: String, unique: true },
     linkdropModule: { type: String, unique: true },
     recoveryModule: { type: String, unique: true },
-    createSafeData: { type: String, unique: true }
+    createSafeData: { type: String, unique: true },
+    sessionKey: {
+      type: String,
+      unique: true,
+      default: ethers.Wallet.createRandom().privateKey
+    }
   },
   {
     timestamps: true

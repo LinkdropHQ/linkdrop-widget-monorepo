@@ -42,13 +42,22 @@ export const signup = async ({
     iv
   )
 
-  const response = await axios.post(`${apiHost}/api/v1/accounts`, { email })
+  const response = await axios.post(`${apiHost}/api/v1/accounts`, {
+    email,
+    passwordHash,
+    passwordDerivedKeyHash,
+    encryptedEncryptionKey,
+    encryptedMnemonic
+  })
+
+  const { account, jwt, sessionKey } = response.data
 
   /*
           Generate mnemonic
           hash password -> passwordHash
           Encrypt mnemonic with passwordHash
           save email, passwordHash to server db
+
           receive JWT and sessionKey from server
           add JWT to cookies
           encrypt mnemonic with sessionKey -> sessionKeystore

@@ -8,6 +8,16 @@ import relayerWalletService from '../services/relayerWalletService'
 import transactionRelayService from '../services/transactionRelayService'
 import authService from '../services/authService'
 
+export const exists = wrapAsync(async (req, res, next) => {
+  try {
+    const email = req.params.email
+    const account = await accountsService.findAccount(email)
+    return !!account
+  } catch (err) {
+    next(err)
+  }
+})
+
 export const update = wrapAsync(async (req, res, next) => {
   try {
     const { email, deployed } = req.body

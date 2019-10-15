@@ -5,6 +5,18 @@ import relayerWalletService from './relayerWalletService'
 import { JWT_SECRET } from '../../config/config.json'
 
 class AuthService {
+  async getSessionKey (email) {
+    try {
+      const account = await accountsService.findAccount(email)
+
+      if (!account) {
+        throw new Error('Account not found ')
+      }
+    } catch (err) {
+      logger.error(err)
+    }
+  }
+
   async getToken (email) {
     try {
       const account = await accountsService.findAccount({

@@ -3,6 +3,8 @@ import * as accountsController from '../controllers/accounts'
 
 const router = express.Router()
 
+router.get('/exists/:email', accountsController.accountExists)
+
 /**
  * @route POST api/v1/accounts
  * @desc Create new account
