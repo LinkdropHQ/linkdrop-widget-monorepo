@@ -13,7 +13,7 @@ export const generateEncryptionKey = () => {
  * @return `iv` Initialization vector
  */
 export const generateIV = () => {
-  return crypto.randomBytes(16).toString('hex')
+  return crypto.randomBytes(16)
 }
 
 /**
@@ -75,7 +75,9 @@ export const extractEncryptionKey = async (
  * @return `passwordDerivedKey` Password derived key
  */
 export const getPasswordDerivedKey = async (email, password) => {
-  return crypto.pbkdf2(password, email, 100000, 32, 'sha256').toString('hex')
+  return crypto
+    .pbkdf2Sync(password, email, 100000, 32, 'sha256')
+    .toString('hex')
 }
 
 /**
@@ -87,7 +89,7 @@ export const getPasswordDerivedKey = async (email, password) => {
 export const getPasswordHash = async (email, password) => {
   const passwordDerivedKey = await getPasswordDerivedKey(email, password)
   return crypto
-    .pbkdf2(passwordDerivedKey, password, 1, 32, 'sha256')
+    .pbkdf2Sync(passwordDerivedKey, password, 1, 32, 'sha256')
     .toString('hex')
 }
 

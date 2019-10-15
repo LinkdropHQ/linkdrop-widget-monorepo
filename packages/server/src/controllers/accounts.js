@@ -65,14 +65,6 @@ export const create = wrapAsync(async (req, res, next) => {
       'Encrypted encryption key is required'
     )
 
-    console.log(
-      'SHIt',
-      await accountsService.findAccount({
-        email: null,
-        chain: relayerWalletService.chain
-      })
-    )
-
     let account = await accountsService.findAccount({
       email,
       chain: relayerWalletService.chain

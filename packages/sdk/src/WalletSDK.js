@@ -18,6 +18,8 @@ import { claim, claimERC721 } from './claim'
 
 import * as cryptoUtils from './cryptoUtils'
 
+import crypto from 'crypto'
+
 const ADDRESS_ZERO = ethers.constants.AddressZero
 const BYTES_ZERO = '0x'
 
@@ -554,6 +556,33 @@ class WalletSDK {
       linkdropSignerSignature,
       receiverAddress
     })
+  }
+
+  async signUp (email, password) {
+    /*
+      Generate mnemonic
+      hash password -> passwordHash
+      Encrypt mnemonic with passwordHash
+      save email, passwordHash to server db
+      receive JWT and sessionKey from server
+      add JWT to cookies
+      encrypt mnemonic with sessionKey -> sessionKeystore
+      return { success, data, errors }, where data is { privateKey, sessionKeystore }
+     */
+
+    const wallet = ethers.Wallet.createRandom()
+    const mnemonic = wallet.mnemonic
+    console.log('mnemonic: ', mnemonic)
+
+    const encryptedWallet = await wallet.encrypt(password)
+    console.log('encryptedWallet: ', encryptedWallet)
+
+    // const encryptedMnemonic = await this.cryptoUtils.getEncryptedMnemonic(
+    //   mnemonic,
+    //   key,
+    //   iv
+    // )
+    // console.log('encryptedMnemonic: ', encryptedMnemonic)
   }
 }
 
