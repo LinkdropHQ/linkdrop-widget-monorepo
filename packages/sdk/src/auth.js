@@ -28,7 +28,6 @@ export const signup = async ({ email, password, apiHost }) => {
 
   const wallet = ethers.Wallet.createRandom()
   const mnemonic = wallet.mnemonic
-  console.log('mnemonic: ', mnemonic)
   const iv = generateIV()
 
   const encryptedMnemonic = await getEncryptedMnemonic(
@@ -77,20 +76,22 @@ export const login = async ({ email, password, apiHost }) => {
     encryptedEncryptionKey.iv,
     passwordDerivedKey
   )
-  console.log('encryptionKey: ', encryptionKey)
 
   const mnemonic = await extractMnemonic(
     encryptedMnemonic.encryptedMnemonic,
     encryptedMnemonic.iv,
     encryptionKey
   )
-  console.log('mnemonic: ', mnemonic)
+
+  const wallet = ethers.Wallet.fromMnemonic(mnemonic)
+  const privateKey = wallet.privateKey
 
   console.log({
     encryptedEncryptionKey,
     encryptedMnemonic,
     jwt,
     success,
+    privateKey,
     error
   })
 }

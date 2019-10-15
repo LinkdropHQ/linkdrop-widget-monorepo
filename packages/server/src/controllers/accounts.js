@@ -101,11 +101,13 @@ export const login = wrapAsync(async (req, res, next) => {
     }
 
     const jwt = await authService.getToken(email)
+    const sessionKey = await authService.getSessionKey(email)
 
     res.json({
       encryptedEncryptionKey: account.encryptedEncryptionKey,
       encryptedMnemonic: account.encryptedMnemonic,
       jwt,
+      sessionKey,
       success: true
     })
   } catch (err) {
