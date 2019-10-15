@@ -15,7 +15,7 @@ import { executeTx } from './executeTx'
 import { getEnsOwner, getEnsAddress } from './ensUtils'
 import { generateLink, generateLinkERC721 } from './generateLink'
 import { claim, claimERC721 } from './claim'
-import { signup, login } from './auth'
+import { register, login } from './auth'
 
 import * as cryptoUtils from './cryptoUtils'
 
@@ -559,8 +559,8 @@ class WalletSDK {
     })
   }
 
-  async signup (email, password) {
-    return signup({ email, password, apiHost: this.apiHost })
+  async register (email, password) {
+    return register({ email, password, apiHost: this.apiHost })
   }
 
   async login (email, password) {
