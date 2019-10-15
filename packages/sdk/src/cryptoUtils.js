@@ -5,7 +5,7 @@ import crypto from 'crypto'
  * @return `encryptionKey` Encryption key
  */
 export const generateEncryptionKey = () => {
-  return crypto.randomBytes(64).toString('hex')
+  return crypto.randomBytes(32).toString('hex')
 }
 
 /**
@@ -13,7 +13,7 @@ export const generateEncryptionKey = () => {
  * @return `iv` Initialization vector
  */
 export const generateIV = () => {
-  return crypto.randomBytes(16)
+  return crypto.randomBytes(16).toString('hex')
 }
 
 /**
@@ -28,9 +28,16 @@ export const getEncryptedEncryptionKey = async (
   password,
   encryptionKey
 ) => {
-  const passwordDerivedKey = await getPasswordDerivedKey(email, password)
+  const passwordDerivedKey = Buffer.from(
+    await getPasswordDerivedKey(email, password),
+    'hex'
+  )
   const iv = generateIV()
-  const cipher = crypto.createCipheriv('aes-256-cbc', passwordDerivedKey, iv)
+  const cipher = crypto.createCipheriv(
+    'aes-256-cbc',
+    Buffer.from(passwordDerivedKey, 'hex'),
+    Buffer.from(iv, 'hex')
+  )
 
   const encryptedEncryptionKey =
     cipher.update(encryptionKey, 'utf8', 'hex') + cipher.final('hex')
@@ -44,7 +51,11 @@ export const getEncryptedEncryptionKey = async (
  * @return `{encryptedMnemonic, iv}`
  */
 export const getEncryptedMnemonic = async (mnemonic, encryptionKey, iv) => {
-  const cipher = crypto.createCipheriv('aes-256-cbc', encryptionKey, iv)
+  const cipher = crypto.createCipheriv(
+    'aes-256-cbc',
+    Buffer.from(encryptionKey, 'hex'),
+    Buffer.from(iv, 'hex')
+  )
 
   const encryptedMnemonic =
     cipher.update(mnemonic, 'utf8', 'hex') + cipher.final('hex')

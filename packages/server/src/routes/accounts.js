@@ -6,22 +6,22 @@ const router = express.Router()
 router.get('/exists/:email', accountsController.exists)
 
 /**
- * @route POST api/v1/accounts
- * @desc Create new account
+ * @route POST api/v1/accounts/signup
+ * @desc Signup new account
  * @access Public
  */
-router.post('/', accountsController.create)
+router.post('/signup', accountsController.signup)
 
 /**
- * @route PUT api/v1/accounts
+ * @route PUT api/v1/accounts/update
  * @desc Update existing account
  * @access Public
  */
-router.put('/', accountsController.update)
+router.put('/update', accountsController.update)
 
 /**
  * @route POST api/v1/accounts/login
- * @desc Login user
+ * @desc Login existing acccount
  * @access Public
  */
 router.post('/login', accountsController.login)

@@ -45,7 +45,7 @@ export const update = wrapAsync(async (req, res, next) => {
   }
 })
 
-export const create = wrapAsync(async (req, res, next) => {
+export const signup = wrapAsync(async (req, res, next) => {
   try {
     const {
       email,
@@ -80,16 +80,16 @@ export const create = wrapAsync(async (req, res, next) => {
 
     account = await accountsService.create({
       email,
-      chain: relayerWalletService.chain,
       passwordHash,
       passwordDerivedKeyHash,
       encryptedEncryptionKey,
       encryptedMnemonic
     })
 
-    const token = await authService.getToken(email)
+    const jwt = await authService.getToken(email)
+    const sessionKey = await authService.getSessionKey(email)
 
-    res.json({ account, token })
+    res.json({ account, jwt, sessionKey, success: true })
   } catch (err) {
     next(err)
   }

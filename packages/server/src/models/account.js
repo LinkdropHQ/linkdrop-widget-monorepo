@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import relayerWalletService from '../services/relayerWalletService'
-import ethers from 'ethers'
+import { ethers } from 'ethers'
 
 const Schema = mongoose.Schema
 

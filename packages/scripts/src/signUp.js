@@ -1,8 +1,9 @@
 import WalletSDK from '../../sdk/src/WalletSDK'
+import { ethers } from 'ethers'
 const walletSDK = new WalletSDK({})
 
 const main = async () => {
-  await walletSDK.signUp('Email', 'Password')
+  const res = await walletSDK.signup('amir', 'password')
 }
 
 main()

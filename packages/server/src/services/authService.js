@@ -9,31 +9,24 @@ class AuthService {
     try {
       const account = await accountsService.findAccount(email)
 
-      if (!account) {
-        throw new Error('Account not found ')
-      }
+      if (!account) throw new Error('Account not found')
+
+      return account.sessionKey
     } catch (err) {
       logger.error(err)
+      throw new Error(err.message)
     }
   }
 
   async getToken (email) {
     try {
-      const account = await accountsService.findAccount({
-        email,
-        chain: relayerWalletService.chain
-      })
+      const account = await accountsService.findAccount(email)
 
       if (!account) throw new Error('Account not found')
 
-      const payload = { account }
-
-      const token = jwt.sign(payload, JWT_SECRET, {
+      return jwt.sign({ account }, JWT_SECRET, {
         expiresIn: 360000
       })
-
-      logger.debug(`Signed new JWT token for ${email}`)
-      return token
     } catch (err) {
       logger.error(err)
       throw new Error(err.message)
