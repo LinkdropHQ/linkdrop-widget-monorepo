@@ -85,7 +85,7 @@ class AccountsService {
   }
 
   async update ({ email, deployed }) {
-    const account = await this.findAccount({ email })
+    const account = await this.findAccount(email)
 
     if (deployed) {
       account.deployed = deployed

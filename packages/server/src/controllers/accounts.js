@@ -22,10 +22,7 @@ export const update = wrapAsync(async (req, res, next) => {
   try {
     const { email, deployed } = req.body
 
-    let account = await accountsService.findAccount({
-      email,
-      chain: relayerWalletService.chain
-    })
+    let account = await accountsService.findAccount(email)
 
     if (!account) {
       return next(boom.badRequest('Account does not exist'))
@@ -33,7 +30,6 @@ export const update = wrapAsync(async (req, res, next) => {
 
     account = await accountsService.update({
       email,
-      chain: relayerWalletService.chain,
       deployed
     })
 
