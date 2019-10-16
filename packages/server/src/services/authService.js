@@ -18,13 +18,13 @@ class AuthService {
     }
   }
 
-  async getToken (email) {
+  async getToken (accountId) {
     try {
-      const account = await accountsService.findAccount(email)
+      // const account = await accountsService.findAccount(email)
 
-      if (!account) throw new Error('Account not found')
+      // if (!account) throw new Error('Account not found')
 
-      return jwt.sign({ account }, JWT_SECRET, {
+      return jwt.sign({ accountId }, JWT_SECRET, {
         expiresIn: 360000
       })
     } catch (err) {

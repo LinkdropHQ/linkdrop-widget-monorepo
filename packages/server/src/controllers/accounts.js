@@ -1,11 +1,8 @@
-import { ethers, utils } from 'ethers'
 import logger from '../utils/logger'
 import boom from '@hapi/boom'
 import assert from 'assert-js'
 import wrapAsync from '../utils/asyncWrapper'
 import accountsService from '../services/accountsService'
-import relayerWalletService from '../services/relayerWalletService'
-import transactionRelayService from '../services/transactionRelayService'
 import authService from '../services/authService'
 
 export const exists = wrapAsync(async (req, res, next) => {
@@ -77,10 +74,18 @@ export const register = wrapAsync(async (req, res, next) => {
       encryptedMnemonic
     })
 
-    const jwt = await authService.getToken(email)
+    const jwt = await authService.getToken(account._id)
     const sessionKey = await authService.getSessionKey(email)
 
-    res.json({ account, jwt, sessionKey, success: true })
+    // set cookie
+    const cookieConfig = {
+      httpOnly: true, // to disable accessing cookie via client side js
+      // secure: true, // to force https (if you use it)
+      maxAge: 1000000000, // ttl in ms (remove this option and cookie will die when browser is closed)
+      signed: true // if you use the secret with cookieParser
+    }
+    res.cookie('jwt', jwt, cookieConfig)
+    res.json({ account, sessionKey, success: true })
   } catch (err) {
     next(err)
   }
