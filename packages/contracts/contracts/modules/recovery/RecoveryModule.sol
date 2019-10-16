@@ -22,6 +22,10 @@ contract RecoveryModule is Module {
     address private oldOwner;
     address private newOwner;
 
+    event RecoveryInitiated(address indexed oldOwner, address indexed newOwner);
+    event RecoveryFinalized();
+    event RecoveryCanceled();
+
     modifier onlyGuardian() {
         require(isGuardian[msg.sender], "Only guardian");
         _;
@@ -68,6 +72,8 @@ contract RecoveryModule is Module {
         prevOwner = _prevOwner;
         oldOwner = _oldOwner;
         newOwner = _newOwner;
+
+        emit RecoveryInitiated(oldOwner, newOwner);
     }
 
     /**
@@ -82,6 +88,8 @@ contract RecoveryModule is Module {
         delete prevOwner;
         delete oldOwner;
         delete newOwner;
+
+        emit RecoveryCanceled();
     }
 
     /**
@@ -102,6 +110,8 @@ contract RecoveryModule is Module {
         delete prevOwner;
         delete oldOwner;
         delete newOwner;
+
+        emit RecoveryFinalized();
     }
 
     /**
