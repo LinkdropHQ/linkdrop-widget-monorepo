@@ -53,7 +53,6 @@ export const create = wrapAsync(async (req, res, next) => {
 
 export const claimAndCreate = wrapAsync(async (req, res, next) => {
   try {
-
     const {
       owner,
       saltNonce,
@@ -69,7 +68,8 @@ export const claimAndCreate = wrapAsync(async (req, res, next) => {
       linkdropMasterAddress,
       campaignId,
       linkdropSignerSignature,
-      receiverSignature
+      receiverSignature,
+      email
     } = req.body
 
     assert.string(owner, 'Owner address is required')
@@ -93,6 +93,8 @@ export const claimAndCreate = wrapAsync(async (req, res, next) => {
 
     assert.string(receiverSignature, 'Receiver signature is required')
 
+    assert.string(email, 'Email is required')
+
     const {
       success,
       txHash,
@@ -115,7 +117,8 @@ export const claimAndCreate = wrapAsync(async (req, res, next) => {
       linkdropMasterAddress,
       campaignId,
       linkdropSignerSignature,
-      receiverSignature
+      receiverSignature,
+      email
     })
 
     res.json({

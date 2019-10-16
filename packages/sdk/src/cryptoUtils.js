@@ -109,9 +109,17 @@ export const extractMnemonic = async (encryptedMnemonic, iv, encryptionKey) => {
  * @return `passwordDerivedKey` Password derived key
  */
 export const getPasswordDerivedKey = async (email, password) => {
-  return crypto
-    .pbkdf2Sync(password, email, 100000, 32, 'sha256')
-    .toString('hex')
+  return crypto.pbkdf(
+    password,
+    email,
+    100000,
+    32,
+    'sha256',
+    (err, passwordDerivedKey) => {
+      if (err) throw err
+      return passwordDerivedKey.toString('hex')
+    }
+  )
 }
 
 /**
@@ -123,7 +131,17 @@ export const getPasswordDerivedKey = async (email, password) => {
 export const getPasswordHash = async (email, password) => {
   const passwordDerivedKey = await getPasswordDerivedKey(email, password)
   return crypto
-    .pbkdf2Sync(passwordDerivedKey, password, 1, 32, 'sha256')
+    .pbkdf2(
+      passwordDerivedKey,
+      password,
+      1,
+      32,
+      'sha256',
+      (err, passwordHash) => {
+        if (err) throw err
+        return passwordHash.toString('hex')
+      }
+    )
     .toString('hex')
 }
 
@@ -139,29 +157,4 @@ export const getPasswordDerivedKeyHash = async (email, password) => {
     .createHash('sha512')
     .update(passwordDerivedKey)
     .digest('hex')
-}
-
-/**
- * Generates assymetric key pair and encrypts private key with `encryptionKey` as passphrase
- * @param {String} encryptionKey Encryption key
- * @return `{publicKey, encryptedPrivateKey}` Public key and encrypted private key in pem format
- */
-export const getEncryptedAssymetricKeyPair = async encryptionKey => {
-  const {
-    publicKey,
-    privateKey: encryptedPrivateKey
-  } = crypto.generateKeyPairSync('rsa', {
-    modulusLength: 2048,
-    publicKeyEncoding: {
-      type: 'spki',
-      format: 'pem'
-    },
-    privateKeyEncoding: {
-      type: 'pkcs8',
-      format: 'pem',
-      cipher: 'aes-256-cbc',
-      passphrase: encryptionKey
-    }
-  })
-  return { publicKey, encryptedPrivateKey }
 }

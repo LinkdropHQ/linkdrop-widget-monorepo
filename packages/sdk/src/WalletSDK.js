@@ -15,11 +15,14 @@ import { executeTx } from './executeTx'
 import { getEnsOwner, getEnsAddress } from './ensUtils'
 import { generateLink, generateLinkERC721 } from './generateLink'
 import { claim, claimERC721 } from './claim'
-import { register, login } from './auth'
+import {
+  register,
+  login,
+  fetchSessionKey,
+  extractPrivateKeyFromSession
+} from './auth'
 
 import * as cryptoUtils from './cryptoUtils'
-
-import crypto from 'crypto'
 
 const ADDRESS_ZERO = ethers.constants.AddressZero
 const BYTES_ZERO = '0x'
@@ -324,6 +327,7 @@ class WalletSDK {
    * @param {String} ensAddress ENS address
    * @param {String} jsonRpcUrl JSON RPC URL
    * @param {String} linkdropFactory Deployed linkdrop factory address
+   * @param {String} email Email
    * @returns {Object} {success, txHash,safe, linkdropModule, recoveryModule, errors}
    */
   async claimAndCreate ({
@@ -351,7 +355,8 @@ class WalletSDK {
     ensDomain = this.ensDomain,
     ensAddress = this.ensAddress,
     jsonRpcUrl = this.jsonRpcUrl,
-    linkdropFactory = this.linkdropFactory
+    linkdropFactory = this.linkdropFactory,
+    email
   }) {
     return claimAndCreate({
       weiAmount,
@@ -378,7 +383,8 @@ class WalletSDK {
       ensDomain,
       ensAddress,
       jsonRpcUrl,
-      linkdropFactory
+      linkdropFactory,
+      email
     })
   }
 
@@ -575,6 +581,23 @@ class WalletSDK {
    */
   async login (email, password) {
     return login({ email, password, apiHost: this.apiHost })
+  }
+
+  /**
+   * Fetches session key from server
+   * @param {String} email Email
+   * @return `sessionKey` Session key
+   */
+  async fetchSessionKey (email) {
+    return fetchSessionKey({ email, apiHost: this.apiHost })
+  }
+
+  async extractPrivateKeyFromSession (email, sessionKeyStore) {
+    return extractPrivateKeyFromSession({
+      email,
+      sessionKeyStore,
+      apiHost: this.apiHost
+    })
   }
 }
 

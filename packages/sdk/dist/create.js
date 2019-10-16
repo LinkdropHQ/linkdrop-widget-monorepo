@@ -250,13 +250,16 @@ function () {
                     switch (_context2.prev = _context2.next) {
                       case 0:
                         return _context2.abrupt("return", deployWallet({
+                          owner: owner,
+                          saltNonce: saltNonce,
                           ensName: ensName,
+                          guardian: guardian,
+                          recoveryPeriod: recoveryPeriod,
+                          gasPrice: gasPrice,
                           ensDomain: ensDomain,
                           ensAddress: ensAddress,
-                          jsonRpcUrl: jsonRpcUrl,
-                          data: multiSendData,
                           apiHost: apiHost,
-                          gasPrice: gasPrice
+                          jsonRpcUrl: jsonRpcUrl
                         }));
 
                       case 1:
@@ -295,13 +298,14 @@ function () {
 }();
 /**
  * Function to deploy new safe
+ * @param {String} owner Safe owner address
  * @param {String} ensName ENS name to register
  * @param {String} ensDomain ENS domain (e.g. 'my-domain.eth')
  * @param {String} ensAddress ENS address
  * @param {String} data Creation data
  * @param {String} gasPrice Gas price in wei
  * @param {String} apiHost API host
- * @param {String} jsonRpcUrl JSON RPC URL
+ * @param {String} jsonRpcUrl JSON RPC URL,
  * @returns {Object} {success, txHash, errors}
  */
 
@@ -314,18 +318,15 @@ function () {
   var _ref6 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
   _regenerator["default"].mark(function _callee4(_ref5) {
-    var ensName, ensDomain, ensAddress, data, gasPrice, apiHost, jsonRpcUrl, ensOwner, response, _response$data, success, txHash, errors;
+    var owner, saltNonce, ensName, guardian, recoveryPeriod, gasPrice, ensDomain, ensAddress, apiHost, jsonRpcUrl, ensOwner, response, _response$data, success, txHash, safe, linkdropModule, recoveryModule, errors;
 
     return _regenerator["default"].wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
-            ensName = _ref5.ensName, ensDomain = _ref5.ensDomain, ensAddress = _ref5.ensAddress, data = _ref5.data, gasPrice = _ref5.gasPrice, apiHost = _ref5.apiHost, jsonRpcUrl = _ref5.jsonRpcUrl;
-
-            _assertJs["default"].string(data, 'Creation data is required');
-
-            _context4.prev = 2;
-            _context4.next = 5;
+            owner = _ref5.owner, saltNonce = _ref5.saltNonce, ensName = _ref5.ensName, guardian = _ref5.guardian, recoveryPeriod = _ref5.recoveryPeriod, gasPrice = _ref5.gasPrice, ensDomain = _ref5.ensDomain, ensAddress = _ref5.ensAddress, apiHost = _ref5.apiHost, jsonRpcUrl = _ref5.jsonRpcUrl;
+            _context4.prev = 1;
+            _context4.next = 4;
             return (0, _ensUtils.getEnsOwner)({
               ensName: ensName,
               ensDomain: ensDomain,
@@ -333,40 +334,47 @@ function () {
               jsonRpcUrl: jsonRpcUrl
             });
 
-          case 5:
+          case 4:
             ensOwner = _context4.sent;
 
             _assertJs["default"]["true"](ensOwner === ADDRESS_ZERO, 'Provided name already has an owner');
 
-            _context4.next = 9;
+            _context4.next = 8;
             return _axios["default"].post("".concat(apiHost, "/api/v1/safes"), {
-              data: data,
+              owner: owner,
+              saltNonce: saltNonce,
+              ensName: ensName,
+              guardian: guardian,
+              recoveryPeriod: recoveryPeriod,
               gasPrice: gasPrice
             });
 
-          case 9:
+          case 8:
             response = _context4.sent;
-            _response$data = response.data, success = _response$data.success, txHash = _response$data.txHash, errors = _response$data.errors;
+            _response$data = response.data, success = _response$data.success, txHash = _response$data.txHash, safe = _response$data.safe, linkdropModule = _response$data.linkdropModule, recoveryModule = _response$data.recoveryModule, errors = _response$data.errors;
             return _context4.abrupt("return", {
               success: success,
               txHash: txHash,
+              safe: safe,
+              linkdropModule: linkdropModule,
+              recoveryModule: recoveryModule,
               errors: errors
             });
 
-          case 14:
-            _context4.prev = 14;
-            _context4.t0 = _context4["catch"](2);
+          case 13:
+            _context4.prev = 13;
+            _context4.t0 = _context4["catch"](1);
             return _context4.abrupt("return", {
               success: false,
               errors: _context4.t0.message || _context4.t0
             });
 
-          case 17:
+          case 16:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, null, [[2, 14]]);
+    }, _callee4, null, [[1, 13]]);
   }));
 
   return function deployWallet(_x2) {

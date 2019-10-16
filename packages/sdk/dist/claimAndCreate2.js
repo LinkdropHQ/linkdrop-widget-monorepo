@@ -82,13 +82,13 @@ function () {
   var _ref2 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
   _regenerator["default"].mark(function _callee(_ref) {
-    var weiAmount, tokenAddress, tokenAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature, campaignId, gnosisSafeMasterCopy, proxyFactory, owner, linkdropModuleMasterCopy, createAndAddModules, multiSend, apiHost, saltNonce, guardian, recoveryPeriod, recoveryModuleMasterCopy, gasPrice, ensName, ensDomain, ensAddress, jsonRpcUrl, linkdropFactory, email, ensOwner, provider, linkdropModuleSetupData, linkdropModuleCreationData, recoveryModuleSetupData, recoveryModuleCreationData, modulesCreationData, createAndAddModulesData, createAndAddModulesMultiSendData, nestedTxData, multiSendData, gnosisSafeData, createSafeData, estimate, creationCosts, createSafeMultiSendData, safe, registerEnsData, registrar, registerEnsMultiSendData, receiverSignature, linkId, claimData, claimMultiSendData, linkdropModule, recoveryModule, response, _response$data, updateAccountOnSuccess, success, txHash, errors;
+    var weiAmount, tokenAddress, tokenAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature, campaignId, gnosisSafeMasterCopy, proxyFactory, owner, linkdropModuleMasterCopy, createAndAddModules, multiSend, apiHost, saltNonce, guardian, recoveryPeriod, recoveryModuleMasterCopy, gasPrice, ensName, ensDomain, ensAddress, jsonRpcUrl, linkdropFactory, ensOwner, provider, linkdropModuleSetupData, linkdropModuleCreationData, recoveryModuleSetupData, recoveryModuleCreationData, modulesCreationData, createAndAddModulesData, createAndAddModulesMultiSendData, nestedTxData, multiSendData, gnosisSafeData, createSafeData, estimate, creationCosts, createSafeMultiSendData, safe, registerEnsData, registrar, registerEnsMultiSendData, receiverSignature, linkId, claimData, claimMultiSendData, linkdropModule, recoveryModule, response, _response$data, success, txHash, errors;
 
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            weiAmount = _ref.weiAmount, tokenAddress = _ref.tokenAddress, tokenAmount = _ref.tokenAmount, expirationTime = _ref.expirationTime, linkKey = _ref.linkKey, linkdropMasterAddress = _ref.linkdropMasterAddress, linkdropSignerSignature = _ref.linkdropSignerSignature, campaignId = _ref.campaignId, gnosisSafeMasterCopy = _ref.gnosisSafeMasterCopy, proxyFactory = _ref.proxyFactory, owner = _ref.owner, linkdropModuleMasterCopy = _ref.linkdropModuleMasterCopy, createAndAddModules = _ref.createAndAddModules, multiSend = _ref.multiSend, apiHost = _ref.apiHost, saltNonce = _ref.saltNonce, guardian = _ref.guardian, recoveryPeriod = _ref.recoveryPeriod, recoveryModuleMasterCopy = _ref.recoveryModuleMasterCopy, gasPrice = _ref.gasPrice, ensName = _ref.ensName, ensDomain = _ref.ensDomain, ensAddress = _ref.ensAddress, jsonRpcUrl = _ref.jsonRpcUrl, linkdropFactory = _ref.linkdropFactory, email = _ref.email;
+            weiAmount = _ref.weiAmount, tokenAddress = _ref.tokenAddress, tokenAmount = _ref.tokenAmount, expirationTime = _ref.expirationTime, linkKey = _ref.linkKey, linkdropMasterAddress = _ref.linkdropMasterAddress, linkdropSignerSignature = _ref.linkdropSignerSignature, campaignId = _ref.campaignId, gnosisSafeMasterCopy = _ref.gnosisSafeMasterCopy, proxyFactory = _ref.proxyFactory, owner = _ref.owner, linkdropModuleMasterCopy = _ref.linkdropModuleMasterCopy, createAndAddModules = _ref.createAndAddModules, multiSend = _ref.multiSend, apiHost = _ref.apiHost, saltNonce = _ref.saltNonce, guardian = _ref.guardian, recoveryPeriod = _ref.recoveryPeriod, recoveryModuleMasterCopy = _ref.recoveryModuleMasterCopy, gasPrice = _ref.gasPrice, ensName = _ref.ensName, ensDomain = _ref.ensDomain, ensAddress = _ref.ensAddress, jsonRpcUrl = _ref.jsonRpcUrl, linkdropFactory = _ref.linkdropFactory;
 
             _assertJs["default"].string(weiAmount, 'Wei amount is required');
 
@@ -144,9 +144,7 @@ function () {
 
             _assertJs["default"].string(linkdropFactory, 'Linkdrop factory address is required');
 
-            _assertJs["default"].string(email, 'Email is required');
-
-            _context.next = 31;
+            _context.next = 30;
             return (0, _ensUtils.getEnsOwner)({
               ensName: ensName,
               ensDomain: ensDomain,
@@ -154,7 +152,7 @@ function () {
               jsonRpcUrl: jsonRpcUrl
             });
 
-          case 31:
+          case 30:
             ensOwner = _context.sent;
 
             _assertJs["default"]["true"](ensOwner === ADDRESS_ZERO, 'Provided name already has an owner');
@@ -181,26 +179,26 @@ function () {
             _context.t0 = gasPrice;
 
             if (_context.t0) {
-              _context.next = 50;
+              _context.next = 49;
               break;
             }
 
-            _context.next = 49;
+            _context.next = 48;
             return provider.getGasPrice();
 
-          case 49:
+          case 48:
             _context.t0 = _context.sent.toNumber();
 
-          case 50:
+          case 49:
             gasPrice = _context.t0;
-            _context.next = 53;
+            _context.next = 52;
             return provider.estimateGas({
               to: proxyFactory,
               data: createSafeData,
               gasPrice: gasPrice
             });
 
-          case 53:
+          case 52:
             estimate = _context.sent.add(104000);
             creationCosts = estimate.mul(gasPrice);
             gnosisSafeData = (0, _utils.encodeParams)(_GnosisSafe["default"].abi, 'setup', [[owner], // owners
@@ -223,20 +221,20 @@ function () {
               paymentAmount: creationCosts.toString()
             });
             registerEnsData = (0, _utils.encodeParams)(_ens.FIFSRegistrar.abi, 'register', [_ethers.ethers.utils.keccak256(_ethers.ethers.utils.toUtf8Bytes(ensName)), safe]);
-            _context.next = 62;
+            _context.next = 61;
             return (0, _ensUtils.getEnsOwner)({
               ensAddress: ensAddress,
               ensDomain: ensDomain,
               jsonRpcUrl: jsonRpcUrl
             });
 
-          case 62:
+          case 61:
             registrar = _context.sent;
             registerEnsMultiSendData = (0, _utils.encodeDataForMultiSend)(CALL_OP, registrar, 0, registerEnsData);
-            _context.next = 66;
+            _context.next = 65;
             return (0, _utils.signReceiverAddress)(linkKey, safe);
 
-          case 66:
+          case 65:
             receiverSignature = _context.sent;
             linkId = new _ethers.ethers.Wallet(linkKey).address;
             claimData = (0, _utils.encodeParams)(_LinkdropFactory["default"].abi, 'claim', [weiAmount, tokenAddress, tokenAmount, expirationTime, linkId, linkdropMasterAddress, campaignId, linkdropSignerSignature, safe, receiverSignature]);
@@ -256,7 +254,7 @@ function () {
               recoveryModuleMasterCopy: recoveryModuleMasterCopy,
               deployer: safe
             });
-            _context.next = 76;
+            _context.next = 75;
             return _axios["default"].post("".concat(apiHost, "/api/v1/safes/claimAndCreate"), {
               owner: owner,
               saltNonce: saltNonce,
@@ -272,15 +270,12 @@ function () {
               linkdropMasterAddress: linkdropMasterAddress,
               campaignId: campaignId,
               linkdropSignerSignature: linkdropSignerSignature,
-              receiverSignature: receiverSignature,
-              email: email
+              receiverSignature: receiverSignature
             });
 
-          case 76:
+          case 75:
             response = _context.sent;
-            console.log(response.data);
-            _response$data = response.data, updateAccountOnSuccess = _response$data.updateAccountOnSuccess, success = _response$data.success, txHash = _response$data.txHash, errors = _response$data.errors;
-            console.log('claimAndCreate.js updateAccountOnSuccess: ', updateAccountOnSuccess);
+            _response$data = response.data, success = _response$data.success, txHash = _response$data.txHash, errors = _response$data.errors;
             return _context.abrupt("return", {
               success: success,
               txHash: txHash,
@@ -288,11 +283,10 @@ function () {
               recoveryModule: recoveryModule,
               safe: safe,
               creationCosts: creationCosts.toString(),
-              errors: errors,
-              updateAccountOnSuccess: updateAccountOnSuccess
+              errors: errors
             });
 
-          case 81:
+          case 78:
           case "end":
             return _context.stop();
         }
