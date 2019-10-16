@@ -76,6 +76,7 @@ class SafeCreationService {
     )
   }
 
+
   async create ({
     owner,
     saltNonce,
@@ -274,6 +275,7 @@ class SafeCreationService {
       return { success: false, errors: err.message || err }
     }
   }
+
 
   async claimAndCreate ({
     owner,

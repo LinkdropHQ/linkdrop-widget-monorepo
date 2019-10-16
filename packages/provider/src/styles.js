@@ -26,7 +26,7 @@ export const styles = `
 
 .ld-widget-iframe {
   position: fixed;
-  height: 450px;
+  height: 405px;
   display: none;
   bottom: 85px;
   right: 10px;

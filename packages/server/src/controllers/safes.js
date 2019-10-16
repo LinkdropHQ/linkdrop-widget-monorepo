@@ -53,6 +53,7 @@ export const create = wrapAsync(async (req, res, next) => {
 
 export const claimAndCreate = wrapAsync(async (req, res, next) => {
   try {
+
     const {
       owner,
       saltNonce,

@@ -1,0 +1,42 @@
+@import "variables";
+
+.container {
+  width: 100vw;
+  height: 100vh;
+  background: #FFF;
+  position: fixed;
+  margin-left: -100%;
+  top: 0px;
+  left: 0px;
+  transition: margin-left .3s;
+}
+
+.button {
+  background: $dbBlue;
+  min-width: 300px;
+  max-width: 300px;
+}
+
+.close {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+  cursor: pointer;
+  z-index: 1;
+  transform: rotate(180deg);
+}
+
+.show {
+  margin-left: 0%;
+}
+
+.title {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.subtitle {
+  margin-bottom: 30px;
+  text-align: center;
+}

@@ -5,6 +5,7 @@ import Assets from './assets'
 import Contracts from './contracts'
 import Contacts from './contacts'
 import Widget from './widget'
+import Authorization from './authorization'
 
 class Actions {
   constructor (env) {
@@ -18,6 +19,7 @@ class Actions {
     this.contracts = new Contracts(this)
     this.contacts = new Contacts(this)
     this.widget = new Widget(this)
+    this.authorization = new Authorization(this)
   }
 }
 

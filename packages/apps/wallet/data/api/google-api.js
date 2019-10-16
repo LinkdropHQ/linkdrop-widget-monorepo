@@ -82,17 +82,17 @@ class GoogleApiService {
     })
   }
 
-  getEmailAndAvatar () {
-    const authInstance = gapi.auth2.getAuthInstance()
-    const isSignedIn = authInstance.isSignedIn.get()
-    if (!isSignedIn) {
-      throw new Error('User not signed in')
-    }
-    const user = authInstance.currentUser.get()
-    const email = user.getBasicProfile().getEmail()
-    const avatar = user.getBasicProfile().getImageUrl()
-    return { email, avatar }
-  }
+  // getEmailAndAvatar () {
+  //   const authInstance = gapi.auth2.getAuthInstance()
+  //   const isSignedIn = authInstance.isSignedIn.get()
+  //   if (!isSignedIn) {
+  //     throw new Error('User not signed in')
+  //   }
+  //   const user = authInstance.currentUser.get()
+  //   const email = user.getBasicProfile().getEmail()
+  //   const avatar = user.getBasicProfile().getImageUrl()
+  //   return { email, avatar }
+  // }
 
   uploadFiles ({ ens, contractAddress, privateKey, chainId }) {
     return new Promise((resolve, reject) => {
@@ -162,6 +162,7 @@ class GoogleApiService {
   }
 
   _handleClientLoad () {
+    console.log({ config })
     gapi.load('client:auth2', _ => {
       this.auth2 = gapi.auth2.init({
         clientId: config.authClientId

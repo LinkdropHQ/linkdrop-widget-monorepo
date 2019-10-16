@@ -2,7 +2,7 @@ export default {
   titles: {
     about: 'About',
     hey: 'Hey!',
-    wallet: 'Wallet'
+    wallet: 'My Wallet'
   },
   menu: {
     support: 'Support',

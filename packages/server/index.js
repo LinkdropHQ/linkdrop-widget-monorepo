@@ -6,6 +6,8 @@ import cors from 'cors'
 import safesRoutes from './src/routes/safes'
 import transactionsRoutes from './src/routes/transactions'
 import accountsRoutes from './src/routes/accounts'
+import config from './config/config'
+import cookieParser from 'cookie-parser'
 
 const app = express()
 
@@ -13,6 +15,7 @@ const app = express()
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json({ extended: false }))
 app.use(cors())
+app.use(cookieParser(config.COOKIE_SECRET))
 
 morgan.token('body', function (req, res) {
   return JSON.stringify(req.body, null, 2)

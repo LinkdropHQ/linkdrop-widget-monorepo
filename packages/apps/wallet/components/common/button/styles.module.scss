@@ -1,0 +1,38 @@
+@import "variables";
+
+.container {
+  max-width: 300px;
+  min-width: 300px;
+  background: $dbBlue;
+  font-size: 20px;
+  transition: background-color .3s;
+  &:not(.disabled) {
+    &:not(.inverted) {
+      &:hover {
+        background-color: rgba(0, 37, 255, .7);
+      }
+    }
+  }
+
+  &.inverted {
+    border-color: $dbBlue;
+    background-color: #FFF;
+    transition: background-color .3s;
+
+    &:hover {
+      background-color: rgba(233, 233, 233, .7);
+    }
+  }
+
+  &.loading {
+    background: rgba(0, 37, 255, .2)!important;
+    cursor: not-allowed;
+    & > div {
+      div {
+        border-color: $dbBlue transparent transparent transparent!important;
+      }
+    }
+  }
+}
+
+

@@ -36,7 +36,7 @@ module.exports = {
   entry: ['webpack/hot/dev-server', '@babel/polyfill', './index.js'],
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, './assets/scripts')
+    path: path.resolve(__dirname, 'assets/scripts')
   },
   context: __dirname,
   resolve: {

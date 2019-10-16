@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken'
 import logger from '../utils/logger'
 import accountsService from './accountsService'
-import relayerWalletService from './relayerWalletService'
 import { JWT_SECRET } from '../../config/config.json'
 
 class AuthService {
@@ -18,15 +17,22 @@ class AuthService {
     }
   }
 
-  async getToken (email) {
+  async getJWT (accountId) {
     try {
-      const account = await accountsService.findAccount(email)
-
-      if (!account) throw new Error('Account not found')
-
-      return jwt.sign({ account }, JWT_SECRET, {
+      return jwt.sign({ accountId }, JWT_SECRET, {
         expiresIn: 360000
       })
+    } catch (err) {
+      logger.error(err)
+      throw new Error(err.message)
+    }
+  }
+
+  async decodeJWT (token) {
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET)
+      console.log('decoded: ', decoded)
+      return decoded.accountId
     } catch (err) {
       logger.error(err)
       throw new Error(err.message)

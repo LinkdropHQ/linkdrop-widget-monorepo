@@ -5,8 +5,7 @@ import { ethers } from 'ethers'
 import {
   encodeParams,
   encodeDataForCreateAndAddModules,
-  encodeDataForMultiSend,
-  signReceiverAddress
+  encodeDataForMultiSend
 } from './utils'
 
 import GnosisSafe from '@gnosis.pm/safe-contracts/build/contracts/GnosisSafe'
