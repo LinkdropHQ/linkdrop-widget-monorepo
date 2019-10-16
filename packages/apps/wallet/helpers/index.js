@@ -11,6 +11,9 @@ import mergeAssets from './merge-assets'
 import defineInitialData from './define-initial-data'
 import saveUserData from './save-user-data'
 import removeUserData from './remove-user-data'
+import generateRandomPassword from './generate-random-password'
+import getApiHost from './get-api-host'
+import defineError from './define-error'
 
 export {
   getImages,
@@ -25,5 +28,8 @@ export {
   mergeAssets,
   defineInitialData,
   saveUserData,
-  removeUserData
+  removeUserData,
+  generateRandomPassword,
+  getApiHost,
+  defineError
 }

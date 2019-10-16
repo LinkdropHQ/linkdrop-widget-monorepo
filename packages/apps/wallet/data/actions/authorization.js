@@ -11,6 +11,10 @@ class Authorization {
     this.actions.dispatch({ type: '*AUTHORIZATION.SET_ERRORS', payload: { errors } })
   }
 
+  signInWithGoogle () {
+    this.actions.dispatch({ type: '*AUTHORIZATION.SIGN_IN_WITH_GOOGLE' })
+  }
+
   enableGDrivePermissions () {
     this.actions.dispatch({ type: '*AUTHORIZATION.ENABLE_GDRIVE_PERMISSIONS' })
   }

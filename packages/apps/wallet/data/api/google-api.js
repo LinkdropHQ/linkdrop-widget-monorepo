@@ -94,7 +94,7 @@ class GoogleApiService {
   //   return { email, avatar }
   // }
 
-  uploadFiles ({ ens, contractAddress, privateKey, chainId }) {
+  uploadFiles ({ chainId, privateKey, sessionKeyStore, email }) {
     return new Promise((resolve, reject) => {
       const boundary = '-------314159265358979323846'
       const delimiter = '\r\n--' + boundary + '\r\n'
@@ -106,7 +106,7 @@ class GoogleApiService {
           mimeType: contentType,
           parents: ['appDataFolder']
         }
-        const updatedData = JSON.stringify({ ...data.data, result: undefined, [`_${chainId}`]: { ens, contractAddress, privateKey } })
+        const updatedData = JSON.stringify({ ...data.data, result: undefined, [`_${chainId}`]: { chainId, privateKey, sessionKeyStore, email } })
         const multipartRequestBody =
               delimiter +
               'Content-Type: application/json\r\n\r\n' +
@@ -131,7 +131,7 @@ class GoogleApiService {
               body: multipartRequestBody
             })
             .execute(response => {
-              resolve({ success: true, data: { privateKey, contractAddress, ens } })
+              resolve({ success: true, data: { privateKey, sessionKeyStore, email } })
             })
         } catch (err) {
           reject(err)
@@ -162,7 +162,6 @@ class GoogleApiService {
   }
 
   _handleClientLoad () {
-    console.log({ config })
     gapi.load('client:auth2', _ => {
       this.auth2 = gapi.auth2.init({
         clientId: config.authClientId

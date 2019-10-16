@@ -1,12 +1,17 @@
-import { put } from 'redux-saga/effects'
-import { delay } from 'redux-saga'
+import { put, select } from 'redux-saga/effects'
 
 const generator = function * ({ payload }) {
   try {
-    const { email, password } = payload
     yield put({ type: 'AUTHORIZATION.SET_LOADING', payload: { loading: true } })
-    yield delay(3000)
-    yield put({ type: 'AUTHORIZATION.SET_SCREEN', payload: { screen: 'success' } })
+    const { email, password } = payload
+    const chainId = yield select(generator.selectors.chainId)
+    const sdk = yield select(generator.selectors.sdk)
+    const { success, data: requestData } = yield sdk.register(email, password)
+    if (success) {
+      const { privateKey, sessionKeyStore } = requestData
+      yield put({ type: '*USER.SET_USER_DATA', payload: { privateKey, email, sessionKeyStore, chainId } })
+      yield put({ type: 'AUTHORIZATION.SET_SCREEN', payload: { screen: 'success' } })
+    }
     yield put({ type: 'AUTHORIZATION.SET_LOADING', payload: { loading: false } })
   } catch (e) {
     console.error(e)
@@ -14,3 +19,7 @@ const generator = function * ({ payload }) {
 }
 
 export default generator
+generator.selectors = {
+  chainId: ({ user: { chainId } }) => chainId,
+  sdk: ({ user: { sdk } }) => sdk
+}

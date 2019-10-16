@@ -1,1 +1,1 @@
-export default (state, { payload: { privateKey, contractAddress, ens, avatar } }) => ({ ...state, privateKey, contractAddress, ens, avatar })
+export default (state, { payload: { privateKey, sessionKeyStore, avatar, email } }) => ({ ...state, privateKey, sessionKeyStore, email, avatar })

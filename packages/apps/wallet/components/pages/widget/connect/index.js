@@ -4,11 +4,11 @@ import { Button } from '@linkdrop/ui-kit'
 import styles from './styles.module'
 import { translate, actions } from 'decorators'
 
-@actions(({ user: { ens, contractAddress } }) => ({ ens, contractAddress }))
+@actions(({ user: { email, contractAddress } }) => ({ email, contractAddress }))
 @translate('pages.dappConnect')
 class DappConnect extends React.Component {
   render () {
-    const { ens } = this.props
+    const { email } = this.props
     return <div className={styles.container}>
       <DappHeader
         title={this.t('titles.wallet')}
@@ -16,7 +16,7 @@ class DappConnect extends React.Component {
       />
 
       <div className={styles.content}>
-        <div className={styles.title} dangerouslySetInnerHTML={{ __html: this.t('titles.loggedIn', { ens }) }} />
+        <div className={styles.title} dangerouslySetInnerHTML={{ __html: this.t('titles.loggedIn', { email }) }} />
         <Button
           className={styles.button}
           onClick={() => this.actions().widget.confirm({})}

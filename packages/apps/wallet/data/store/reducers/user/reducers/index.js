@@ -5,12 +5,11 @@ import setErrors from './set-errors'
 import setReadyToClaim from './set-ready-to-claim'
 import setAlreadyClaimed from './set-already-claimed'
 import setSdk from './set-sdk'
-import setContractsAddress from './set-contract-address'
 import setPrivateKey from './set-private-key'
-import setEns from './set-ens'
 import setUserData from './set-user-data'
 import toggleNote from './toggle-note'
 import setChainId from './set-chain-id'
+import setEmail from './set-email'
 
 export default {
   changeLocale,
@@ -20,10 +19,9 @@ export default {
   setReadyToClaim,
   setAlreadyClaimed,
   setSdk,
-  setContractsAddress,
   setPrivateKey,
-  setEns,
   setUserData,
   toggleNote,
-  setChainId
+  setChainId,
+  setEmail
 }

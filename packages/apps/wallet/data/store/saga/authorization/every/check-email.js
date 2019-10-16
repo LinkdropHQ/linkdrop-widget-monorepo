@@ -1,12 +1,12 @@
-import { put } from 'redux-saga/effects'
-import { delay } from 'redux-saga'
+import { put, call } from 'redux-saga/effects'
+import { checkEmail } from 'data/api/authorization'
 
 const generator = function * ({ payload }) {
   try {
     const { email } = payload
     yield put({ type: 'AUTHORIZATION.SET_LOADING', payload: { loading: true } })
-    yield delay(3000)
-    if (DB.indexOf(email) > -1) {
+    const wasCreatedPreviously = yield call(checkEmail, { email })
+    if (wasCreatedPreviously) {
       yield put({ type: 'AUTHORIZATION.SET_SCREEN', payload: { screen: 'sign-in' } })
     } else {
       yield put({ type: 'AUTHORIZATION.SET_SCREEN', payload: { screen: 'sign-up' } })
@@ -18,8 +18,3 @@ const generator = function * ({ payload }) {
 }
 
 export default generator
-
-const DB = [
-  'spacehaz@gmail.com',
-  'spacehaz2@gmail.com'
-]

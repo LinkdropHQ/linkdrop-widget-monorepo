@@ -3,7 +3,7 @@ import { translate, actions } from 'decorators'
 import styles from './styles.module'
 import { Input, Button } from 'components/common'
 
-@actions(({ authorization: { loading } }) => ({ loading }))
+@actions(({ authorization: { loading, errors } }) => ({ loading, errors }))
 @translate('pages.authorization')
 class SignIn extends React.Component {
   constructor (props) {
@@ -14,7 +14,7 @@ class SignIn extends React.Component {
   }
 
   render () {
-    const { email, signIn, startRestorePassword, loading } = this.props
+    const { email, errors, signIn, startRestorePassword, loading } = this.props
     const { password } = this.state
     return <div className={styles.container}>
       <div className={styles.title}>{this.t('titles.signInAs')}</div>
@@ -26,6 +26,7 @@ class SignIn extends React.Component {
         onChange={({ value }) => this.setState({ password: value })}
         placeholder={this.t('titles.password')}
       />
+      {this.renderErrors({ errors })}
       <Button
         disabled={this.defineIfDisabled({ password })}
         loading={loading}
@@ -36,6 +37,13 @@ class SignIn extends React.Component {
       </Button>
       <div onClick={_ => startRestorePassword && startRestorePassword()} className={styles.link}>{this.t('titles.forgotPassport')}</div>
     </div>
+  }
+
+  renderErrors ({ errors }) {
+    if (!errors || errors.length === 0) {
+      return null
+    }
+    return <div className={styles.error}>{this.t(`errors.${errors[0]}`)}</div>
   }
 
   defineIfDisabled ({ password }) {
