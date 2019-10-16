@@ -140,22 +140,34 @@ describe('Recovery Module Tests', () => {
     })
 
     it('should fail to initiate recovery from non guardian account', async () => {
-      await expect(recoveryModule.initiateRecovery()).to.be.revertedWith(
-        'Only guardian'
-      )
+      await expect(
+        recoveryModule.initiateRecovery(
+          SENTINEL_ADDRESS,
+          firstOwner.address,
+          secondOwner.address
+        )
+      ).to.be.revertedWith('Only guardian')
       expect(await recoveryModule.recoveryInitiated()).to.eq(0)
     })
 
     it('should be able to initiate recovery from guardian', async () => {
       recoveryModule = recoveryModule.connect(guardian)
-      await recoveryModule.initiateRecovery()
+      await recoveryModule.initiateRecovery(
+        SENTINEL_ADDRESS,
+        firstOwner.address,
+        secondOwner.address
+      )
       expect(await recoveryModule.recoveryInitiated()).to.not.eq(0)
     })
 
     it('should fail to initiate recovery twice', async () => {
-      await expect(recoveryModule.initiateRecovery()).to.be.revertedWith(
-        'Recovery is already initiated'
-      )
+      await expect(
+        recoveryModule.initiateRecovery(
+          SENTINEL_ADDRESS,
+          firstOwner.address,
+          secondOwner.address
+        )
+      ).to.be.revertedWith('Recovery is already initiated')
     })
 
     it('should fail to cancel recovery from non owner account', async () => {
@@ -170,12 +182,12 @@ describe('Recovery Module Tests', () => {
       gnosisSafe = gnosisSafe.connect(deployer)
 
       const to = recoveryModule.address
-      const value = 0
+      const value = '0'
       const data = encodeParams(RecoveryModule.abi, 'cancelRecovery', [])
-      const operation = 0
-      const safeTxGas = 0
-      const baseGas = 0
-      const gasPrice = 0
+      const operation = '0'
+      const safeTxGas = '0'
+      const baseGas = '0'
+      const gasPrice = '0'
       const gasToken = ADDRESS_ZERO
       const refundReceiver = ADDRESS_ZERO
       const nonce = await gnosisSafe.nonce()
@@ -192,7 +204,7 @@ describe('Recovery Module Tests', () => {
         gasPrice,
         gasToken,
         refundReceiver,
-        nonce: nonce.toNumber()
+        nonce: nonce.toString()
       })
 
       await gnosisSafe.execTransaction(
@@ -213,30 +225,26 @@ describe('Recovery Module Tests', () => {
     })
 
     it('should fail to recover access from non guardian account', async () => {
-      await recoveryModule.initiateRecovery()
+      await recoveryModule.initiateRecovery(
+        SENTINEL_ADDRESS,
+        firstOwner.address,
+        secondOwner.address
+      )
       expect(await recoveryModule.recoveryInitiated()).to.not.eq(0)
 
       recoveryModule = recoveryModule.connect(deployer)
 
-      await expect(
-        recoveryModule.recoverAccess(
-          SENTINEL_ADDRESS,
-          firstOwner.address,
-          secondOwner.address
-        )
-      ).to.be.revertedWith('Only guardian')
+      await expect(recoveryModule.recoverAccess()).to.be.revertedWith(
+        'Only guardian'
+      )
     })
 
     it('should fail to recover access when recovery period is not over', async () => {
       recoveryModule = recoveryModule.connect(guardian)
 
-      await expect(
-        recoveryModule.recoverAccess(
-          SENTINEL_ADDRESS,
-          firstOwner.address,
-          secondOwner.address
-        )
-      ).to.be.revertedWith('Recovery period is not over')
+      await expect(recoveryModule.recoverAccess()).to.be.revertedWith(
+        'Recovery period is not over'
+      )
     })
 
     it('should fail to remove guardian with any account', async () => {
@@ -251,14 +259,14 @@ describe('Recovery Module Tests', () => {
       gnosisSafe = gnosisSafe.connect(deployer)
 
       const to = recoveryModule.address
-      const value = 0
+      const value = '0'
       const data = encodeParams(RecoveryModule.abi, 'removeGuardian', [
         guardian.address
       ])
-      const operation = 0
-      const safeTxGas = 0
-      const baseGas = 0
-      const gasPrice = 0
+      const operation = '0'
+      const safeTxGas = '0'
+      const baseGas = '0'
+      const gasPrice = '0'
       const gasToken = ADDRESS_ZERO
       const refundReceiver = ADDRESS_ZERO
       const nonce = await gnosisSafe.nonce()
@@ -275,7 +283,7 @@ describe('Recovery Module Tests', () => {
         gasPrice,
         gasToken,
         refundReceiver,
-        nonce: nonce.toNumber()
+        nonce: nonce.toString()
       })
 
       await gnosisSafe.execTransaction(
@@ -299,14 +307,14 @@ describe('Recovery Module Tests', () => {
       gnosisSafe = gnosisSafe.connect(deployer)
 
       const to = recoveryModule.address
-      const value = 0
+      const value = '0'
       const data = encodeParams(RecoveryModule.abi, 'addGuardian', [
         secondGuardian.address
       ])
-      const operation = 0
-      const safeTxGas = 0
-      const baseGas = 0
-      const gasPrice = 0
+      const operation = '0'
+      const safeTxGas = '0'
+      const baseGas = '0'
+      const gasPrice = '0'
       const gasToken = ADDRESS_ZERO
       const refundReceiver = ADDRESS_ZERO
       const nonce = await gnosisSafe.nonce()
@@ -323,7 +331,7 @@ describe('Recovery Module Tests', () => {
         gasPrice,
         gasToken,
         refundReceiver,
-        nonce: nonce.toNumber()
+        nonce: nonce.toString()
       })
 
       await gnosisSafe.execTransaction(
@@ -351,11 +359,7 @@ describe('Recovery Module Tests', () => {
       setTimeout(async () => {
         expect(await recoveryModule.recoveryInitiated()).to.not.eq(0)
 
-        await recoveryModule.recoverAccess(
-          SENTINEL_ADDRESS,
-          firstOwner.address,
-          secondOwner.address
-        )
+        await recoveryModule.recoverAccess()
 
         expect(await recoveryModule.recoveryInitiated()).to.eq(0)
       }, RECOVERY_PERIOD_IN_SECONDS * 1000)
