@@ -18,6 +18,16 @@ contract RecoveryModule is Module {
     // Recovery initiation timestamp
     uint public recoveryInitiated;
 
+    address private prevOwner;
+    address private oldOwner;
+    address private newOwner;
+
+    event RecoveryInitiated(address indexed oldOwner, address indexed newOwner);
+    event RecoveryFinalized();
+    event RecoveryCanceled();
+    event GuardianAdded(address indexed guardian);
+    event GuardianRemoved(address indexed guardian);
+
     modifier onlyGuardian() {
         require(isGuardian[msg.sender], "Only guardian");
         _;
@@ -44,14 +54,28 @@ contract RecoveryModule is Module {
 
     /**
     * @dev Function to initiate recovery. Can only be called by guardian
+    * @param _prevOwner Owner that pointed to the owner to be replaced in the linked list
+    * @param _oldOwner Owner address to be replaced
+    * @param _newOwner New owner address
     */
-    function initiateRecovery()
+    function initiateRecovery
+    (
+        address _prevOwner,
+        address _oldOwner,
+        address _newOwner
+    )
     public
     onlyGuardian
     {
         require(recoveryInitiated == 0, "Recovery is already initiated");
         /* solium-disable-next-line */
         recoveryInitiated = now;
+
+        prevOwner = _prevOwner;
+        oldOwner = _oldOwner;
+        newOwner = _newOwner;
+
+        emit RecoveryInitiated(oldOwner, newOwner);
     }
 
     /**
@@ -63,21 +87,18 @@ contract RecoveryModule is Module {
     {
         require(recoveryInitiated != 0, "Recovery is not initiated");
         delete recoveryInitiated;
+        delete prevOwner;
+        delete oldOwner;
+        delete newOwner;
+
+        emit RecoveryCanceled();
     }
 
     /**
     * @dev Function to recover access (change Safe owner). Can only be called by guardian
-    * @param _prevOwner Owner that pointed to the owner to be replaced in the linked list
-    * @param _oldOwner Owner address to be replaced
-    * @param _newOwner New owner address
     * @return True if transaction executes successfully, false otherwise
     */
-    function recoverAccess
-    (
-        address _prevOwner,
-        address _oldOwner,
-        address _newOwner
-    )
+    function recoverAccess()
     public
     onlyGuardian
     {
@@ -85,9 +106,14 @@ contract RecoveryModule is Module {
         /* solium-disable-next-line */
         require(now - recoveryInitiated >= recoveryPeriod, "Recovery period is not over");
 
-        bytes memory data = abi.encodeWithSignature("swapOwner(address,address,address)", _prevOwner, _oldOwner, _newOwner);
+        bytes memory data = abi.encodeWithSignature("swapOwner(address,address,address)", prevOwner, oldOwner, newOwner);
         require(manager.execTransactionFromModule(address(manager), 0, data, Enum.Operation.Call), "Recovery failed");
         delete recoveryInitiated;
+        delete prevOwner;
+        delete oldOwner;
+        delete newOwner;
+
+        emit RecoveryFinalized();
     }
 
     /**
@@ -101,6 +127,8 @@ contract RecoveryModule is Module {
         require(_guardian != address(0), "Invalid guardian address");
         require(!isGuardian[_guardian], "Duplicate guardian address");
         isGuardian[_guardian] = true;
+
+        emit GuardianAdded(_guardian);
     }
 
     /**
@@ -113,6 +141,8 @@ contract RecoveryModule is Module {
     {
         require(isGuardian[_guardian], "Invalid guardian address");
         delete isGuardian[_guardian];
+
+        emit GuardianRemoved(_guardian);
     }
 
 }
