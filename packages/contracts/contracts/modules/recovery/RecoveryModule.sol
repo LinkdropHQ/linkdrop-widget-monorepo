@@ -25,6 +25,8 @@ contract RecoveryModule is Module {
     event RecoveryInitiated(address indexed oldOwner, address indexed newOwner);
     event RecoveryFinalized();
     event RecoveryCanceled();
+    event GuardianAdded(address indexed guardian);
+    event GuardianRemoved(address indexed guardian);
 
     modifier onlyGuardian() {
         require(isGuardian[msg.sender], "Only guardian");
@@ -125,6 +127,8 @@ contract RecoveryModule is Module {
         require(_guardian != address(0), "Invalid guardian address");
         require(!isGuardian[_guardian], "Duplicate guardian address");
         isGuardian[_guardian] = true;
+
+        emit GuardianAdded(_guardian);
     }
 
     /**
@@ -137,6 +141,8 @@ contract RecoveryModule is Module {
     {
         require(isGuardian[_guardian], "Invalid guardian address");
         delete isGuardian[_guardian];
+
+        emit GuardianRemoved(_guardian);
     }
 
 }

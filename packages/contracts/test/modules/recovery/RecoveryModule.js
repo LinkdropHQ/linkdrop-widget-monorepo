@@ -152,11 +152,13 @@ describe('Recovery Module Tests', () => {
 
     it('should be able to initiate recovery from guardian', async () => {
       recoveryModule = recoveryModule.connect(guardian)
-      await recoveryModule.initiateRecovery(
-        SENTINEL_ADDRESS,
-        firstOwner.address,
-        secondOwner.address
-      )
+      await expect(
+        recoveryModule.initiateRecovery(
+          SENTINEL_ADDRESS,
+          firstOwner.address,
+          secondOwner.address
+        )
+      ).to.emit(recoveryModule, 'RecoveryInitiated')
       expect(await recoveryModule.recoveryInitiated()).to.not.eq(0)
     })
 
@@ -207,18 +209,20 @@ describe('Recovery Module Tests', () => {
         nonce: nonce.toString()
       })
 
-      await gnosisSafe.execTransaction(
-        to,
-        value,
-        data,
-        operation,
-        safeTxGas,
-        baseGas,
-        gasPrice,
-        gasToken,
-        refundReceiver,
-        signature
-      )
+      await expect(
+        gnosisSafe.execTransaction(
+          to,
+          value,
+          data,
+          operation,
+          safeTxGas,
+          baseGas,
+          gasPrice,
+          gasToken,
+          refundReceiver,
+          signature
+        )
+      ).to.emit(recoveryModule, 'RecoveryCanceled')
 
       expect(await recoveryModule.recoveryInitiated()).to.eq(0)
       expect(await gnosisSafe.nonce()).to.eq(nonce.add(1))
@@ -286,18 +290,20 @@ describe('Recovery Module Tests', () => {
         nonce: nonce.toString()
       })
 
-      await gnosisSafe.execTransaction(
-        to,
-        value,
-        data,
-        operation,
-        safeTxGas,
-        baseGas,
-        gasPrice,
-        gasToken,
-        refundReceiver,
-        signature
-      )
+      await expect(
+        gnosisSafe.execTransaction(
+          to,
+          value,
+          data,
+          operation,
+          safeTxGas,
+          baseGas,
+          gasPrice,
+          gasToken,
+          refundReceiver,
+          signature
+        )
+      ).to.emit(recoveryModule, 'GuardianRemoved')
 
       expect(await recoveryModule.isGuardian(guardian.address)).to.be.false
       expect(await gnosisSafe.nonce()).to.eq(nonce.add(1))
@@ -334,18 +340,20 @@ describe('Recovery Module Tests', () => {
         nonce: nonce.toString()
       })
 
-      await gnosisSafe.execTransaction(
-        to,
-        value,
-        data,
-        operation,
-        safeTxGas,
-        baseGas,
-        gasPrice,
-        gasToken,
-        refundReceiver,
-        signature
-      )
+      await expect(
+        gnosisSafe.execTransaction(
+          to,
+          value,
+          data,
+          operation,
+          safeTxGas,
+          baseGas,
+          gasPrice,
+          gasToken,
+          refundReceiver,
+          signature
+        )
+      ).to.emit(recoveryModule, 'GuardianAdded')
 
       expect(await recoveryModule.isGuardian(guardian.address)).to.be.false
       expect(await recoveryModule.isGuardian(secondGuardian.address)).to.be.true
@@ -359,7 +367,10 @@ describe('Recovery Module Tests', () => {
       setTimeout(async () => {
         expect(await recoveryModule.recoveryInitiated()).to.not.eq(0)
 
-        await recoveryModule.recoverAccess()
+        await expect(recoveryModule.recoverAccess()).to.emit(
+          recoveryModule,
+          'RecoveryFinalized'
+        )
 
         expect(await recoveryModule.recoveryInitiated()).to.eq(0)
       }, RECOVERY_PERIOD_IN_SECONDS * 1000)
