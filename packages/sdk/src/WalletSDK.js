@@ -559,10 +559,20 @@ class WalletSDK {
     })
   }
 
+  /**
+   * Registers new account in database
+   * @param {String} email Email
+   * @param {String} password Password
+   */
   async register (email, password) {
     return register({ email, password, apiHost: this.apiHost })
   }
 
+  /**
+   * Logs existing account into system
+   * @param {String} email Email
+   * @param {String} password Password
+   */
   async login (email, password) {
     return login({ email, password, apiHost: this.apiHost })
   }
