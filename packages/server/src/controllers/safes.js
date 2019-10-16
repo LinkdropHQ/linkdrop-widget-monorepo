@@ -7,21 +7,43 @@ import safeCreationService from '../services/safeCreationService'
 
 export const create = wrapAsync(async (req, res, next) => {
   try {
-    logger.info('POST api/v1/safes/')
-    logger.json(req.body, 'info')
-
-    const { data, gasPrice } = req.body
-    assert.string(data, 'Creation data is required')
+    const {
+      owner,
+      saltNonce,
+      ensName,
+      guardian,
+      recoveryPeriod,
+      gasPrice
+    } = req.body
+    assert.string(owner, 'Owner address is required')
+    assert.string(saltNonce, 'Salt nonce is required')
+    assert.string(ensName, 'Ens name is required')
+    assert.string(guardian, 'Guardian address is required')
+    assert.string(recoveryPeriod, 'Recovery period is required')
     assert.string(gasPrice, 'Gas price is required')
 
-    const { success, txHash, errors } = await safeCreationService.create({
-      data,
+    const {
+      success,
+      txHash,
+      safe,
+      linkdropModule,
+      recoveryModule,
+      errors
+    } = await safeCreationService.create({
+      owner,
+      saltNonce,
+      ensName,
+      guardian,
+      recoveryPeriod,
       gasPrice
     })
 
     res.json({
       success,
       txHash,
+      safe,
+      linkdropModule,
+      recoveryModule,
       errors
     })
   } catch (err) {
@@ -31,25 +53,76 @@ export const create = wrapAsync(async (req, res, next) => {
 
 export const claimAndCreate = wrapAsync(async (req, res, next) => {
   try {
-    logger.info('POST api/v1/safes/claimAndCreate')
-    logger.json(req.body, 'info')
+    const {
+      owner,
+      saltNonce,
+      ensName,
+      guardian,
+      recoveryPeriod,
+      gasPrice,
+      weiAmount,
+      tokenAddress,
+      tokenAmount,
+      expirationTime,
+      linkId,
+      linkdropMasterAddress,
+      campaignId,
+      linkdropSignerSignature,
+      receiverSignature
+    } = req.body
 
-    const { data, gasPrice } = req.body
-    assert.string(data, 'Creation data is required')
+    assert.string(owner, 'Owner address is required')
+    assert.string(saltNonce, 'Salt nonce is required')
+    assert.string(ensName, 'Ens name is required')
+    assert.string(guardian, 'Guardian address is required')
+    assert.string(recoveryPeriod, 'Recovery period is required')
     assert.string(gasPrice, 'Gas price is required')
+
+    assert.string(weiAmount, 'Wei amount is required')
+    assert.string(tokenAddress, 'Token address is required')
+    assert.string(tokenAmount, 'Token amount is required')
+    assert.string(expirationTime, 'Expiration time is required')
+    assert.string(linkId, 'Link id is required')
+    assert.string(linkdropMasterAddress, 'Linkdrop master address is requred')
+    assert.string(campaignId, 'Campaign id is required')
+    assert.string(
+      linkdropSignerSignature,
+      'Linkdrop signer signature is required'
+    )
+
+    assert.string(receiverSignature, 'Receiver signature is required')
 
     const {
       success,
       txHash,
+      safe,
+      linkdropModule,
+      recoveryModule,
       errors
     } = await safeCreationService.claimAndCreate({
-      data,
-      gasPrice
+      owner,
+      saltNonce,
+      ensName,
+      guardian,
+      recoveryPeriod,
+      gasPrice,
+      weiAmount,
+      tokenAddress,
+      tokenAmount,
+      expirationTime,
+      linkId,
+      linkdropMasterAddress,
+      campaignId,
+      linkdropSignerSignature,
+      receiverSignature
     })
 
     res.json({
       success,
       txHash,
+      safe,
+      linkdropModule,
+      recoveryModule,
       errors
     })
   } catch (err) {

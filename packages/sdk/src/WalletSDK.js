@@ -15,6 +15,11 @@ import { executeTx } from './executeTx'
 import { getEnsOwner, getEnsAddress } from './ensUtils'
 import { generateLink, generateLinkERC721 } from './generateLink'
 import { claim, claimERC721 } from './claim'
+import { register, login } from './auth'
+
+import * as cryptoUtils from './cryptoUtils'
+
+import crypto from 'crypto'
 
 const ADDRESS_ZERO = ethers.constants.AddressZero
 const BYTES_ZERO = '0x'
@@ -52,6 +57,7 @@ class WalletSDK {
     this.ensDomain = ensDomain
     this.guardian = guardian
     this.linkdropFactory = linkdropFactory
+    this.cryptoUtils = cryptoUtils
   }
 
   /**
@@ -147,6 +153,11 @@ class WalletSDK {
     ensName,
     saltNonce,
     gasPrice,
+    email,
+    passwordHash,
+    passwordDerivedKeyHash,
+    encryptedEncryptionKey,
+    encryptedMnemonicPhrase,
     recoveryPeriod = this.recoveryPeriod,
     guardian = this.guardian,
     ensAddress = this.ensAddress,
@@ -546,6 +557,24 @@ class WalletSDK {
       linkdropSignerSignature,
       receiverAddress
     })
+  }
+
+  /**
+   * Registers new account in database
+   * @param {String} email Email
+   * @param {String} password Password
+   */
+  async register (email, password) {
+    return register({ email, password, apiHost: this.apiHost })
+  }
+
+  /**
+   * Logs existing account into system
+   * @param {String} email Email
+   * @param {String} password Password
+   */
+  async login (email, password) {
+    return login({ email, password, apiHost: this.apiHost })
   }
 }
 
