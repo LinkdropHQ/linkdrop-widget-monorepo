@@ -1,5 +1,6 @@
 import express from 'express'
 import * as accountsController from '../controllers/accounts'
+import auth from '../middleware/auth'
 
 const router = express.Router()
 
@@ -13,7 +14,6 @@ router.get('/fetch-session-key', accountsController.fetchSessionKey)
  * @access Public
  */
 router.post('/register', accountsController.register)
-
 
 /**
  * @route POST api/v1/accounts/login

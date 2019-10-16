@@ -15,7 +15,6 @@ export const exists = wrapAsync(async (req, res, next) => {
   }
 })
 
-
 export const register = wrapAsync(async (req, res, next) => {
   try {
     const {
