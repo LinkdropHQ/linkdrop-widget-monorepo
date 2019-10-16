@@ -36,7 +36,7 @@ export const register = async ({ email, password, apiHost }) => {
     iv
   )
 
-  const response = await axios.post(`${apiHost}/api/v1/accounts/signup`, {
+  const response = await axios.post(`${apiHost}/api/v1/accounts/register`, {
     email,
     passwordHash,
     passwordDerivedKeyHash,
@@ -45,6 +45,7 @@ export const register = async ({ email, password, apiHost }) => {
   })
 
   const { account, jwt, sessionKey, success, error } = response.data
+
   const sessionKeyStore = await wallet.encrypt(sessionKey)
 
   return {
@@ -93,4 +94,15 @@ export const login = async ({ email, password, apiHost }) => {
     data: { privateKey: wallet.privateKey, sessionKeyStore },
     error
   }
+}
+
+// @TODO Change path to the endpoint
+export const extractPrivateKeyFromSession = async ({
+  email,
+  sessionKeyStore,
+  apiHost
+}) => {
+  const sessionKey = await axios.get(`${apiHost}/api/v1/session/${email}`)
+  const wallet = ethers.Wallet.fromEncryptedJson(sessionKeyStore, sessionKey)
+  return wallet.privateKey
 }
