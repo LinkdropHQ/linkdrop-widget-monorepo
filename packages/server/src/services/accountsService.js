@@ -20,6 +20,13 @@ class AccountsService {
     return Account.findOne({ email, chain: relayerWalletService.chain })
   }
 
+  async findById (accountId) {
+    if (accountId == null) {
+      return
+    }
+    return Account.findOne({ '_id': accountId, chain: relayerWalletService.chain })
+  }
+  
   async create ({
     email,
     passwordHash,

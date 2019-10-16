@@ -15,19 +15,19 @@ const AccountSchema = new Schema(
     passwordHash: { type: String, required: true },
     passwordDerivedKeyHash: { type: String, required: true },
     encryptedEncryptionKey: { type: Object, required: true },
-    encryptedMnemonic: { type: Object, required: true, unique: true },
+    encryptedMnemonic: { type: Object, required: true },
     deployed: { type: Boolean, required: true, default: false },
-    ens: { type: String, unique: true },
-    owner: { type: String, unique: true },
+    ens: { type: String },
+    owner: { type: String },
     saltNonce: { type: String },
-    safe: { type: String, unique: true },
-    linkdropModule: { type: String, unique: true },
-    recoveryModule: { type: String, unique: true },
-    createSafeData: { type: String, unique: true },
+    safe: { type: String },
+    linkdropModule: { type: String },
+    recoveryModule: { type: String },
+    createSafeData: { type: String },
     sessionKey: {
       type: String,
       unique: true,
-      default: ethers.Wallet.createRandom().privateKey
+      default: () => ethers.Wallet.createRandom().privateKey
     }
   },
   {

@@ -96,12 +96,13 @@ export const login = async ({ email, password, apiHost }) => {
   }
 }
 
+// @TODO Change path to the endpoint
 export const extractPrivateKeyFromSession = async ({
   email,
   sessionKeyStore,
   apiHost
 }) => {
-  const sessionKey = await axios.get(`${apiHost}/api/v1/session/:email`)
+  const sessionKey = await axios.get(`${apiHost}/api/v1/session/${email}`)
   const wallet = ethers.Wallet.fromEncryptedJson(sessionKeyStore, sessionKey)
   return wallet.privateKey
 }
