@@ -75,12 +75,12 @@ function () {
               value: value,
               data: data,
               operation: operation,
-              safeTxGas: gasSpectrum[i].safeTxGas,
-              baseGas: gasSpectrum[i].baseGas,
-              gasPrice: gasSpectrum[i].gasPrice,
+              safeTxGas: gasSpectrum[i].safeTxGas.toString(),
+              baseGas: gasSpectrum[i].baseGas.toString(),
+              gasPrice: gasSpectrum[i].gasPrice.toString(),
               gasToken: gasToken,
               refundReceiver: refundReceiver,
-              nonce: parseInt(nonce)
+              nonce: nonce
             });
 
           case 13:
@@ -124,12 +124,12 @@ function () {
  * @param {String} safe Safe address
  * @param {String} privateKey Safe owner's private key
  * @param {String} to To
- * @param {Number} value Value
+ * @param {String} value Value
  * @param {String} data Data
- * @param {Number} operation Operation
- * @param {Number} safeTxGas Safe tx gas
- * @param {Number} baseGas Base gas
- * @param {Number} gasPrice Gas price
+ * @param {String} operation Operation
+ * @param {String} safeTxGas Safe tx gas
+ * @param {String} baseGas Base gas
+ * @param {String} gasPrice Gas price
  * @param {String} gasToken Gas token
  * @param {String} refundReceiver Refund receiver
  * @returns {Object} {success, txHash, errors}
@@ -160,7 +160,7 @@ function () {
 
             _assertJs["default"].string(to, 'To is required');
 
-            _assertJs["default"].integer(value, 'Value is required');
+            _assertJs["default"].string(value, 'Value is required');
 
             _assertJs["default"].string(data, 'Data is required');
 

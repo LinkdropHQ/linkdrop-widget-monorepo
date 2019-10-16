@@ -83,7 +83,8 @@ export const claimAndCreate = async ({
   ensDomain,
   ensAddress,
   jsonRpcUrl,
-  linkdropFactory
+  linkdropFactory,
+  email
 }) => {
   assert.string(weiAmount, 'Wei amount is required')
   assert.string(tokenAddress, 'Token address is required')
@@ -131,6 +132,8 @@ export const claimAndCreate = async ({
   assert.string(jsonRpcUrl, 'Json rpc url is required')
   assert.string(apiHost, 'Api host is required')
   assert.string(linkdropFactory, 'Linkdrop factory address is required')
+
+  assert.string(email, 'Email is required')
 
   const ensOwner = await getEnsOwner({
     ensName,
@@ -319,8 +322,10 @@ export const claimAndCreate = async ({
     linkdropMasterAddress,
     campaignId,
     linkdropSignerSignature,
-    receiverSignature
+    receiverSignature,
+    email
   })
+
   const { success, txHash, errors } = response.data
 
   return {

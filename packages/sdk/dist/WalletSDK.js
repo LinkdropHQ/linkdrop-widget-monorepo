@@ -1,5 +1,7 @@
 "use strict";
 
+var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
+
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
 Object.defineProperty(exports, "__esModule", {
@@ -38,6 +40,10 @@ var _ensUtils = require("./ensUtils");
 var _generateLink3 = require("./generateLink");
 
 var _claim3 = require("./claim");
+
+var _auth = require("./auth");
+
+var cryptoUtils = _interopRequireWildcard(require("./cryptoUtils"));
 
 var ADDRESS_ZERO = _ethers.ethers.constants.AddressZero;
 var BYTES_ZERO = '0x';
@@ -91,6 +97,7 @@ function () {
     this.ensDomain = ensDomain;
     this.guardian = guardian;
     this.linkdropFactory = linkdropFactory;
+    this.cryptoUtils = cryptoUtils;
   }
   /**
    * @dev Function to get encoded params data from contract abi
@@ -223,13 +230,13 @@ function () {
       var _create2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
       _regenerator["default"].mark(function _callee2(_ref3) {
-        var owner, ensName, saltNonce, gasPrice, _ref3$recoveryPeriod, recoveryPeriod, _ref3$guardian, guardian, _ref3$ensAddress, ensAddress, _ref3$ensDomain, ensDomain, _ref3$gnosisSafeMaste, gnosisSafeMasterCopy, _ref3$proxyFactory, proxyFactory, _ref3$linkdropModuleM, linkdropModuleMasterCopy, _ref3$recoveryModuleM, recoveryModuleMasterCopy, _ref3$multiSend, multiSend, _ref3$createAndAddMod, createAndAddModules, _ref3$jsonRpcUrl, jsonRpcUrl, _ref3$apiHost, apiHost;
+        var owner, ensName, saltNonce, gasPrice, email, passwordHash, passwordDerivedKeyHash, encryptedEncryptionKey, encryptedMnemonicPhrase, _ref3$recoveryPeriod, recoveryPeriod, _ref3$guardian, guardian, _ref3$ensAddress, ensAddress, _ref3$ensDomain, ensDomain, _ref3$gnosisSafeMaste, gnosisSafeMasterCopy, _ref3$proxyFactory, proxyFactory, _ref3$linkdropModuleM, linkdropModuleMasterCopy, _ref3$recoveryModuleM, recoveryModuleMasterCopy, _ref3$multiSend, multiSend, _ref3$createAndAddMod, createAndAddModules, _ref3$jsonRpcUrl, jsonRpcUrl, _ref3$apiHost, apiHost;
 
         return _regenerator["default"].wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                owner = _ref3.owner, ensName = _ref3.ensName, saltNonce = _ref3.saltNonce, gasPrice = _ref3.gasPrice, _ref3$recoveryPeriod = _ref3.recoveryPeriod, recoveryPeriod = _ref3$recoveryPeriod === void 0 ? this.recoveryPeriod : _ref3$recoveryPeriod, _ref3$guardian = _ref3.guardian, guardian = _ref3$guardian === void 0 ? this.guardian : _ref3$guardian, _ref3$ensAddress = _ref3.ensAddress, ensAddress = _ref3$ensAddress === void 0 ? this.ensAddress : _ref3$ensAddress, _ref3$ensDomain = _ref3.ensDomain, ensDomain = _ref3$ensDomain === void 0 ? this.ensDomain : _ref3$ensDomain, _ref3$gnosisSafeMaste = _ref3.gnosisSafeMasterCopy, gnosisSafeMasterCopy = _ref3$gnosisSafeMaste === void 0 ? this.gnosisSafeMasterCopy : _ref3$gnosisSafeMaste, _ref3$proxyFactory = _ref3.proxyFactory, proxyFactory = _ref3$proxyFactory === void 0 ? this.proxyFactory : _ref3$proxyFactory, _ref3$linkdropModuleM = _ref3.linkdropModuleMasterCopy, linkdropModuleMasterCopy = _ref3$linkdropModuleM === void 0 ? this.linkdropModuleMasterCopy : _ref3$linkdropModuleM, _ref3$recoveryModuleM = _ref3.recoveryModuleMasterCopy, recoveryModuleMasterCopy = _ref3$recoveryModuleM === void 0 ? this.recoveryModuleMasterCopy : _ref3$recoveryModuleM, _ref3$multiSend = _ref3.multiSend, multiSend = _ref3$multiSend === void 0 ? this.multiSend : _ref3$multiSend, _ref3$createAndAddMod = _ref3.createAndAddModules, createAndAddModules = _ref3$createAndAddMod === void 0 ? this.createAndAddModules : _ref3$createAndAddMod, _ref3$jsonRpcUrl = _ref3.jsonRpcUrl, jsonRpcUrl = _ref3$jsonRpcUrl === void 0 ? this.jsonRpcUrl : _ref3$jsonRpcUrl, _ref3$apiHost = _ref3.apiHost, apiHost = _ref3$apiHost === void 0 ? this.apiHost : _ref3$apiHost;
+                owner = _ref3.owner, ensName = _ref3.ensName, saltNonce = _ref3.saltNonce, gasPrice = _ref3.gasPrice, email = _ref3.email, passwordHash = _ref3.passwordHash, passwordDerivedKeyHash = _ref3.passwordDerivedKeyHash, encryptedEncryptionKey = _ref3.encryptedEncryptionKey, encryptedMnemonicPhrase = _ref3.encryptedMnemonicPhrase, _ref3$recoveryPeriod = _ref3.recoveryPeriod, recoveryPeriod = _ref3$recoveryPeriod === void 0 ? this.recoveryPeriod : _ref3$recoveryPeriod, _ref3$guardian = _ref3.guardian, guardian = _ref3$guardian === void 0 ? this.guardian : _ref3$guardian, _ref3$ensAddress = _ref3.ensAddress, ensAddress = _ref3$ensAddress === void 0 ? this.ensAddress : _ref3$ensAddress, _ref3$ensDomain = _ref3.ensDomain, ensDomain = _ref3$ensDomain === void 0 ? this.ensDomain : _ref3$ensDomain, _ref3$gnosisSafeMaste = _ref3.gnosisSafeMasterCopy, gnosisSafeMasterCopy = _ref3$gnosisSafeMaste === void 0 ? this.gnosisSafeMasterCopy : _ref3$gnosisSafeMaste, _ref3$proxyFactory = _ref3.proxyFactory, proxyFactory = _ref3$proxyFactory === void 0 ? this.proxyFactory : _ref3$proxyFactory, _ref3$linkdropModuleM = _ref3.linkdropModuleMasterCopy, linkdropModuleMasterCopy = _ref3$linkdropModuleM === void 0 ? this.linkdropModuleMasterCopy : _ref3$linkdropModuleM, _ref3$recoveryModuleM = _ref3.recoveryModuleMasterCopy, recoveryModuleMasterCopy = _ref3$recoveryModuleM === void 0 ? this.recoveryModuleMasterCopy : _ref3$recoveryModuleM, _ref3$multiSend = _ref3.multiSend, multiSend = _ref3$multiSend === void 0 ? this.multiSend : _ref3$multiSend, _ref3$createAndAddMod = _ref3.createAndAddModules, createAndAddModules = _ref3$createAndAddMod === void 0 ? this.createAndAddModules : _ref3$createAndAddMod, _ref3$jsonRpcUrl = _ref3.jsonRpcUrl, jsonRpcUrl = _ref3$jsonRpcUrl === void 0 ? this.jsonRpcUrl : _ref3$jsonRpcUrl, _ref3$apiHost = _ref3.apiHost, apiHost = _ref3$apiHost === void 0 ? this.apiHost : _ref3$apiHost;
                 return _context2.abrupt("return", (0, _create3.create)({
                   owner: owner,
                   ensName: ensName,
@@ -445,6 +452,7 @@ function () {
      * @param {String} ensAddress ENS address
      * @param {String} jsonRpcUrl JSON RPC URL
      * @param {String} linkdropFactory Deployed linkdrop factory address
+     * @param {String} email Email
      * @returns {Object} {success, txHash,safe, linkdropModule, recoveryModule, errors}
      */
 
@@ -454,13 +462,13 @@ function () {
       var _claimAndCreate2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
       _regenerator["default"].mark(function _callee5(_ref7) {
-        var weiAmount, tokenAddress, tokenAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature, campaignId, owner, ensName, saltNonce, gasPrice, _ref7$gnosisSafeMaste, gnosisSafeMasterCopy, _ref7$proxyFactory, proxyFactory, _ref7$linkdropModuleM, linkdropModuleMasterCopy, _ref7$createAndAddMod, createAndAddModules, _ref7$multiSend, multiSend, _ref7$apiHost, apiHost, _ref7$guardian, guardian, _ref7$recoveryPeriod, recoveryPeriod, _ref7$recoveryModuleM, recoveryModuleMasterCopy, _ref7$ensDomain, ensDomain, _ref7$ensAddress, ensAddress, _ref7$jsonRpcUrl, jsonRpcUrl, _ref7$linkdropFactory, linkdropFactory;
+        var weiAmount, tokenAddress, tokenAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature, campaignId, owner, ensName, saltNonce, gasPrice, _ref7$gnosisSafeMaste, gnosisSafeMasterCopy, _ref7$proxyFactory, proxyFactory, _ref7$linkdropModuleM, linkdropModuleMasterCopy, _ref7$createAndAddMod, createAndAddModules, _ref7$multiSend, multiSend, _ref7$apiHost, apiHost, _ref7$guardian, guardian, _ref7$recoveryPeriod, recoveryPeriod, _ref7$recoveryModuleM, recoveryModuleMasterCopy, _ref7$ensDomain, ensDomain, _ref7$ensAddress, ensAddress, _ref7$jsonRpcUrl, jsonRpcUrl, _ref7$linkdropFactory, linkdropFactory, email;
 
         return _regenerator["default"].wrap(function _callee5$(_context5) {
           while (1) {
             switch (_context5.prev = _context5.next) {
               case 0:
-                weiAmount = _ref7.weiAmount, tokenAddress = _ref7.tokenAddress, tokenAmount = _ref7.tokenAmount, expirationTime = _ref7.expirationTime, linkKey = _ref7.linkKey, linkdropMasterAddress = _ref7.linkdropMasterAddress, linkdropSignerSignature = _ref7.linkdropSignerSignature, campaignId = _ref7.campaignId, owner = _ref7.owner, ensName = _ref7.ensName, saltNonce = _ref7.saltNonce, gasPrice = _ref7.gasPrice, _ref7$gnosisSafeMaste = _ref7.gnosisSafeMasterCopy, gnosisSafeMasterCopy = _ref7$gnosisSafeMaste === void 0 ? this.gnosisSafeMasterCopy : _ref7$gnosisSafeMaste, _ref7$proxyFactory = _ref7.proxyFactory, proxyFactory = _ref7$proxyFactory === void 0 ? this.proxyFactory : _ref7$proxyFactory, _ref7$linkdropModuleM = _ref7.linkdropModuleMasterCopy, linkdropModuleMasterCopy = _ref7$linkdropModuleM === void 0 ? this.linkdropModuleMasterCopy : _ref7$linkdropModuleM, _ref7$createAndAddMod = _ref7.createAndAddModules, createAndAddModules = _ref7$createAndAddMod === void 0 ? this.createAndAddModules : _ref7$createAndAddMod, _ref7$multiSend = _ref7.multiSend, multiSend = _ref7$multiSend === void 0 ? this.multiSend : _ref7$multiSend, _ref7$apiHost = _ref7.apiHost, apiHost = _ref7$apiHost === void 0 ? this.apiHost : _ref7$apiHost, _ref7$guardian = _ref7.guardian, guardian = _ref7$guardian === void 0 ? this.guardian : _ref7$guardian, _ref7$recoveryPeriod = _ref7.recoveryPeriod, recoveryPeriod = _ref7$recoveryPeriod === void 0 ? this.recoveryPeriod : _ref7$recoveryPeriod, _ref7$recoveryModuleM = _ref7.recoveryModuleMasterCopy, recoveryModuleMasterCopy = _ref7$recoveryModuleM === void 0 ? this.recoveryModuleMasterCopy : _ref7$recoveryModuleM, _ref7$ensDomain = _ref7.ensDomain, ensDomain = _ref7$ensDomain === void 0 ? this.ensDomain : _ref7$ensDomain, _ref7$ensAddress = _ref7.ensAddress, ensAddress = _ref7$ensAddress === void 0 ? this.ensAddress : _ref7$ensAddress, _ref7$jsonRpcUrl = _ref7.jsonRpcUrl, jsonRpcUrl = _ref7$jsonRpcUrl === void 0 ? this.jsonRpcUrl : _ref7$jsonRpcUrl, _ref7$linkdropFactory = _ref7.linkdropFactory, linkdropFactory = _ref7$linkdropFactory === void 0 ? this.linkdropFactory : _ref7$linkdropFactory;
+                weiAmount = _ref7.weiAmount, tokenAddress = _ref7.tokenAddress, tokenAmount = _ref7.tokenAmount, expirationTime = _ref7.expirationTime, linkKey = _ref7.linkKey, linkdropMasterAddress = _ref7.linkdropMasterAddress, linkdropSignerSignature = _ref7.linkdropSignerSignature, campaignId = _ref7.campaignId, owner = _ref7.owner, ensName = _ref7.ensName, saltNonce = _ref7.saltNonce, gasPrice = _ref7.gasPrice, _ref7$gnosisSafeMaste = _ref7.gnosisSafeMasterCopy, gnosisSafeMasterCopy = _ref7$gnosisSafeMaste === void 0 ? this.gnosisSafeMasterCopy : _ref7$gnosisSafeMaste, _ref7$proxyFactory = _ref7.proxyFactory, proxyFactory = _ref7$proxyFactory === void 0 ? this.proxyFactory : _ref7$proxyFactory, _ref7$linkdropModuleM = _ref7.linkdropModuleMasterCopy, linkdropModuleMasterCopy = _ref7$linkdropModuleM === void 0 ? this.linkdropModuleMasterCopy : _ref7$linkdropModuleM, _ref7$createAndAddMod = _ref7.createAndAddModules, createAndAddModules = _ref7$createAndAddMod === void 0 ? this.createAndAddModules : _ref7$createAndAddMod, _ref7$multiSend = _ref7.multiSend, multiSend = _ref7$multiSend === void 0 ? this.multiSend : _ref7$multiSend, _ref7$apiHost = _ref7.apiHost, apiHost = _ref7$apiHost === void 0 ? this.apiHost : _ref7$apiHost, _ref7$guardian = _ref7.guardian, guardian = _ref7$guardian === void 0 ? this.guardian : _ref7$guardian, _ref7$recoveryPeriod = _ref7.recoveryPeriod, recoveryPeriod = _ref7$recoveryPeriod === void 0 ? this.recoveryPeriod : _ref7$recoveryPeriod, _ref7$recoveryModuleM = _ref7.recoveryModuleMasterCopy, recoveryModuleMasterCopy = _ref7$recoveryModuleM === void 0 ? this.recoveryModuleMasterCopy : _ref7$recoveryModuleM, _ref7$ensDomain = _ref7.ensDomain, ensDomain = _ref7$ensDomain === void 0 ? this.ensDomain : _ref7$ensDomain, _ref7$ensAddress = _ref7.ensAddress, ensAddress = _ref7$ensAddress === void 0 ? this.ensAddress : _ref7$ensAddress, _ref7$jsonRpcUrl = _ref7.jsonRpcUrl, jsonRpcUrl = _ref7$jsonRpcUrl === void 0 ? this.jsonRpcUrl : _ref7$jsonRpcUrl, _ref7$linkdropFactory = _ref7.linkdropFactory, linkdropFactory = _ref7$linkdropFactory === void 0 ? this.linkdropFactory : _ref7$linkdropFactory, email = _ref7.email;
                 return _context5.abrupt("return", (0, _claimAndCreate3.claimAndCreate)({
                   weiAmount: weiAmount,
                   tokenAddress: tokenAddress,
@@ -486,7 +494,8 @@ function () {
                   ensDomain: ensDomain,
                   ensAddress: ensAddress,
                   jsonRpcUrl: jsonRpcUrl,
-                  linkdropFactory: linkdropFactory
+                  linkdropFactory: linkdropFactory,
+                  email: email
                 }));
 
               case 2:
@@ -756,6 +765,143 @@ function () {
       }
 
       return claimERC721;
+    }()
+    /**
+     * Registers new account in database
+     * @param {String} email Email
+     * @param {String} password Password
+     */
+
+  }, {
+    key: "register",
+    value: function () {
+      var _register2 = (0, _asyncToGenerator2["default"])(
+      /*#__PURE__*/
+      _regenerator["default"].mark(function _callee10(email, password) {
+        return _regenerator["default"].wrap(function _callee10$(_context10) {
+          while (1) {
+            switch (_context10.prev = _context10.next) {
+              case 0:
+                return _context10.abrupt("return", (0, _auth.register)({
+                  email: email,
+                  password: password,
+                  apiHost: this.apiHost
+                }));
+
+              case 1:
+              case "end":
+                return _context10.stop();
+            }
+          }
+        }, _callee10, this);
+      }));
+
+      function register(_x13, _x14) {
+        return _register2.apply(this, arguments);
+      }
+
+      return register;
+    }()
+    /**
+     * Logs existing account into system
+     * @param {String} email Email
+     * @param {String} password Password
+     */
+
+  }, {
+    key: "login",
+    value: function () {
+      var _login2 = (0, _asyncToGenerator2["default"])(
+      /*#__PURE__*/
+      _regenerator["default"].mark(function _callee11(email, password) {
+        return _regenerator["default"].wrap(function _callee11$(_context11) {
+          while (1) {
+            switch (_context11.prev = _context11.next) {
+              case 0:
+                return _context11.abrupt("return", (0, _auth.login)({
+                  email: email,
+                  password: password,
+                  apiHost: this.apiHost
+                }));
+
+              case 1:
+              case "end":
+                return _context11.stop();
+            }
+          }
+        }, _callee11, this);
+      }));
+
+      function login(_x15, _x16) {
+        return _login2.apply(this, arguments);
+      }
+
+      return login;
+    }()
+    /**
+     * Fetches session key from server
+     * @param {String} email Email
+     * @return `sessionKey` Session key
+     */
+
+  }, {
+    key: "fetchSessionKey",
+    value: function () {
+      var _fetchSessionKey2 = (0, _asyncToGenerator2["default"])(
+      /*#__PURE__*/
+      _regenerator["default"].mark(function _callee12(email) {
+        return _regenerator["default"].wrap(function _callee12$(_context12) {
+          while (1) {
+            switch (_context12.prev = _context12.next) {
+              case 0:
+                return _context12.abrupt("return", (0, _auth.fetchSessionKey)({
+                  email: email,
+                  apiHost: this.apiHost
+                }));
+
+              case 1:
+              case "end":
+                return _context12.stop();
+            }
+          }
+        }, _callee12, this);
+      }));
+
+      function fetchSessionKey(_x17) {
+        return _fetchSessionKey2.apply(this, arguments);
+      }
+
+      return fetchSessionKey;
+    }()
+  }, {
+    key: "extractPrivateKeyFromSession",
+    value: function () {
+      var _extractPrivateKeyFromSession2 = (0, _asyncToGenerator2["default"])(
+      /*#__PURE__*/
+      _regenerator["default"].mark(function _callee13(email, sessionKeyStore) {
+        return _regenerator["default"].wrap(function _callee13$(_context13) {
+          while (1) {
+            switch (_context13.prev = _context13.next) {
+              case 0:
+                return _context13.abrupt("return", (0, _auth.extractPrivateKeyFromSession)({
+                  email: email,
+                  sessionKeyStore: sessionKeyStore,
+                  apiHost: this.apiHost
+                }));
+
+              case 1:
+              case "end":
+                return _context13.stop();
+            }
+          }
+        }, _callee13, this);
+      }));
+
+      function extractPrivateKeyFromSession(_x18, _x19) {
+        return _extractPrivateKeyFromSession2.apply(this, arguments);
+      }
+
+      return extractPrivateKeyFromSession;
     }()
   }]);
   return WalletSDK;

@@ -69,7 +69,7 @@ const _setCookie = async (accountId, res) => {
     maxAge: 1000000000, // ttl in ms (remove this option and cookie will die when browser is closed)
     signed: true // if you use the secret with cookieParser
   }
-  
+
   res.cookie('LINKDROP_WIDGET_JWT', jwt, cookieConfig)
 }
 
@@ -109,7 +109,9 @@ export const fetchSessionKey = wrapAsync(async (req, res, next) => {
     }
     console.log('signed-cookies:', signedCookies)
     try {
-      const accountId = await authService.decodeJWT(signedCookies.LINKDROP_WIDGET_JWT)
+      const accountId = await authService.decodeJWT(
+        signedCookies.LINKDROP_WIDGET_JWT
+      )
       console.log({ accountId })
       const account = await accountsService.findById(accountId)
       return res.json({
@@ -118,8 +120,8 @@ export const fetchSessionKey = wrapAsync(async (req, res, next) => {
       })
     } catch (err) {
       next(boom.badRequest(err.message))
-    }    
-    
+    }
+
     res.json({
       success: false
     })

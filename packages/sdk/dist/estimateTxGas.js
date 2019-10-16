@@ -117,6 +117,23 @@ function () {
 
             txGasEstimate = txGasEstimate.toNumber() + 10000;
             gasCosts = [];
+            gasCosts.push({
+              gasPrice: 0,
+              baseGas: estimateBaseGas({
+                safe: safe,
+                to: to,
+                value: value,
+                data: data,
+                operation: operation,
+                txGasEstimate: txGasEstimate,
+                gasToken: gasToken,
+                gasPrice: 0,
+                refundReceiver: refundReceiver,
+                signatureCount: signatureCount,
+                nonce: nonce
+              }),
+              safeTxGas: txGasEstimate
+            });
 
             for (gasPriceGwei = currentGasPriceGwei; gasPriceGwei <= currentGasPriceGwei + 5; gasPriceGwei++) {
               gasPrice = _ethers.ethers.utils.parseUnits(gasPriceGwei.toString(), 'gwei').toNumber();
@@ -142,7 +159,7 @@ function () {
 
             return _context.abrupt("return", gasCosts);
 
-          case 21:
+          case 22:
           case "end":
             return _context.stop();
         }

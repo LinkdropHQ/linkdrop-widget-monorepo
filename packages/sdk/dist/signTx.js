@@ -18,15 +18,15 @@ var _assertJs = _interopRequireDefault(require("assert-js"));
  * @param {String} safe Safe address
  * @param {String} privateKey Safe owner's private key
  * @param {String} to To
- * @param {Number} value Value
+ * @param {String} value Value
  * @param {String} data Data
- * @param {Number} operation Operation
- * @param {Number} safeTxGas Safe tx gas
- * @param {Number} baseGas Base gas
- * @param {Number} gasPrice Gas price
+ * @param {String} operation Operation
+ * @param {String} safeTxGas Safe tx gas
+ * @param {String} baseGas Base gas
+ * @param {String} gasPrice Gas price
  * @param {String} gasToken Gas token
  * @param {String} refundReceiver Refund receiver
- * @param {Number} nonce Safe's nonce
+ * @param {String} nonce Safe's nonce
  */
 var signTx = function signTx(_ref) {
   var safe = _ref.safe,
@@ -48,21 +48,21 @@ var signTx = function signTx(_ref) {
 
   _assertJs["default"].string(to, 'To is required');
 
-  _assertJs["default"].integer(value, 'Value is required');
+  _assertJs["default"].string(value, 'Value is required');
 
   _assertJs["default"].string(data, 'Data is required');
 
-  _assertJs["default"].integer(safeTxGas, 'Safe tx gas is required');
+  _assertJs["default"].string(safeTxGas, 'Safe tx gas is required');
 
-  _assertJs["default"].integer(baseGas, 'Base gas is required');
+  _assertJs["default"].string(baseGas, 'Base gas is required');
 
-  _assertJs["default"].integer(gasPrice, 'Gas price is required');
+  _assertJs["default"].string(gasPrice, 'Gas price is required');
 
   _assertJs["default"].string(gasToken, 'Gas token is required');
 
   _assertJs["default"].string(refundReceiver, 'Refund receiver address is required');
 
-  _assertJs["default"].integer(nonce, 'Nonce is required');
+  _assertJs["default"].string(nonce, 'Nonce is required');
 
   if (privateKey.includes('0x')) {
     privateKey = privateKey.replace('0x', '');
