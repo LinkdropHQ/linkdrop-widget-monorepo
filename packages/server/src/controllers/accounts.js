@@ -20,7 +20,8 @@ export const exists = wrapAsync(async (req, res, next) => {
 
 export const update = wrapAsync(async (req, res, next) => {
   try {
-    const { email, deployed } = req.body
+    const { email } = req.account
+    const { deployed } = req.body
 
     let account = await accountsService.findAccount(email)
 
