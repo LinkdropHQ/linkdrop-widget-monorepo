@@ -44,7 +44,7 @@ export const register = async ({ email, password, apiHost }) => {
     encryptedMnemonic
   })
 
-  const { account, jwt, sessionKey, success, error } = response.data
+  const { account, sessionKey, success, error } = response.data
 
   const sessionKeyStore = await wallet.encrypt(sessionKey)
 
@@ -67,7 +67,6 @@ export const login = async ({ email, password, apiHost }) => {
   const {
     encryptedEncryptionKey,
     encryptedMnemonic,
-    jwt,
     sessionKey,
     success,
     error
@@ -96,13 +95,20 @@ export const login = async ({ email, password, apiHost }) => {
   }
 }
 
-// @TODO Change path to the endpoint
+export const fetchSessionKey = async ({ email, apiHost }) => {
+  const response = axios.get(`${apiHost}/api/v1/accounts/fetch-session-key`, {
+    withCredentials: true
+  })
+  const { success, sessionKey } = response.data
+  return sessionKey
+}
+
 export const extractPrivateKeyFromSession = async ({
   email,
   sessionKeyStore,
   apiHost
 }) => {
-  const sessionKey = await axios.get(`${apiHost}/api/v1/session/${email}`)
+  const sessionKey = await fetchSessionKey(email, apiHost)
   const wallet = ethers.Wallet.fromEncryptedJson(sessionKeyStore, sessionKey)
   return wallet.privateKey
 }

@@ -24,9 +24,12 @@ class AccountsService {
     if (accountId == null) {
       return
     }
-    return Account.findOne({ '_id': accountId, chain: relayerWalletService.chain })
+    return Account.findOne({
+      _id: accountId,
+      chain: relayerWalletService.chain
+    })
   }
-  
+
   async create ({
     email,
     passwordHash,
@@ -91,12 +94,44 @@ class AccountsService {
     return creationCosts
   }
 
-  async update ({ email, deployed }) {
+  async update ({
+    email,
+    deployed,
+    ens,
+    owner,
+    saltNonce,
+    safe,
+    linkdropModule,
+    recoveryModule,
+    createSafeData
+  }) {
     const account = await this.findAccount(email)
 
     if (deployed) {
       account.deployed = deployed
     }
+    if (ens) {
+      account.ens = ens
+    }
+    if (owner) {
+      account.owner = owner
+    }
+    if (saltNonce) {
+      account.saltNonce = saltNonce
+    }
+    if (safe) {
+      account.safe = safe
+    }
+    if (linkdropModule) {
+      account.linkdropModule = linkdropModule
+    }
+    if (recoveryModule) {
+      account.recoveryModule = recoveryModule
+    }
+    if (createSafeData) {
+      account.createSafeData = createSafeData
+    }
+
     logger.debug(
       `Updating account ${account.email} on ${account.chain} network`
     )

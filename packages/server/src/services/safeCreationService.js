@@ -13,6 +13,7 @@ import { ENS, FIFSRegistrar } from '@ensdomains/ens'
 import sdkService from './sdkService'
 import ensService from './ensService'
 import linkdropFactoryService from './linkdropFactoryService'
+import accountsService from './accountsService'
 
 import {
   GNOSIS_SAFE_MASTERCOPY_ADDRESS,
@@ -75,7 +76,6 @@ class SafeCreationService {
       relayerWalletService.provider
     )
   }
-
 
   async create ({
     owner,
@@ -276,7 +276,6 @@ class SafeCreationService {
     }
   }
 
-
   async claimAndCreate ({
     owner,
     saltNonce,
@@ -292,9 +291,15 @@ class SafeCreationService {
     linkdropMasterAddress,
     campaignId,
     linkdropSignerSignature,
-    receiverSignature
+    receiverSignature,
+    email
   }) {
     try {
+      let account = await accountsService.findAccount(email)
+      if (!account) {
+        throw new Error('Account with such email is not registered')
+      }
+
       logger.info('Creating new safe with ENS and claiming linkdrop...')
 
       const linkdropModuleSetupData = sdkService.walletSDK.encodeParams(
@@ -494,6 +499,18 @@ class SafeCreationService {
         data: multiSendData,
         gasPrice: ethers.utils.parseUnits(gasPrice, 'wei'),
         gasLimit: 6950000
+      })
+
+      account = await accountsService.update({
+        email,
+        deployed: true,
+        ens: `${ensName}.${ensService.ensDomain}`,
+        owner,
+        saltNonce,
+        safe,
+        linkdropModule,
+        recoveryModule,
+        createSafeData
       })
 
       logger.json(
