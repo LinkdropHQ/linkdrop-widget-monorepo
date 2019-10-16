@@ -162,7 +162,6 @@ class GoogleApiService {
   }
 
   _handleClientLoad () {
-    console.log({ config })
     gapi.load('client:auth2', _ => {
       this.auth2 = gapi.auth2.init({
         clientId: config.authClientId

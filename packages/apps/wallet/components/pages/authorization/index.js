@@ -9,13 +9,14 @@ import gapiService from 'data/api/google-api'
 import SignInWithEmail from './sign-in-with-email'
 import GoogleDrivePermission from './google-drive-permission'
 
-@actions(({ user: { sdk, privateKey, contractAddress, ens, loading, chainId } }) => ({
+@actions(({ authorization: { authorized }, user: { sdk, privateKey, contractAddress, ens, loading, chainId } }) => ({
   loading,
   sdk,
   contractAddress,
   privateKey,
   ens,
-  chainId
+  chainId,
+  authorized
 }))
 @translate('pages.authorization')
 class Authorization extends React.Component {
@@ -23,7 +24,6 @@ class Authorization extends React.Component {
     super(props)
     this.state = {
       enableAuthorize: false,
-      authorized: false,
       accessingDrive: false
     }
   }
@@ -42,7 +42,7 @@ class Authorization extends React.Component {
   }
 
   render () {
-    const { authorized } = this.state
+    const { authorized } = this.props
     return <Page dynamicHeader disableProfile>
       {authorized ? this.renderGoogleDriveScreen() : this.renderAuthorizationScreen()}
     </Page>
@@ -97,20 +97,20 @@ class Authorization extends React.Component {
     return <GoogleDrivePermission accessingDrive={accessingDrive} enableDrivePermissions={_ => this.enableDrivePermissions()} />
   }
 
-  async handleAuthClick () {
-    const isSignedIn = await gapiService.signIn()
-    if (isSignedIn) {
-      // if has drive permissions sync with it immediately
-      if (gapiService.hasDrivePermissions()) {
-        await this._syncPrivateKeyWithDrive()
-      } else {
-        // otherwise show screen to enable permissions
-        this.setState({
-          authorized: true
-        })
-      }
-    }
-  }
+  // async handleAuthClick () {
+  // const isSignedIn = await gapiService.signIn()
+  // if (isSignedIn) {
+  //   // if has drive permissions sync with it immediately
+  //   if (gapiService.hasDrivePermissions()) {
+  //     await this._syncPrivateKeyWithDrive()
+  //   } else {
+  //     // otherwise show screen to enable permissions
+  //     this.setState({
+  //       authorized: true
+  //     })
+  //   }
+  // }
+  // }
 
   renderAuthorizationScreen () {
     const { loading } = this.props
@@ -122,7 +122,7 @@ class Authorization extends React.Component {
         title={this.t(`titles.${createWallet ? 'createWalletTitle' : 'signInTitle'}`)}
         onClose={_ => this.setState({ signInWithWallet: false, createWallet: false })}
       />
-      <Button loadingClassName={styles.buttonLoading} className={styles.button} inverted loading={!enableAuthorize || loading} onClick={e => this.handleAuthClick(e)}>
+      <Button loadingClassName={styles.buttonLoading} className={styles.button} inverted loading={!enableAuthorize || loading} onClick={e => this.actions().authorization.signInWithGoogle()}>
         <RetinaImage width={30} {...getImages({ src: 'google' })} />
         {this.t('titles.googleSignIn')}
       </Button>

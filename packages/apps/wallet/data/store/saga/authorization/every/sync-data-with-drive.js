@@ -1,12 +1,13 @@
 import { put, select } from 'redux-saga/effects'
 import gapiService from 'data/api/google-api'
-import { getEns } from 'helpers'
 import getImageAndAvatar from './get-email-and-avatar'
+import { generateRandomPassword } from 'helpers'
 
 const generator = function * () {
   try {
     yield put({ type: 'AUTHORIZATION.SET_LOADING', payload: { loading: true } })
     const { chainId } = yield select(generator.selectors.userData)
+    const sdk = yield select(generator.selectors.sdk)
     const { email, avatar } = yield getImageAndAvatar()
     // fetching files from Drive
     const fetchResult = yield gapiService.fetchFiles({ chainId })
@@ -14,10 +15,13 @@ const generator = function * () {
     if (fetchResult.success && fetchResult.data[`_${chainId}`]) {
       data = fetchResult.data[`_${chainId}`]
     } else { // if no files on drive upload new ones
-      const { contractAddress, privateKey } = yield select(generator.selectors.userData)
-      const ens = getEns({ email, chainId })
-      const uploadResult = yield gapiService.uploadFiles({ chainId, ens, contractAddress, privateKey })
-      data = uploadResult.data
+      const password = generateRandomPassword()
+      // console.log({ password, apiHost })
+      console.log('registring...')
+      const result = yield sdk.register(email, password)
+      return console.log({ result })
+      // const uploadResult = yield gapiService.uploadFiles({ chainId, ens, contractAddress, privateKey })
+      // data = uploadResult.data
     }
     const { privateKey, contractAddress, ens } = data
     console.log({ privateKey, contractAddress, ens, avatar, chainId })
@@ -31,5 +35,6 @@ const generator = function * () {
 
 export default generator
 generator.selectors = {
-  userData: ({ user: { chainId, contractAddress, privateKey } }) => ({ chainId, contractAddress, privateKey })
+  userData: ({ user: { chainId } }) => ({ chainId }),
+  sdk: ({ user: { sdk } }) => sdk
 }
