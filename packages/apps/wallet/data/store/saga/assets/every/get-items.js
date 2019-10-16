@@ -35,7 +35,10 @@ const generator = function * () {
     const chainId = yield select(generator.selectors.chainId)
     const contractAddress = yield select(generator.selectors.contractAddress)
     const networkName = defineNetworkName({ chainId })
+
+    return yield put({ type: 'ASSETS.SET_ITEMS', payload: { items: [] } })
     const { status = 0, result = [], message } = yield call(getItems, { address: contractAddress, networkName })
+
     const provider = yield ethers.getDefaultProvider(networkName)
     const ethBalance = yield provider.getBalance(contractAddress)
 

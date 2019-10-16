@@ -13,7 +13,7 @@ class Provider {
     this.ensName = opts.ensName
     this.network = opts.network || 'mainnet'
     this.rpcUrl = opts.rpcUrl || `https://${this.network}.infura.io/v3/d4d1a2b933e048e28fb6fe1abe3e813a`
-    this.widgetUrl = opts.widgetUrl || 'http://localhost:9002'
+    this.widgetUrl = opts.widgetUrl || 'http://localhost:9002/#/receive?weiAmount=0&nftAddress=0x174970430bbf46a3fb6b094760394857c6e1209a&tokenId=5&expirationTime=1900000000000&version=1&chainId=4&linkKey=0xea5c4f2abbc0de7c7549d26e8a0f5ff407fbfe300bc3c760e075f70a1fb35ab6&linkdropMasterAddress=0xaa46966f3448291068249e6f3fa8fda59c929f3e&linkdropSignerSignature=0x05675c723b053dd213c4a83f4aab04f6f33214b647d770db3eb327aeb8ae709d175beac13a2336dda551222553fc4de19208f85832d04e470da6713aaaf918091c&campaignId=7'
 
     if (!opts.ensName) {
       throw new Error('ENS name should be provided')

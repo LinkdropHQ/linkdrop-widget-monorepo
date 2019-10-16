@@ -77,7 +77,7 @@ class Claim extends React.Component {
 
   getAssetsData ({ nftAddress, tokenId, weiAmount, chainId, tokenAddress, tokenAmount }) {
     if (nftAddress && tokenId) {
-      // this.actions().assets.getTokenERC721Data({ nftAddress, tokenId, chainId })
+      this.actions().assets.getTokenERC721Data({ nftAddress, tokenId, chainId })
     } else {
       this.actions().assets.getTokenERC20Data({ tokenAddress, tokenAmount, chainId })
     }

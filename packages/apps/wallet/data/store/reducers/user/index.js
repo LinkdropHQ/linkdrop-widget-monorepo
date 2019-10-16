@@ -23,7 +23,7 @@ const initialState = {
   sessionKeyStore,
   avatar: ls && ls.getItem && ls.getItem('avatar'),
   showNote: true,
-  chainId: null
+  chainId
 }
 
 export default (state = initialState, action = {}) => {
