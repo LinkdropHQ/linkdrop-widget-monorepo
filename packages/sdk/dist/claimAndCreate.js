@@ -82,7 +82,7 @@ function () {
   var _ref2 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
   _regenerator["default"].mark(function _callee(_ref) {
-    var weiAmount, tokenAddress, tokenAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature, campaignId, gnosisSafeMasterCopy, proxyFactory, owner, linkdropModuleMasterCopy, createAndAddModules, multiSend, apiHost, saltNonce, guardian, recoveryPeriod, recoveryModuleMasterCopy, gasPrice, ensName, ensDomain, ensAddress, jsonRpcUrl, linkdropFactory, email, ensOwner, provider, linkdropModuleSetupData, linkdropModuleCreationData, recoveryModuleSetupData, recoveryModuleCreationData, modulesCreationData, createAndAddModulesData, createAndAddModulesMultiSendData, nestedTxData, multiSendData, gnosisSafeData, createSafeData, estimate, creationCosts, createSafeMultiSendData, safe, registerEnsData, registrar, registerEnsMultiSendData, receiverSignature, linkId, claimData, claimMultiSendData, linkdropModule, recoveryModule, response, _response$data, updateAccountOnSuccess, success, txHash, errors;
+    var weiAmount, tokenAddress, tokenAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature, campaignId, gnosisSafeMasterCopy, proxyFactory, owner, linkdropModuleMasterCopy, createAndAddModules, multiSend, apiHost, saltNonce, guardian, recoveryPeriod, recoveryModuleMasterCopy, gasPrice, ensName, ensDomain, ensAddress, jsonRpcUrl, linkdropFactory, email, ensOwner, provider, linkdropModuleSetupData, linkdropModuleCreationData, recoveryModuleSetupData, recoveryModuleCreationData, modulesCreationData, createAndAddModulesData, createAndAddModulesMultiSendData, nestedTxData, multiSendData, gnosisSafeData, createSafeData, estimate, creationCosts, createSafeMultiSendData, safe, registerEnsData, registrar, registerEnsMultiSendData, receiverSignature, linkId, claimData, claimMultiSendData, linkdropModule, recoveryModule, response, _response$data, success, txHash, errors;
 
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) {
@@ -278,9 +278,7 @@ function () {
 
           case 76:
             response = _context.sent;
-            console.log(response.data);
-            _response$data = response.data, updateAccountOnSuccess = _response$data.updateAccountOnSuccess, success = _response$data.success, txHash = _response$data.txHash, errors = _response$data.errors;
-            console.log('claimAndCreate.js updateAccountOnSuccess: ', updateAccountOnSuccess);
+            _response$data = response.data, success = _response$data.success, txHash = _response$data.txHash, errors = _response$data.errors;
             return _context.abrupt("return", {
               success: success,
               txHash: txHash,
@@ -288,11 +286,10 @@ function () {
               recoveryModule: recoveryModule,
               safe: safe,
               creationCosts: creationCosts.toString(),
-              errors: errors,
-              updateAccountOnSuccess: updateAccountOnSuccess
+              errors: errors
             });
 
-          case 81:
+          case 79:
           case "end":
             return _context.stop();
         }

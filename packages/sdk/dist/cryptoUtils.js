@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getEncryptedAssymetricKeyPair = exports.getPasswordDerivedKeyHash = exports.getPasswordHash = exports.getPasswordDerivedKey = exports.extractMnemonic = exports.extractEncryptionKey = exports.getEncryptedMnemonic = exports.getEncryptedEncryptionKey = exports.generateIV = exports.generateEncryptionKey = void 0;
+exports.getPasswordDerivedKeyHash = exports.getPasswordHash = exports.getPasswordDerivedKey = exports.extractMnemonic = exports.extractEncryptionKey = exports.getEncryptedMnemonic = exports.getEncryptedEncryptionKey = exports.generateIV = exports.generateEncryptionKey = void 0;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 
@@ -211,7 +211,10 @@ function () {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
-            return _context5.abrupt("return", _crypto["default"].pbkdf2Sync(password, email, 100000, 32, 'sha256').toString('hex'));
+            return _context5.abrupt("return", _crypto["default"].pbkdf(password, email, 100000, 32, 'sha256', function (err, passwordDerivedKey) {
+              if (err) throw err;
+              return passwordDerivedKey.toString('hex');
+            }));
 
           case 1:
           case "end":
@@ -251,7 +254,10 @@ function () {
 
           case 2:
             passwordDerivedKey = _context6.sent;
-            return _context6.abrupt("return", _crypto["default"].pbkdf2Sync(passwordDerivedKey, password, 1, 32, 'sha256').toString('hex'));
+            return _context6.abrupt("return", _crypto["default"].pbkdf2(passwordDerivedKey, password, 1, 32, 'sha256', function (err, passwordHash) {
+              if (err) throw err;
+              return passwordHash.toString('hex');
+            }).toString('hex'));
 
           case 4:
           case "end":
@@ -305,56 +311,5 @@ function () {
     return _ref7.apply(this, arguments);
   };
 }();
-/**
- * Generates assymetric key pair and encrypts private key with `encryptionKey` as passphrase
- * @param {String} encryptionKey Encryption key
- * @return `{publicKey, encryptedPrivateKey}` Public key and encrypted private key in pem format
- */
-
 
 exports.getPasswordDerivedKeyHash = getPasswordDerivedKeyHash;
-
-var getEncryptedAssymetricKeyPair =
-/*#__PURE__*/
-function () {
-  var _ref8 = (0, _asyncToGenerator2["default"])(
-  /*#__PURE__*/
-  _regenerator["default"].mark(function _callee8(encryptionKey) {
-    var _crypto$generateKeyPa, publicKey, encryptedPrivateKey;
-
-    return _regenerator["default"].wrap(function _callee8$(_context8) {
-      while (1) {
-        switch (_context8.prev = _context8.next) {
-          case 0:
-            _crypto$generateKeyPa = _crypto["default"].generateKeyPairSync('rsa', {
-              modulusLength: 2048,
-              publicKeyEncoding: {
-                type: 'spki',
-                format: 'pem'
-              },
-              privateKeyEncoding: {
-                type: 'pkcs8',
-                format: 'pem',
-                cipher: 'aes-256-cbc',
-                passphrase: encryptionKey
-              }
-            }), publicKey = _crypto$generateKeyPa.publicKey, encryptedPrivateKey = _crypto$generateKeyPa.privateKey;
-            return _context8.abrupt("return", {
-              publicKey: publicKey,
-              encryptedPrivateKey: encryptedPrivateKey
-            });
-
-          case 2:
-          case "end":
-            return _context8.stop();
-        }
-      }
-    }, _callee8);
-  }));
-
-  return function getEncryptedAssymetricKeyPair(_x19) {
-    return _ref8.apply(this, arguments);
-  };
-}();
-
-exports.getEncryptedAssymetricKeyPair = getEncryptedAssymetricKeyPair;

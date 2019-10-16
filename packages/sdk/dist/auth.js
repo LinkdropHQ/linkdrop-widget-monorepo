@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.extractPrivateKeyFromSession = exports.login = exports.register = void 0;
+exports.extractPrivateKeyFromSession = exports.fetchSessionKey = exports.login = exports.register = void 0;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 
@@ -23,7 +23,7 @@ function () {
   var _ref2 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
   _regenerator["default"].mark(function _callee(_ref) {
-    var email, password, apiHost, encryptionKey, encryptedEncryptionKey, passwordHash, passwordDerivedKeyHash, wallet, mnemonic, iv, encryptedMnemonic, response, _response$data, account, jwt, sessionKey, success, error, sessionKeyStore;
+    var email, password, apiHost, encryptionKey, encryptedEncryptionKey, passwordHash, passwordDerivedKeyHash, wallet, mnemonic, iv, encryptedMnemonic, response, _response$data, account, sessionKey, success, error, sessionKeyStore;
 
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) {
@@ -65,7 +65,7 @@ function () {
 
           case 19:
             response = _context.sent;
-            _response$data = response.data, account = _response$data.account, jwt = _response$data.jwt, sessionKey = _response$data.sessionKey, success = _response$data.success, error = _response$data.error;
+            _response$data = response.data, account = _response$data.account, sessionKey = _response$data.sessionKey, success = _response$data.success, error = _response$data.error;
             _context.next = 23;
             return wallet.encrypt(sessionKey);
 
@@ -101,7 +101,7 @@ function () {
   var _ref4 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
   _regenerator["default"].mark(function _callee2(_ref3) {
-    var email, password, apiHost, passwordDerivedKey, passwordHash, response, _response$data2, encryptedEncryptionKey, encryptedMnemonic, jwt, sessionKey, success, error, encryptionKey, mnemonic, wallet, sessionKeyStore;
+    var email, password, apiHost, passwordDerivedKey, passwordHash, response, _response$data2, encryptedEncryptionKey, encryptedMnemonic, sessionKey, success, error, encryptionKey, mnemonic, wallet, sessionKeyStore;
 
     return _regenerator["default"].wrap(function _callee2$(_context2) {
       while (1) {
@@ -126,7 +126,7 @@ function () {
 
           case 9:
             response = _context2.sent;
-            _response$data2 = response.data, encryptedEncryptionKey = _response$data2.encryptedEncryptionKey, encryptedMnemonic = _response$data2.encryptedMnemonic, jwt = _response$data2.jwt, sessionKey = _response$data2.sessionKey, success = _response$data2.success, error = _response$data2.error;
+            _response$data2 = response.data, encryptedEncryptionKey = _response$data2.encryptedEncryptionKey, encryptedMnemonic = _response$data2.encryptedMnemonic, sessionKey = _response$data2.sessionKey, success = _response$data2.success, error = _response$data2.error;
             _context2.next = 13;
             return (0, _cryptoUtils.extractEncryptionKey)(encryptedEncryptionKey.encryptedEncryptionKey, encryptedEncryptionKey.iv, passwordDerivedKey);
 
@@ -163,32 +163,30 @@ function () {
   return function login(_x2) {
     return _ref4.apply(this, arguments);
   };
-}(); // @TODO Change path to the endpoint
-
+}();
 
 exports.login = login;
 
-var extractPrivateKeyFromSession =
+var fetchSessionKey =
 /*#__PURE__*/
 function () {
   var _ref6 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
   _regenerator["default"].mark(function _callee3(_ref5) {
-    var email, sessionKeyStore, apiHost, sessionKey, wallet;
+    var email, apiHost, response, _response$data3, success, sessionKey;
+
     return _regenerator["default"].wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
-            email = _ref5.email, sessionKeyStore = _ref5.sessionKeyStore, apiHost = _ref5.apiHost;
-            _context3.next = 3;
-            return _axios["default"].get("".concat(apiHost, "/api/v1/session/").concat(email));
+            email = _ref5.email, apiHost = _ref5.apiHost;
+            response = _axios["default"].get("".concat(apiHost, "/api/v1/accounts/fetch-session-key"), {
+              withCredentials: true
+            });
+            _response$data3 = response.data, success = _response$data3.success, sessionKey = _response$data3.sessionKey;
+            return _context3.abrupt("return", sessionKey);
 
-          case 3:
-            sessionKey = _context3.sent;
-            wallet = _ethers.ethers.Wallet.fromEncryptedJson(sessionKeyStore, sessionKey);
-            return _context3.abrupt("return", wallet.privateKey);
-
-          case 6:
+          case 4:
           case "end":
             return _context3.stop();
         }
@@ -196,8 +194,43 @@ function () {
     }, _callee3);
   }));
 
-  return function extractPrivateKeyFromSession(_x3) {
+  return function fetchSessionKey(_x3) {
     return _ref6.apply(this, arguments);
+  };
+}();
+
+exports.fetchSessionKey = fetchSessionKey;
+
+var extractPrivateKeyFromSession =
+/*#__PURE__*/
+function () {
+  var _ref8 = (0, _asyncToGenerator2["default"])(
+  /*#__PURE__*/
+  _regenerator["default"].mark(function _callee4(_ref7) {
+    var email, sessionKeyStore, apiHost, sessionKey, wallet;
+    return _regenerator["default"].wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            email = _ref7.email, sessionKeyStore = _ref7.sessionKeyStore, apiHost = _ref7.apiHost;
+            _context4.next = 3;
+            return fetchSessionKey(email, apiHost);
+
+          case 3:
+            sessionKey = _context4.sent;
+            wallet = _ethers.ethers.Wallet.fromEncryptedJson(sessionKeyStore, sessionKey);
+            return _context4.abrupt("return", wallet.privateKey);
+
+          case 6:
+          case "end":
+            return _context4.stop();
+        }
+      }
+    }, _callee4);
+  }));
+
+  return function extractPrivateKeyFromSession(_x4) {
+    return _ref8.apply(this, arguments);
   };
 }();
 

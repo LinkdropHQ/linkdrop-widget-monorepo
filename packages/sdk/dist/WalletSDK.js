@@ -45,8 +45,6 @@ var _auth = require("./auth");
 
 var cryptoUtils = _interopRequireWildcard(require("./cryptoUtils"));
 
-var _crypto = _interopRequireDefault(require("crypto"));
-
 var ADDRESS_ZERO = _ethers.ethers.constants.AddressZero;
 var BYTES_ZERO = '0x';
 
@@ -839,6 +837,71 @@ function () {
       }
 
       return login;
+    }()
+    /**
+     * Fetches session key from server
+     * @param {String} email Email
+     * @return `sessionKey` Session key
+     */
+
+  }, {
+    key: "fetchSessionKey",
+    value: function () {
+      var _fetchSessionKey2 = (0, _asyncToGenerator2["default"])(
+      /*#__PURE__*/
+      _regenerator["default"].mark(function _callee12(email) {
+        return _regenerator["default"].wrap(function _callee12$(_context12) {
+          while (1) {
+            switch (_context12.prev = _context12.next) {
+              case 0:
+                return _context12.abrupt("return", (0, _auth.fetchSessionKey)({
+                  email: email,
+                  apiHost: this.apiHost
+                }));
+
+              case 1:
+              case "end":
+                return _context12.stop();
+            }
+          }
+        }, _callee12, this);
+      }));
+
+      function fetchSessionKey(_x17) {
+        return _fetchSessionKey2.apply(this, arguments);
+      }
+
+      return fetchSessionKey;
+    }()
+  }, {
+    key: "extractPrivateKeyFromSession",
+    value: function () {
+      var _extractPrivateKeyFromSession2 = (0, _asyncToGenerator2["default"])(
+      /*#__PURE__*/
+      _regenerator["default"].mark(function _callee13(email, sessionKeyStore) {
+        return _regenerator["default"].wrap(function _callee13$(_context13) {
+          while (1) {
+            switch (_context13.prev = _context13.next) {
+              case 0:
+                return _context13.abrupt("return", (0, _auth.extractPrivateKeyFromSession)({
+                  email: email,
+                  sessionKeyStore: sessionKeyStore,
+                  apiHost: this.apiHost
+                }));
+
+              case 1:
+              case "end":
+                return _context13.stop();
+            }
+          }
+        }, _callee13, this);
+      }));
+
+      function extractPrivateKeyFromSession(_x18, _x19) {
+        return _extractPrivateKeyFromSession2.apply(this, arguments);
+      }
+
+      return extractPrivateKeyFromSession;
     }()
   }]);
   return WalletSDK;
