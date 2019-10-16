@@ -5,6 +5,8 @@ const router = express.Router()
 
 router.get('/exists/:email', accountsController.exists)
 
+router.get('/fetch-session-key', accountsController.fetchSessionKey)
+
 /**
  * @route POST api/v1/accounts/register
  * @desc Signup new account
@@ -12,12 +14,6 @@ router.get('/exists/:email', accountsController.exists)
  */
 router.post('/register', accountsController.register)
 
-/**
- * @route PUT api/v1/accounts/update
- * @desc Update existing account
- * @access Public
- */
-router.put('/update', accountsController.update)
 
 /**
  * @route POST api/v1/accounts/login
