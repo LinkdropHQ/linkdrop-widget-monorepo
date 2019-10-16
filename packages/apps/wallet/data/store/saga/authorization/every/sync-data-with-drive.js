@@ -17,15 +17,18 @@ const generator = function * () {
     } else { // if no files on drive upload new ones
       const password = generateRandomPassword()
       // console.log({ password, apiHost })
-      console.log('registring...')
-      const result = yield sdk.register(email, password)
-      return console.log({ result })
-      // const uploadResult = yield gapiService.uploadFiles({ chainId, ens, contractAddress, privateKey })
-      // data = uploadResult.data
+      console.log('registering...')
+      const { success, data: requestData } = yield sdk.register(email, password)
+      if (success) {
+        const { privateKey, sessionKeyStore } = requestData
+        // save private key in non-persistent JS memory (not in localstorage)
+        // save sessionKeyStore to persistent localstorage
+        const uploadResult = yield gapiService.uploadFiles({ chainId, privateKey, sessionKeyStore })
+        data = uploadResult.data
+      }
     }
-    const { privateKey, contractAddress, ens } = data
-    console.log({ privateKey, contractAddress, ens, avatar, chainId })
-    yield put({ type: '*USER.SET_USER_DATA', payload: { privateKey, contractAddress, ens, avatar, chainId } })
+    const { privateKey, sessionKeyStore } = data
+    yield put({ type: '*USER.SET_USER_DATA', payload: { privateKey, sessionKeyStore, avatar, chainId } })
     yield put({ type: 'AUTHORIZATION.SET_LOADING', payload: { loading: false } })
     return { email, avatar }
   } catch (e) {

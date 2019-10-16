@@ -7,12 +7,11 @@ import AppRouter from '../router'
 import { getHashVariables } from '@linkdrop/commons'
 import config from 'app.config.js'
 
-@actions(({ widget: { page, txParams, connected, eventEmitter }, user: { sdk, loading, privateKey, contractAddress, ens, locale } }) => ({
+@actions(({ widget: { page, txParams, connected, eventEmitter }, user: { sdk, loading, privateKey, sessionKeyStore, locale } }) => ({
   sdk,
   loading,
   privateKey,
-  contractAddress,
-  ens,
+  sessionKeyStore,
   locale,
   // widget
   page,
@@ -42,7 +41,9 @@ class WidgetRouter extends React.Component {
         return this._awaitUserConnectConfirmation()
       },
       getAccounts: () => {
-        const { contractAddress, ens } = this.props
+        const { sessionKeyStore, privateKey } = this.props
+        return console.log({ sessionKeyStore, privateKey })
+
         if (!ens) return []
         return [contractAddress]
       }
@@ -102,9 +103,9 @@ class WidgetRouter extends React.Component {
   }
 
   render () {
-    const { sdk, privateKey, contractAddress, ens, page, connected } = this.props
+    const { sdk, privateKey, sessionKeyStore, page, connected } = this.props
     if (!sdk) { return <Loading /> }
-    if (sdk && (!ens || !privateKey || !contractAddress)) { return <Authorization /> }
+    if (sdk && (!privateKey || !sessionKeyStore)) { return <Authorization /> }
     if (connected && !page) return <AppRouter />
     if (page === 'CONNECT_SCREEN') { return <Widget.Connect /> }
     if (page === 'CONFIRM_TRANSACTION_SCREEN') { return <Widget.Confirm /> }

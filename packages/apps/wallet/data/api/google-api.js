@@ -94,7 +94,7 @@ class GoogleApiService {
   //   return { email, avatar }
   // }
 
-  uploadFiles ({ ens, contractAddress, privateKey, chainId }) {
+  uploadFiles ({ chainId, privateKey, sessionKeyStore }) {
     return new Promise((resolve, reject) => {
       const boundary = '-------314159265358979323846'
       const delimiter = '\r\n--' + boundary + '\r\n'
@@ -106,7 +106,7 @@ class GoogleApiService {
           mimeType: contentType,
           parents: ['appDataFolder']
         }
-        const updatedData = JSON.stringify({ ...data.data, result: undefined, [`_${chainId}`]: { ens, contractAddress, privateKey } })
+        const updatedData = JSON.stringify({ ...data.data, result: undefined, [`_${chainId}`]: { chainId, privateKey, sessionKeyStore } })
         const multipartRequestBody =
               delimiter +
               'Content-Type: application/json\r\n\r\n' +
@@ -131,7 +131,7 @@ class GoogleApiService {
               body: multipartRequestBody
             })
             .execute(response => {
-              resolve({ success: true, data: { privateKey, contractAddress, ens } })
+              resolve({ success: true, data: { privateKey, sessionKeyStore } })
             })
         } catch (err) {
           reject(err)
