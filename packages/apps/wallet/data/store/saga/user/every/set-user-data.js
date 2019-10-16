@@ -5,10 +5,10 @@ const ls = (typeof window === 'undefined' ? {} : window).localStorage
 
 const generator = function * ({ payload }) {
   try {
-    const { privateKey, sessionKeyStore, avatar, chainId } = payload
-    yield put({ type: 'USER.SET_USER_DATA', payload: { privateKey, sessionKeyStore, avatar } })
+    const { privateKey, sessionKeyStore, avatar, chainId, email } = payload
+    yield put({ type: 'USER.SET_USER_DATA', payload: { privateKey, sessionKeyStore, avatar, email } })
     if (ls && ls.setItem) {
-      saveUserData({ sessionKeyStore, avatar, chainId })
+      saveUserData({ sessionKeyStore, avatar, chainId, email })
     }
   } catch (e) {
     console.error(e)

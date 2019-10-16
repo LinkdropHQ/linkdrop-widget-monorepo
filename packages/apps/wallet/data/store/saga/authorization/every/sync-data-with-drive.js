@@ -23,7 +23,7 @@ const generator = function * () {
         const { privateKey, sessionKeyStore } = requestData
         // save private key in non-persistent JS memory (not in localstorage)
         // save sessionKeyStore to persistent localstorage
-        const uploadResult = yield gapiService.uploadFiles({ chainId, privateKey, sessionKeyStore })
+        const uploadResult = yield gapiService.uploadFiles({ email, chainId, privateKey, sessionKeyStore })
         data = uploadResult.data
       }
     }

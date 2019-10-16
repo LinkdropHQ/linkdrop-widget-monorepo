@@ -6,19 +6,19 @@ const ls = (typeof window === 'undefined' ? {} : window).localStorage
 const {
   chainId = config.defaultChainId
 } = getHashVariables()
-const { sessionKeyStore } = defineInitialData({ chainId })
+const { sessionKeyStore, email } = defineInitialData({ chainId })
 
 const initialState = {
   id: undefined,
   locale: 'en',
-  email: null,
+  email,
   step: 0,
   loading: false,
   errors: [],
   readyToClaim: false,
   alreadyClaimed: false,
   sdk: null,
-  privateKey: '0x5d16682004265c5ead90a2a716100bbff6a78db358381425aec853499841b1ee',
+  privateKey: null,
   // надо null
   sessionKeyStore,
   avatar: ls && ls.getItem && ls.getItem('avatar'),

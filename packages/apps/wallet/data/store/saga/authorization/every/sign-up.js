@@ -9,7 +9,6 @@ const generator = function * ({ payload }) {
     const { success, data: requestData } = yield sdk.register(email, password)
     if (success) {
       const { privateKey, sessionKeyStore } = requestData
-      console.log({ privateKey, sessionKeyStore })
       yield put({ type: '*USER.SET_USER_DATA', payload: { privateKey, email, sessionKeyStore, chainId } })
       yield put({ type: 'AUTHORIZATION.SET_SCREEN', payload: { screen: 'success' } })
     }

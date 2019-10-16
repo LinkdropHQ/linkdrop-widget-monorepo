@@ -41,5 +41,8 @@ export default {
     secure: 'Secure',
     signUp: 'Sign up',
     next: 'Next'
+  },
+  errors: {
+    INVALID_PASSWORD: 'Invalid Password'
   }
 }
