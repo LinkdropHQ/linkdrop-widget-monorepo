@@ -129,3 +129,18 @@ export const fetchSessionKey = wrapAsync(async (req, res, next) => {
     next(err)
   }
 })
+
+export const isDeployed = wrapAsync(async (req, res, next) => {
+  try {
+    const { email } = req.body
+    const account = await accountsService.findAccount(email)
+
+    if (!account) {
+      return next(boom.badRequest('No account found'))
+    }
+
+    return { success: true, isDeployed: account.deployed }
+  } catch (err) {
+    next(err)
+  }
+})

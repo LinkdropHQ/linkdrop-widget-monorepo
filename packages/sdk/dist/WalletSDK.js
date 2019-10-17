@@ -41,7 +41,7 @@ var _generateLink3 = require("./generateLink");
 
 var _claim3 = require("./claim");
 
-var _auth = require("./auth");
+var _accounts = require("./accounts");
 
 var cryptoUtils = _interopRequireWildcard(require("./cryptoUtils"));
 
@@ -782,7 +782,7 @@ function () {
           while (1) {
             switch (_context10.prev = _context10.next) {
               case 0:
-                return _context10.abrupt("return", (0, _auth.register)({
+                return _context10.abrupt("return", (0, _accounts.register)({
                   email: email,
                   password: password,
                   apiHost: this.apiHost
@@ -818,7 +818,7 @@ function () {
           while (1) {
             switch (_context11.prev = _context11.next) {
               case 0:
-                return _context11.abrupt("return", (0, _auth.login)({
+                return _context11.abrupt("return", (0, _accounts.login)({
                   email: email,
                   password: password,
                   apiHost: this.apiHost
@@ -841,7 +841,7 @@ function () {
     /**
      * Fetches session key from server
      * @param {String} email Email
-     * @return `sessionKey` Session key
+     * @return `{success, sessionKey, error}`
      */
 
   }, {
@@ -854,7 +854,7 @@ function () {
           while (1) {
             switch (_context12.prev = _context12.next) {
               case 0:
-                return _context12.abrupt("return", (0, _auth.fetchSessionKey)({
+                return _context12.abrupt("return", (0, _accounts.fetchSessionKey)({
                   email: email,
                   apiHost: this.apiHost
                 }));
@@ -873,6 +873,13 @@ function () {
 
       return fetchSessionKey;
     }()
+    /**
+     * Fetches session key from server, decrypts session keystore and returns private key
+     * @param {String} email Email
+     * @param {Object} sessionKeyStore Encrypted session key store
+     * @return `{success, privateKey, error}`
+     */
+
   }, {
     key: "extractPrivateKeyFromSession",
     value: function () {
@@ -883,7 +890,7 @@ function () {
           while (1) {
             switch (_context13.prev = _context13.next) {
               case 0:
-                return _context13.abrupt("return", (0, _auth.extractPrivateKeyFromSession)({
+                return _context13.abrupt("return", (0, _accounts.extractPrivateKeyFromSession)({
                   email: email,
                   sessionKeyStore: sessionKeyStore,
                   apiHost: this.apiHost
@@ -902,6 +909,41 @@ function () {
       }
 
       return extractPrivateKeyFromSession;
+    }()
+    /**
+     * Returns whether a wallet for the given account is deployed
+     * @param {String} email Email
+     * @return `{success, isDeployed, error}`
+     */
+
+  }, {
+    key: "isDeployed",
+    value: function () {
+      var _isDeployed2 = (0, _asyncToGenerator2["default"])(
+      /*#__PURE__*/
+      _regenerator["default"].mark(function _callee14(email) {
+        return _regenerator["default"].wrap(function _callee14$(_context14) {
+          while (1) {
+            switch (_context14.prev = _context14.next) {
+              case 0:
+                return _context14.abrupt("return", (0, _accounts.isDeployed)({
+                  email: email,
+                  apiHost: this.apiHost
+                }));
+
+              case 1:
+              case "end":
+                return _context14.stop();
+            }
+          }
+        }, _callee14, this);
+      }));
+
+      function isDeployed(_x20) {
+        return _isDeployed2.apply(this, arguments);
+      }
+
+      return isDeployed;
     }()
   }]);
   return WalletSDK;
