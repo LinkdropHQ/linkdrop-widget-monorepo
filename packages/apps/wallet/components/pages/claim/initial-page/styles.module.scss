@@ -5,8 +5,8 @@
 }
 
 .title {
-  font-size: 35px;
-  margin-bottom: 50px;
+  font-size: 20px;
+  margin-bottom: 20px;
   text-transform: uppercase;
 }
 
@@ -15,6 +15,11 @@
   max-width: 300px;
   background: $dbBlue;
 }
+
+.tokenIconNft {
+  width: 140px;
+  height: 140px;
+} 
 
 .terms {
   margin-bottom: 25px;
@@ -28,7 +33,7 @@
 }
 
 .tokenIcon {
-  margin-bottom: 30px;
+  margin-bottom: 15px;
 }
 
 .wallet {

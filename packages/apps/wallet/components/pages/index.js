@@ -9,6 +9,7 @@ import Receive from './receive'
 import Common from './common'
 import Widget from './widget'
 import BuyTokens from './buy-tokens'
+import Assets from './assets'
 
 export {
   NotFound,
@@ -21,5 +22,6 @@ export {
   Receive,
   Common,
   Widget,
+  Assets,
   BuyTokens
 }
