@@ -27,6 +27,8 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.7.1",
     "morgan": "^1.9.1",
+    "shipit-cli": "^5.1.0",
+    "shipit-deploy": "^5.1.0",
     "util": "^0.12.1",
     "web3": "^1.2.1",
     "winston": "^3.2.1"
