@@ -13,22 +13,6 @@ const generator = function * ({ payload }) {
     const privateKey = yield select(generator.selectors.privateKey)
     const ens = getEns({ email, chainId })
 
-    console.log({
-      weiAmount: weiAmount || '0',
-      nftAddress,
-      tokenId,
-      expirationTime,
-      linkKey,
-      linkdropSignerSignature,
-      linkdropMasterAddress,
-      campaignId,
-      email,
-      owner: new ethers.Wallet(privateKey).address,
-      ensName: ens.slice(0, ens.indexOf('.')),
-      saltNonce: String(+(new Date())),
-      gasPrice: '0'
-    })
-
     const { success, txHash, errors } = yield sdk.claimAndCreateERC721({
       weiAmount: weiAmount || '0',
       nftAddress,
@@ -44,8 +28,6 @@ const generator = function * ({ payload }) {
       saltNonce: String(+(new Date())),
       gasPrice: '0'
     })
-
-    console.log({ txHash })
 
     // {
     //   owner: new ethers.Wallet(privateKey).address, +

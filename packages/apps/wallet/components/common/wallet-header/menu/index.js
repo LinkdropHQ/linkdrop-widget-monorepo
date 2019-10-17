@@ -15,12 +15,14 @@ class Menu extends React.Component {
 
   render () {
     const MENU = [
+    // buy tokens commented out
+      // {
+      //   title: text('common.walletHeader.menu.buyTokens'),
+      //   href: prepareRedirectUrl({ link: '/#/buy-tokens' }),
+      //   color: variables.greenColor,
+      //   logo: '$'
+      // },
       {
-        title: text('common.walletHeader.menu.buyTokens'),
-        href: prepareRedirectUrl({ link: '/#/buy-tokens' }),
-        color: variables.greenColor,
-        logo: '$'
-      }, {
         title: text('common.walletHeader.menu.withdraw'),
         href: prepareRedirectUrl({ link: '/#/send' })
       }, {

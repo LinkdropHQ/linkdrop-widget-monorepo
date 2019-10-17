@@ -5,6 +5,7 @@ import { getHashVariables } from '@linkdrop/commons'
 import { TokensAmount, AssetBalance, AccountBalance } from 'components/common'
 import { getCurrentAsset } from 'helpers'
 import styles from './styles.module'
+import { Alert } from '@linkdrop/ui-kit'
 
 @actions(({ user: { chainId }, tokens: { transactionId, transactionStatus } }) => ({ transactionId, chainId, transactionStatus }))
 @translate('pages.claim')
@@ -59,9 +60,27 @@ class ClaimingProcessPage extends React.Component {
     if (!mainAsset) { return null }
     const { balanceFormatted, symbol } = mainAsset
     return <div className={commonStyles.container}>
-      <AccountBalance items={itemsToClaim} loading={loading} />
-      <TokensAmount chainId={chainId} transactionId={transactionId} loading={loading} symbol={symbol} amount={balanceFormatted} />
+      {this.renderPreview({ mainAsset, loading, itemsToClaim })}
+      <div className={styles.loading}>
+        <TokensAmount chainId={chainId} transactionId={transactionId} claimingFinished={!loading} loading={loading} symbol={symbol} amount={balanceFormatted} />
+      </div>
     </div>
+  }
+
+  renderPreview ({ mainAsset, loading, itemsToClaim }) {
+    if (mainAsset.type === 'erc721') {
+      const { image } = mainAsset
+      return <div className={styles.tokenPreview}>
+        <div className={styles.tokenPreviewImage}>
+          <img src={image} />
+        </div>
+        <div className={styles.tokenPreviewTitle}>
+          blabla
+        </div>
+      </div>
+    }
+
+    return <AccountBalance items={itemsToClaim} loading={loading} />
   }
 }
 

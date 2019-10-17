@@ -3,3 +3,23 @@
 .content {
   width: 300px;
 }
+
+.tokenPreviewImage {
+  margin-bottom: 15px;
+  width: 140px;
+  height: 140px;
+}
+
+.tokenPreviewImage img {
+  max-height: 100%;
+}
+
+.tokenPreviewTitle {
+  font-size: 20px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.loading {
+  margin-bottom: 15px;
+}

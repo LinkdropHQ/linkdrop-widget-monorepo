@@ -43,9 +43,9 @@ class WidgetRouter extends React.Component {
         return this._awaitUserConnectConfirmation()
       },
       getAccounts: () => {
-        if (!walletAddress) { 
+        if (!walletAddress) {
           const { privateKey, sdk } = this.props
-          console.log("WALLET: getAccounts")
+          console.log('WALLET: getAccounts')
           const owner = new ethers.Wallet(privateKey).address
           walletAddress = sdk.precomputeAddress({ owner })
         }
@@ -108,6 +108,7 @@ class WidgetRouter extends React.Component {
 
   render () {
     const { sdk, privateKey, sessionKeyStore, page, connected } = this.props
+    console.log({ privateKey })
     if (!sdk && privateKey === null) { return <Loading /> }
     if (sdk && !sessionKeyStore) { return <Authorization /> }
     if (connected && !page) return <AppRouter />

@@ -31,7 +31,6 @@ class Claim extends React.Component {
       campaignId
     } = getHashVariables()
     this.actions().tokens.checkIfClaimed({ linkKey, chainId, linkdropMasterAddress, campaignId })
-    this.actions().assets.getItems({ wallet: contractAddress, chainId })
   }
 
   componentWillReceiveProps ({ readyToClaim, alreadyClaimed, chainId }) {
@@ -76,6 +75,7 @@ class Claim extends React.Component {
   }
 
   getAssetsData ({ nftAddress, tokenId, weiAmount, chainId, tokenAddress, tokenAmount }) {
+    console.log({ nftAddress })
     if (nftAddress && tokenId) {
       this.actions().assets.getTokenERC721Data({ nftAddress, tokenId, chainId })
     } else {

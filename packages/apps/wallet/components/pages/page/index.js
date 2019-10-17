@@ -5,19 +5,28 @@ import styles from './styles.module'
 import { translate, actions } from 'decorators'
 import classNames from 'classnames'
 
-@actions(({ user: { showNote, chainId, moonpayShow, contractAddress } }) => ({ chainId, showNote, moonpayShow, contractAddress }))
+@actions(({ user: { showNote, chainId, moonpayShow, privateKey } }) => ({ chainId, showNote, moonpayShow, privateKey }))
 @translate('pages.page')
 class Page extends React.Component {
   componentDidMount () {
-    const { contractAddress, chainId } = this.props
+    const { chainId } = this.props
 
     const interval = window.checkAssets
     if (interval) {
       interval && window.clearInterval(interval)
     }
-    if (!contractAddress) { return }
-    this.actions().assets.getItems({ chainId, wallet: contractAddress })
-    window.checkAssets = window.setInterval(_ => this.actions().assets.getItems({ chainId, wallet: contractAddress }), 30000)
+    window.checkAssets = window.setInterval(_ => {
+      const { privateKey } = this.props
+      if (!privateKey) { return }
+      this.actions().assets.getItems({ chainId })
+    }, 30000)
+  }
+
+  componentWillReceiveProps ({ privateKey, chainId }) {
+    const { privateKey: prevPrivateKey } = this.props
+    if (privateKey && !prevPrivateKey) {
+      this.actions().assets.getItems({ chainId })
+    }
   }
 
   render () {

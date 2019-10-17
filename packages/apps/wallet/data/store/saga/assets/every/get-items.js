@@ -16,7 +16,7 @@ const getImage = function * ({ metadataURL }) {
   }
 }
 
-const getTokenDataERC20 = function * ({ address, symbol, decimals, chainId, provider, contractAddress }) {
+const getTokenDataERC20 = function * ({ address, symbol, decimals, chainId, provider, walletAddress }) {
   let assetPrice = 0
   if (Number(chainId) === 1) {
     assetPrice = yield call(getAssetPrice, { symbol })
@@ -24,7 +24,7 @@ const getTokenDataERC20 = function * ({ address, symbol, decimals, chainId, prov
 
   const tokenContract = new ethers.Contract(address, TokenMock.abi, provider)
 
-  const balance = yield tokenContract.balanceOf(contractAddress)
+  const balance = yield tokenContract.balanceOf(walletAddress)
   // currentAddress - кошелек пользователя
   // account
   const amountFormatted = yield utils.formatUnits(balance, decimals)
@@ -41,7 +41,7 @@ const getTokenDataERC20 = function * ({ address, symbol, decimals, chainId, prov
   }
 }
 
-const getTokenDataERC721 = function * ({ tokenId, name, address, chainId, provider, contractAddress }) {
+const getTokenDataERC721 = function * ({ tokenId, name, address, chainId, provider }) {
   const nftContract = yield new ethers.Contract(address, NFTMock.abi, provider)
   const metadataURL = yield nftContract.tokenURI(tokenId)
   const symbol = yield nftContract.symbol()
@@ -62,24 +62,27 @@ const getTokenDataERC721 = function * ({ tokenId, name, address, chainId, provid
 const generator = function * () {
   try {
     const chainId = yield select(generator.selectors.chainId)
-    // const contractAddress = yield select(generator.selectors.contractAddress)
-    const contractAddress = '0xAa46966f3448291068249E6f3fa8FDA59C929f3E'
+    const sdk = yield select(generator.selectors.sdk)
+    const privateKey = yield select(generator.selectors.privateKey)
+    const owner = new ethers.Wallet(privateKey).address
+    // const walletAddress = sdk.precomputeAddress({ owner })
+    const walletAddress = '0xAa46966f3448291068249E6f3fa8FDA59C929f3E'
     const networkName = defineNetworkName({ chainId })
 
-    const { status = 0, result = [], message } = yield call(getItems, { address: contractAddress, networkName })
-    const { assets: resultERC721 } = yield call(getItemsERC721, { address: contractAddress, networkName })
+    const { status = 0, result = [], message } = yield call(getItems, { address: walletAddress, networkName })
+    const { assets: resultERC721 } = yield call(getItemsERC721, { address: walletAddress, networkName })
     const provider = yield ethers.getDefaultProvider(networkName)
-    const ethBalance = yield provider.getBalance(contractAddress)
+    const ethBalance = yield provider.getBalance(walletAddress)
 
     let assetsStorage = []
     if (status && status === '1' && message === 'OK') {
       const erc20Assets = result.filter(asset => asset.type === 'ERC-20')
-      const erc20AssetsFormatted = yield all(erc20Assets.map(({ contractAddress: address, symbol, decimals }) => getTokenDataERC20({ address, symbol, decimals, chainId, provider, contractAddress })))
+      const erc20AssetsFormatted = yield all(erc20Assets.map(({ contractAddress: address, symbol, decimals }) => getTokenDataERC20({ address, symbol, decimals, chainId, provider, walletAddress })))
       assetsStorage = assetsStorage.concat(erc20AssetsFormatted)
     }
 
     if (resultERC721 && resultERC721.length > 0) {
-      const erc721AssetsFormatted = yield all(resultERC721.map(({ token_id: tokenId, asset_contract: { address }, name }) => getTokenDataERC721({ tokenId, name, address, chainId, provider, contractAddress })))
+      const erc721AssetsFormatted = yield all(resultERC721.map(({ token_id: tokenId, asset_contract: { address }, name }) => getTokenDataERC721({ tokenId, name, address, chainId, provider, walletAddress })))
       assetsStorage = assetsStorage.concat(erc721AssetsFormatted)
     }
 
@@ -100,6 +103,7 @@ const generator = function * () {
         price: assetPrice
       }])
     }
+    console.log({ assetsStorage })
     yield put({ type: 'ASSETS.SET_ITEMS', payload: { items: assetsStorage || [] } })
   } catch (e) {
     console.error(e)
@@ -110,5 +114,6 @@ export default generator
 generator.selectors = {
   contractAddress: ({ user: { contractAddress } }) => contractAddress,
   sdk: ({ user: { sdk } }) => sdk,
-  chainId: ({ user: { chainId } }) => chainId
+  chainId: ({ user: { chainId } }) => chainId,
+  privateKey: ({ user: { privateKey } }) => privateKey
 }
