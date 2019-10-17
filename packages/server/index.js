@@ -14,7 +14,10 @@ const app = express()
 // Init middlewares
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json({ extended: false }))
-app.use(cors())
+app.use(cors({
+  origin: 'http://localhost:9002',
+  credentials: true
+}))
 app.use(cookieParser(config.COOKIE_SECRET))
 
 morgan.token('body', function (req, res) {

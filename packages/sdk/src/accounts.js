@@ -42,6 +42,8 @@ export const register = async ({ email, password, apiHost }) => {
     passwordDerivedKeyHash,
     encryptedEncryptionKey,
     encryptedMnemonic
+  }, {
+    withCredentials: true
   })
 
   const { account, sessionKey, success, error } = response.data
@@ -56,13 +58,13 @@ export const register = async ({ email, password, apiHost }) => {
 }
 
 export const login = async ({ email, password, apiHost }) => {
-  const passwordDerivedKey = await getPasswordDerivedKey(email, password)
+
   const passwordHash = await getPasswordHash(email, password)
 
   const response = await axios.post(`${apiHost}/api/v1/accounts/login`, {
     email,
     passwordHash
-  })
+  }, { withCredentials: true })
 
   const {
     encryptedEncryptionKey,
@@ -72,6 +74,7 @@ export const login = async ({ email, password, apiHost }) => {
     error
   } = response.data
 
+  const passwordDerivedKey = await getPasswordDerivedKey(email, password)
   const encryptionKey = await extractEncryptionKey(
     encryptedEncryptionKey.encryptedEncryptionKey,
     encryptedEncryptionKey.iv,
