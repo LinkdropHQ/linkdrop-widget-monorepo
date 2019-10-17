@@ -5,13 +5,29 @@ import { getEns } from 'helpers'
 
 const generator = function * ({ payload }) {
   try {
-    const { wallet, campaignId, nftAddress, tokenId, weiAmount, expirationTime, linkKey, linkdropSignerSignature } = payload
+    const { campaignId, nftAddress, tokenId, weiAmount, expirationTime, linkKey, linkdropSignerSignature, linkdropMasterAddress } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const sdk = yield select(generator.selectors.sdk)
     const email = yield select(generator.selectors.email)
     const chainId = yield select(generator.selectors.chainId)
     const privateKey = yield select(generator.selectors.privateKey)
     const ens = getEns({ email, chainId })
+
+    console.log({
+      weiAmount: weiAmount || '0',
+      nftAddress,
+      tokenId,
+      expirationTime,
+      linkKey,
+      linkdropSignerSignature,
+      linkdropMasterAddress,
+      campaignId,
+      email,
+      owner: new ethers.Wallet(privateKey).address,
+      ensName: ens.slice(0, ens.indexOf('.')),
+      saltNonce: String(+(new Date())),
+      gasPrice: '0'
+    })
 
     const { success, txHash, errors } = yield sdk.claimAndCreateERC721({
       weiAmount: weiAmount || '0',
@@ -20,6 +36,7 @@ const generator = function * ({ payload }) {
       expirationTime,
       linkKey,
       linkdropSignerSignature,
+      linkdropMasterAddress,
       campaignId,
       email,
       owner: new ethers.Wallet(privateKey).address,
