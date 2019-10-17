@@ -115,7 +115,7 @@ export const extractPrivateKeyFromSession = async ({
   const { success, sessionKey, error } = await fetchSessionKey(apiHost)
   let wallet
   if (success === true) {
-    wallet = ethers.Wallet.fromEncryptedJson(sessionKeyStore, sessionKey)
+    wallet = await ethers.Wallet.fromEncryptedJson(sessionKeyStore, sessionKey)
   }
   return { success, privateKey: wallet.privateKey, error }
 }

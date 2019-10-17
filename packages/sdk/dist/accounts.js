@@ -61,6 +61,8 @@ function () {
               passwordDerivedKeyHash: passwordDerivedKeyHash,
               encryptedEncryptionKey: encryptedEncryptionKey,
               encryptedMnemonic: encryptedMnemonic
+            }, {
+              withCredentials: true
             });
 
           case 19:
@@ -101,7 +103,7 @@ function () {
   var _ref4 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
   _regenerator["default"].mark(function _callee2(_ref3) {
-    var email, password, apiHost, passwordDerivedKey, passwordHash, response, _response$data2, encryptedEncryptionKey, encryptedMnemonic, sessionKey, success, error, encryptionKey, mnemonic, wallet, sessionKeyStore;
+    var email, password, apiHost, passwordHash, response, _response$data2, encryptedEncryptionKey, encryptedMnemonic, sessionKey, success, error, passwordDerivedKey, encryptionKey, mnemonic, wallet, sessionKeyStore;
 
     return _regenerator["default"].wrap(function _callee2$(_context2) {
       while (1) {
@@ -109,24 +111,26 @@ function () {
           case 0:
             email = _ref3.email, password = _ref3.password, apiHost = _ref3.apiHost;
             _context2.next = 3;
-            return (0, _cryptoUtils.getPasswordDerivedKey)(email, password);
-
-          case 3:
-            passwordDerivedKey = _context2.sent;
-            _context2.next = 6;
             return (0, _cryptoUtils.getPasswordHash)(email, password);
 
-          case 6:
+          case 3:
             passwordHash = _context2.sent;
-            _context2.next = 9;
+            _context2.next = 6;
             return _axios["default"].post("".concat(apiHost, "/api/v1/accounts/login"), {
               email: email,
               passwordHash: passwordHash
+            }, {
+              withCredentials: true
             });
 
-          case 9:
+          case 6:
             response = _context2.sent;
             _response$data2 = response.data, encryptedEncryptionKey = _response$data2.encryptedEncryptionKey, encryptedMnemonic = _response$data2.encryptedMnemonic, sessionKey = _response$data2.sessionKey, success = _response$data2.success, error = _response$data2.error;
+            _context2.next = 10;
+            return (0, _cryptoUtils.getPasswordDerivedKey)(email, password);
+
+          case 10:
+            passwordDerivedKey = _context2.sent;
             _context2.next = 13;
             return (0, _cryptoUtils.extractEncryptionKey)(encryptedEncryptionKey.encryptedEncryptionKey, encryptedEncryptionKey.iv, passwordDerivedKey);
 
