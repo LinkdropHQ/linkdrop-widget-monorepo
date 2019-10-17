@@ -307,24 +307,27 @@ export const claimAndCreateERC721 = async ({
     deployer: safe
   })
 
-  const response = await axios.post(`${apiHost}/api/v1/safes/claimAndCreate`, {
-    owner,
-    saltNonce,
-    ensName,
-    guardian,
-    recoveryPeriod,
-    gasPrice,
-    weiAmount,
-    nftAddress,
-    tokenId,
-    expirationTime,
-    linkId,
-    linkdropMasterAddress,
-    campaignId,
-    linkdropSignerSignature,
-    receiverSignature,
-    email
-  })
+  const response = await axios.post(
+    `${apiHost}/api/v1/safes/claimAndCreateERC721`,
+    {
+      owner,
+      saltNonce,
+      ensName,
+      guardian,
+      recoveryPeriod,
+      gasPrice,
+      weiAmount,
+      nftAddress,
+      tokenId,
+      expirationTime,
+      linkId,
+      linkdropMasterAddress,
+      campaignId,
+      linkdropSignerSignature,
+      receiverSignature,
+      email
+    }
+  )
 
   const { success, txHash, errors } = response.data
 
