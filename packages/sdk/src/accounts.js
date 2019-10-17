@@ -58,7 +58,6 @@ export const register = async ({ email, password, apiHost }) => {
 }
 
 export const login = async ({ email, password, apiHost }) => {
-
   const passwordHash = await getPasswordHash(email, password)
 
   const response = await axios.post(`${apiHost}/api/v1/accounts/login`, {
