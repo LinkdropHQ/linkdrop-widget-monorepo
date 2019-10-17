@@ -255,7 +255,7 @@ class SafeCreationService {
         to: this.multiSendWithRefund.address,
         data: multiSendData,
         gasPrice: ethers.utils.parseUnits(gasPrice, 'wei'),
-        gasLimit: 6500000
+        gasLimit: 900000
       })
 
       logger.json(
@@ -498,7 +498,7 @@ class SafeCreationService {
         to: this.multiSendWithRefund.address,
         data: multiSendData,
         gasPrice: ethers.utils.parseUnits(gasPrice, 'wei'),
-        gasLimit: 6950000
+        gasLimit: 900000
       })
 
       account = await accountsService.update({
@@ -753,7 +753,7 @@ class SafeCreationService {
         to: this.multiSendWithRefund.address,
         data: multiSendData,
         gasPrice: ethers.utils.parseUnits(gasPrice, 'wei'),
-        gasLimit: 6950000
+        gasLimit: 900000
       })
 
       account = await accountsService.update({
