@@ -36,7 +36,6 @@ const generator = function * ({ payload }) {
 }
 
 export default generator
-
 generator.selectors = {
   sdk: ({ user: { sdk } }) => sdk
 }
