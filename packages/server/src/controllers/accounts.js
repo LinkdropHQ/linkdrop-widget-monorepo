@@ -107,7 +107,7 @@ export const fetchSessionKey = wrapAsync(async (req, res, next) => {
     if (!signedCookies.LINKDROP_WIDGET_JWT) {
       return next(boom.badRequest('No JWT token in cookies'))
     }
-    console.log('signed-cookies:', signedCookies)
+
     try {
       const accountId = await authService.decodeJWT(
         signedCookies.LINKDROP_WIDGET_JWT
