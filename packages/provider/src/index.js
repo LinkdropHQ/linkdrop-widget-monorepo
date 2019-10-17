@@ -10,14 +10,9 @@ const SubscriptionsSubprovider = require('web3-provider-engine/subproviders/subs
 
 class Provider {
   constructor (opts) {
-    this.ensName = opts.ensName
     this.network = opts.network || 'mainnet'
     this.rpcUrl = opts.rpcUrl || `https://${this.network}.infura.io/v3/d4d1a2b933e048e28fb6fe1abe3e813a`
-    this.widgetUrl = opts.widgetUrl || 'http://localhost:9002/#/receive?weiAmount=100000000000000000&nftAddress=0xe1d5946ea3566013940abdad07e357cfe0e3860d&tokenId=1&expirationTime=1900000000000&version=1&chainId=4&linkKey=0x13a1aa46c1a84b0a2cd8dc080846b006fd8162da8de4b7bdac411361b3ae91e3&linkdropMasterAddress=0xf695e673d7d159cbfc119b53d8928ceca4efe99e&linkdropSignerSignature=0x204e3abeaa1969404ce699895385c7cb4d2d694c9d92b3b924df1f654acbef2549f9c3d4227012aa2a693bffdfcfdb116b8959aac67c60bf8654ad35bc30f23c1c&campaignId=15'
-
-    if (!opts.ensName) {
-      throw new Error('ENS name should be provided')
-    }
+    this.widgetUrl = opts.widgetUrl || 'http://localhost:9002'
 
     if (!opts.network) {
       throw new Error('network should be provided')
@@ -125,13 +120,9 @@ class Provider {
 
     engine.enable = async () => {
       await this._initWidgetFrame()
-
-      // this._showWidget()
       try {
         await this.widget.communication.connect()
-        // this._hideWidget()
       } catch (err) {
-        /// this._hideWidget()
         throw err
       }
     }
@@ -155,7 +146,7 @@ class Provider {
             result = true
             break
           default:
-            var message = `Card Web3 object does not support synchronous methods like ${
+            var message = `Linkdrop Widget Web3 object does not support synchronous methods like ${
             payload.method
           } without a callback parameter.`
             throw new Error(message)
