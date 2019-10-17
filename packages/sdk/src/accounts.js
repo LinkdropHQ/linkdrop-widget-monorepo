@@ -36,15 +36,19 @@ export const register = async ({ email, password, apiHost }) => {
     iv
   )
 
-  const response = await axios.post(`${apiHost}/api/v1/accounts/register`, {
-    email,
-    passwordHash,
-    passwordDerivedKeyHash,
-    encryptedEncryptionKey,
-    encryptedMnemonic
-  }, {
-    withCredentials: true
-  })
+  const response = await axios.post(
+    `${apiHost}/api/v1/accounts/register`,
+    {
+      email,
+      passwordHash,
+      passwordDerivedKeyHash,
+      encryptedEncryptionKey,
+      encryptedMnemonic
+    },
+    {
+      withCredentials: true
+    }
+  )
 
   const { account, sessionKey, success, error } = response.data
 
@@ -60,10 +64,14 @@ export const register = async ({ email, password, apiHost }) => {
 export const login = async ({ email, password, apiHost }) => {
   const passwordHash = await getPasswordHash(email, password)
 
-  const response = await axios.post(`${apiHost}/api/v1/accounts/login`, {
-    email,
-    passwordHash
-  }, { withCredentials: true })
+  const response = await axios.post(
+    `${apiHost}/api/v1/accounts/login`,
+    {
+      email,
+      passwordHash
+    },
+    { withCredentials: true }
+  )
 
   const {
     encryptedEncryptionKey,
