@@ -53,7 +53,7 @@ app.use((err, req, res, next) => {
   if (err.isBoom) {
     // Log the error
     logger.error(err.output.payload.message)
-    res.status(err.output.statusCode).json(err.output.payload)
+    res.status(err.output.statusCode).json({ error: err.output.payload })
   } else {
     logger.error(err.message)
     res.status(500).json({ error: err.message })
