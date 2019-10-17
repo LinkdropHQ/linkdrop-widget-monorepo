@@ -119,6 +119,8 @@ export const extractPrivateKeyFromSession = async ({
 }
 
 export const isDeployed = async ({ email, apiHost }) => {
-  const response = await axios.get(`${apiHost}/api/v1/accounts/is-deployed`)
+  const response = await axios.get(
+    `${apiHost}/api/v1/accounts/is-deployed/${email}`
+  )
   return response.data
 }

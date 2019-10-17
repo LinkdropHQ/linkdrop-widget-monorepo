@@ -4,6 +4,7 @@ import assert from 'assert-js'
 import wrapAsync from '../utils/asyncWrapper'
 import accountsService from '../services/accountsService'
 import authService from '../services/authService'
+import relayerWalletService from '../services/relayerWalletService'
 
 export const exists = wrapAsync(async (req, res, next) => {
   try {
@@ -132,12 +133,12 @@ export const fetchSessionKey = wrapAsync(async (req, res, next) => {
 
 export const isDeployed = wrapAsync(async (req, res, next) => {
   try {
-    const { email } = req.body
-    const account = await accountsService.findAccount(email)
-    if (!account) {
-      return res.send(false)
+    const account = await accountsService.findAccount(req.params.email)
+    if (account && account.safe) {
+      const code = await relayerWalletService.provider.getCode(account.safe)
+      return res.send(code !== '0x')
     }
-    res.send(account.deployed)
+    res.send(false)
   } catch (err) {
     next(err)
   }
