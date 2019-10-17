@@ -58,7 +58,7 @@ const ADDRESS_ZERO = ethers.constants.AddressZero
  * @param {String} linkdropFactory Deployed linkdrop factory address
  * @returns {Object} {success, txHash, safe, errors}
  */
-export const claimAndCreate = async ({
+export const claimAndCreateERC721 = async ({
   weiAmount,
   nftAddress,
   tokenId,
