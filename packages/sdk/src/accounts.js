@@ -95,7 +95,7 @@ export const login = async ({ email, password, apiHost }) => {
   }
 }
 
-export const fetchSessionKey = async ({ apiHost }) => {
+export const fetchSessionKey = async apiHost => {
   const response = await axios.get(
     `${apiHost}/api/v1/accounts/fetch-session-key`,
     {
@@ -120,6 +120,5 @@ export const extractPrivateKeyFromSession = async ({
 
 export const isDeployed = async ({ email, apiHost }) => {
   const response = await axios.get(`${apiHost}/api/v1/accounts/is-deployed`)
-  const { success, isDeployed, error } = response.data
-  return { success, isDeployed, error }
+  return response.data
 }

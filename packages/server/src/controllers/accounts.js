@@ -134,12 +134,10 @@ export const isDeployed = wrapAsync(async (req, res, next) => {
   try {
     const { email } = req.body
     const account = await accountsService.findAccount(email)
-
     if (!account) {
-      return next(boom.badRequest('No account found'))
+      return res.send(false)
     }
-
-    return { success: true, isDeployed: account.deployed }
+    res.send(account.deployed)
   } catch (err) {
     next(err)
   }

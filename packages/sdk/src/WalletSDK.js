@@ -583,7 +583,6 @@ class WalletSDK {
     return login({ email, password, apiHost: this.apiHost })
   }
 
-
   /**
    * Fetches session key from server, decrypts session keystore and returns private key
    * @param {Object} sessionKeyStore Encrypted session key store
@@ -599,7 +598,7 @@ class WalletSDK {
   /**
    * Returns whether a wallet for the given account is deployed
    * @param {String} email Email
-   * @return `{success, isDeployed, error}`
+   * @return `isDeployed`
    */
   async isDeployed (email) {
     return isDeployed({ email, apiHost: this.apiHost })
