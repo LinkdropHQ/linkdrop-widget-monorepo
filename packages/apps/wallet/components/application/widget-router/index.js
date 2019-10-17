@@ -43,7 +43,6 @@ class WidgetRouter extends React.Component {
         return this._awaitUserConnectConfirmation()
       },
       getAccounts: () => {
-<<<<<<< HEAD
         if (!walletAddress) { 
           const { privateKey, sdk } = this.props
           console.log("WALLET: getAccounts")
@@ -51,12 +50,6 @@ class WidgetRouter extends React.Component {
           walletAddress = sdk.precomputeAddress({ owner })
         }
         return [walletAddress]
-=======
-        const { sessionKeyStore, privateKey } = this.props
-        return console.log({ sessionKeyStore, privateKey })
-
-        // return [contractAddress]
->>>>>>> 065844f24ad8502daf65f64823075f83a2cb414b
       }
     }
 

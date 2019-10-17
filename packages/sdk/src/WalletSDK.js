@@ -47,7 +47,7 @@ class WalletSDK {
     linkdropFactory = '0xBa051891B752ecE3670671812486fe8dd34CC1c8'
   }) {
     this.chain = chain
-    this.jsonRpcUrl = jsonRpcUrl || `https://${chain}.infura.io`
+    this.jsonRpcUrl = jsonRpcUrl || `https://${chain}.infura.io/v3/ecd43c9cd96e45ceb9131fba9b100b07`
     this.apiHost = apiHost
     this.claimHost = claimHost
     this.gnosisSafeMasterCopy = gnosisSafeMasterCopy
@@ -119,7 +119,12 @@ class WalletSDK {
       owner,
       saltNonce: owner,
       deployer: this.proxyFactory,
-      gnosisSafeMasterCopy: this.gnosisSafeMasterCopy
+      gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
+      to,
+      data,
+      paymentToken,
+      paymentAmount,
+      paymentReceiver
     })
   }
 
@@ -325,7 +330,6 @@ class WalletSDK {
     campaignId,
     owner,
     ensName,
-    saltNonce,
     email
   }) {
     return claimAndCreateERC721({
@@ -338,7 +342,7 @@ class WalletSDK {
       linkdropSignerSignature,
       campaignId,
       owner,
-      saltNonce,
+      saltNonce: owner,
       ensName,
       gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
       proxyFactory: this.proxyFactory,
