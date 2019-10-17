@@ -1,41 +1,22 @@
 import { put, select } from 'redux-saga/effects'
 import { ERRORS } from './data'
-import { factory } from 'app.config.js'
 
 const generator = function * ({ payload }) {
   try {
-    const { campaignId, wallet, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature } = payload
+    const { wallet, campaignId, nftAddress, tokenId, weiAmount, expirationTime, linkKey, linkdropSignerSignature } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const sdk = yield select(generator.selectors.sdk)
-    const ens = yield select(generator.selectors.ens)
-    const privateKey = yield select(generator.selectors.privateKey)
-    const walletContractExist = yield sdk.walletContractExist(ens)
-    let result = {}
-    const claimParams = {
+    const { success, txHash, errors } = yield sdk.claimERC721({
       weiAmount: weiAmount || '0',
-      tokenAddress,
-      tokenAmount: tokenAmount || '0',
+      nftAddress,
+      tokenId,
       expirationTime,
       linkKey,
-      linkdropMasterAddress,
       linkdropSignerSignature,
       receiverAddress: wallet,
-      campaignId,
-      factoryAddress: factory
-    }
+      campaignId
+    })
 
-    if (walletContractExist) {
-      console.log('...claiming')
-      result = yield sdk.claim(claimParams)
-    } else {
-      const deployParams = {
-        privateKey,
-        ensName: ens
-      }
-      console.log('...claiming and deploy')
-      result = yield sdk.claimAndDeploy(claimParams, deployParams)
-    }
-    const { success, errors, txHash } = result
     if (success) {
       yield put({ type: 'TOKENS.SET_TRANSACTION_ID', payload: { transactionId: txHash } })
     } else {
@@ -46,7 +27,6 @@ const generator = function * ({ payload }) {
     }
     yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
   } catch (error) {
-    console.error(error)
     const { response: { data: { errors = [] } = {} } = {} } = error
     if (errors.length > 0) {
       const currentError = ERRORS.indexOf(errors[0])
@@ -57,8 +37,5 @@ const generator = function * ({ payload }) {
 
 export default generator
 generator.selectors = {
-  sdk: ({ user: { sdk } }) => sdk,
-  ens: ({ user: { ens } }) => ens,
-  privateKey: ({ user: { privateKey } }) => privateKey,
-  contractAddress: ({ user: { contractAddress } }) => contractAddress
+  sdk: ({ user: { sdk } }) => sdk
 }
