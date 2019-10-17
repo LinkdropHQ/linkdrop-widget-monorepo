@@ -1,31 +1,11 @@
 import axios from 'axios'
 import assert from 'assert-js'
-import { computeSafeAddress } from './computeSafeAddress'
 import { ethers } from 'ethers'
-import {
-  encodeParams,
-  encodeDataForCreateAndAddModules,
-  encodeDataForMultiSend,
-  signReceiverAddress
-} from './utils'
-
-import GnosisSafe from '@gnosis.pm/safe-contracts/build/contracts/GnosisSafe'
-import ProxyFactory from '@gnosis.pm/safe-contracts/build/contracts/ProxyFactory'
-import MultiSend from '@gnosis.pm/safe-contracts/build/contracts/MultiSend'
-import CreateAndAddModules from '@gnosis.pm/safe-contracts/build/contracts/CreateAndAddModules'
-import LinkdropModule from '../../contracts/build/LinkdropModule'
-import RecoveryModule from '../../contracts/build/RecoveryModule.json'
-import LinkdropFactory from '@linkdrop/contracts/build/LinkdropFactory'
-
+import { signReceiverAddress } from './utils'
 import { computeLinkdropModuleAddress } from './computeLinkdropModuleAddress'
 import { computeRecoveryModuleAddress } from './computeRecoveryModuleAddress'
-
+import { precomputeSafeAddressWithModules } from './precomputeSafeAddressWithModules'
 import { getEnsOwner } from './ensUtils'
-
-import { FIFSRegistrar } from '@ensdomains/ens'
-
-const CALL_OP = 0
-const DELEGATECALL_OP = 1
 
 const ADDRESS_ZERO = ethers.constants.AddressZero
 
@@ -50,12 +30,10 @@ const ADDRESS_ZERO = ethers.constants.AddressZero
  * @param {String} guardian Guardian address
  * @param {String} recoveryPeriod Recovery period
  * @param {String} recoveryModuleMasterCopy Deployed recovery moduel mastercopy address
- * @param {String} gasPrice Gas price in wei
  * @param {String} ensName ENS name (e.g. 'alice')
  * @param {String} ensDomain ENS domain (e.g. 'my-domain.eth)
  * @param {String} ensAddress ENS address
  * @param {String} jsonRpcUrl JSON RPC URL
- * @param {String} linkdropFactory Deployed linkdrop factory address
  * @returns {Object} {success, txHash, safe, errors}
  */
 export const claimAndCreateERC721 = async ({
@@ -78,12 +56,10 @@ export const claimAndCreateERC721 = async ({
   guardian,
   recoveryPeriod,
   recoveryModuleMasterCopy,
-  gasPrice,
   ensName,
   ensDomain,
   ensAddress,
   jsonRpcUrl,
-  linkdropFactory,
   email
 }) => {
   assert.string(weiAmount, 'Wei amount is required')
@@ -106,7 +82,6 @@ export const claimAndCreateERC721 = async ({
   assert.string(apiHost, 'Api host is required')
   assert.string(ensName, 'Ens name is required')
   assert.string(saltNonce, 'Salt nonce is required')
-  assert.string(gasPrice, 'Gas price is required')
   assert.string(guardian, 'Guardian address is required')
   assert.string(recoveryPeriod, 'Recovery period is required')
   assert.string(ensAddress, 'Ens address is required')
@@ -131,7 +106,6 @@ export const claimAndCreateERC721 = async ({
   )
   assert.string(jsonRpcUrl, 'Json rpc url is required')
   assert.string(apiHost, 'Api host is required')
-  assert.string(linkdropFactory, 'Linkdrop factory address is required')
 
   assert.string(email, 'Email is required')
 
@@ -143,160 +117,27 @@ export const claimAndCreateERC721 = async ({
   })
   assert.true(ensOwner === ADDRESS_ZERO, 'Provided name already has an owner')
 
-  const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
-
-  const linkdropModuleSetupData = encodeParams(LinkdropModule.abi, 'setup', [
-    [owner]
-  ])
-
-  const linkdropModuleCreationData = encodeParams(
-    ProxyFactory.abi,
-    'createProxyWithNonce',
-    [linkdropModuleMasterCopy, linkdropModuleSetupData, saltNonce]
-  )
-
-  const recoveryModuleSetupData = encodeParams(RecoveryModule.abi, 'setup', [
-    [guardian],
-    recoveryPeriod
-  ])
-
-  const recoveryModuleCreationData = encodeParams(
-    ProxyFactory.abi,
-    'createProxyWithNonce',
-    [recoveryModuleMasterCopy, recoveryModuleSetupData, saltNonce]
-  )
-
-  const modulesCreationData = encodeDataForCreateAndAddModules([
-    linkdropModuleCreationData,
-    recoveryModuleCreationData
-  ])
-
-  const createAndAddModulesData = encodeParams(
-    CreateAndAddModules.abi,
-    'createAndAddModules',
-    [proxyFactory, modulesCreationData]
-  )
-
-  const createAndAddModulesMultiSendData = encodeDataForMultiSend(
-    DELEGATECALL_OP,
-    createAndAddModules,
-    0,
-    createAndAddModulesData
-  )
-
-  let nestedTxData = '0x' + createAndAddModulesMultiSendData
-
-  let multiSendData = encodeParams(MultiSend.abi, 'multiSend', [nestedTxData])
-
-  let gnosisSafeData = encodeParams(GnosisSafe.abi, 'setup', [
-    [owner], // owners
-    1, // threshold
-    multiSend, // to
-    multiSendData, // data,
-    ADDRESS_ZERO, // payment token address
-    0, // payment amount
-    ADDRESS_ZERO // payment receiver address
-  ])
-
-  let createSafeData = encodeParams(ProxyFactory.abi, 'createProxyWithNonce', [
+  const safeAddress = precomputeSafeAddressWithModules({
     gnosisSafeMasterCopy,
-    gnosisSafeData,
-    saltNonce
-  ])
-
-  gasPrice = gasPrice || (await provider.getGasPrice()).toNumber()
-
-  const estimate = (await provider.estimateGas({
-    to: proxyFactory,
-    data: createSafeData,
-    gasPrice
-  })).add(104000)
-
-  const creationCosts = estimate.mul(gasPrice)
-
-  gnosisSafeData = encodeParams(GnosisSafe.abi, 'setup', [
-    [owner], // owners
-    1, // threshold
-    multiSend, // to
-    multiSendData, // data,
-    ADDRESS_ZERO, // payment token address
-    creationCosts, // payment amount
-    ADDRESS_ZERO // payment receiver address
-  ])
-
-  createSafeData = encodeParams(ProxyFactory.abi, 'createProxyWithNonce', [
-    gnosisSafeMasterCopy,
-    gnosisSafeData,
-    saltNonce
-  ])
-
-  const createSafeMultiSendData = encodeDataForMultiSend(
-    CALL_OP,
     proxyFactory,
-    0,
-    createSafeData
-  )
-
-  const safe = computeSafeAddress({
     owner,
+    linkdropModuleMasterCopy,
+    createAndAddModules,
+    multiSend,
     saltNonce,
-    gnosisSafeMasterCopy: gnosisSafeMasterCopy,
-    deployer: proxyFactory,
-    to: multiSend,
-    data: multiSendData,
-    paymentAmount: creationCosts.toString()
+    guardian,
+    recoveryPeriod,
+    recoveryModuleMasterCopy
   })
-
-  const registerEnsData = encodeParams(FIFSRegistrar.abi, 'register', [
-    ethers.utils.keccak256(ethers.utils.toUtf8Bytes(ensName)),
-    safe
-  ])
-
-  const registrar = await getEnsOwner({ ensAddress, ensDomain, jsonRpcUrl })
-
-  const registerEnsMultiSendData = encodeDataForMultiSend(
-    CALL_OP,
-    registrar,
-    0,
-    registerEnsData
-  )
-
-  const receiverSignature = await signReceiverAddress(linkKey, safe)
+  
+  const receiverSignature = await signReceiverAddress(linkKey, safeAddress)
   const linkId = new ethers.Wallet(linkKey).address
-
-  const claimData = encodeParams(LinkdropFactory.abi, 'claimERC721', [
-    weiAmount,
-    nftAddress,
-    tokenId,
-    expirationTime,
-    linkId,
-    linkdropMasterAddress,
-    campaignId,
-    linkdropSignerSignature,
-    safe,
-    receiverSignature
-  ])
-
-  const claimMultiSendData = encodeDataForMultiSend(
-    CALL_OP,
-    linkdropFactory,
-    0,
-    claimData
-  )
-
-  nestedTxData =
-    '0x' +
-    claimMultiSendData +
-    createSafeMultiSendData +
-    registerEnsMultiSendData
-
-  multiSendData = encodeParams(MultiSend.abi, 'multiSend', [nestedTxData])
 
   const linkdropModule = computeLinkdropModuleAddress({
     owner,
     saltNonce,
     linkdropModuleMasterCopy,
-    deployer: safe
+    deployer: safeAddress
   })
 
   const recoveryModule = computeRecoveryModuleAddress({
@@ -304,7 +145,7 @@ export const claimAndCreateERC721 = async ({
     recoveryPeriod,
     saltNonce,
     recoveryModuleMasterCopy,
-    deployer: safe
+    deployer: safeAddress
   })
 
   const response = await axios.post(
@@ -315,7 +156,7 @@ export const claimAndCreateERC721 = async ({
       ensName,
       guardian,
       recoveryPeriod,
-      gasPrice,
+      gasPrice: '0',
       weiAmount,
       nftAddress,
       tokenId,
@@ -336,8 +177,8 @@ export const claimAndCreateERC721 = async ({
     txHash,
     linkdropModule,
     recoveryModule,
-    safe,
-    creationCosts: creationCosts.toString(),
+    safeAddress,
+    creationCosts: '0',
     errors
   }
 }

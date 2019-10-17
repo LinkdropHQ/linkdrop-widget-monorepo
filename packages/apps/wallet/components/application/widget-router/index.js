@@ -3,6 +3,7 @@ import { Authorization, Widget } from 'components/pages'
 // import './styles'
 import { Loading } from '@linkdrop/ui-kit'
 import { actions } from 'decorators'
+import { ethers } from 'ethers'
 import AppRouter from '../router'
 import { getHashVariables } from '@linkdrop/commons'
 import config from 'app.config.js'
@@ -29,6 +30,7 @@ class WidgetRouter extends React.Component {
       this.actions().user.createSdk({ linkdropMasterAddress })
     }
 
+    let walletAddress = null
     // Methods child is exposing to parent
     const methods = {
       sendTransaction: async (txParams) => {
@@ -41,10 +43,13 @@ class WidgetRouter extends React.Component {
         return this._awaitUserConnectConfirmation()
       },
       getAccounts: () => {
-        const { sessionKeyStore, privateKey } = this.props
-        return console.log({ sessionKeyStore, privateKey })
-
-        // return [contractAddress]
+        if (!walletAddress) { 
+          const { privateKey, sdk } = this.props
+          console.log("WALLET: getAccounts")
+          const owner = new ethers.Wallet(privateKey).address
+          walletAddress = sdk.precomputeAddress({ owner })
+        }
+        return [walletAddress]
       }
     }
 
