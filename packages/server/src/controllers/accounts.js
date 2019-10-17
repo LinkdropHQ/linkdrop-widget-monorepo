@@ -136,9 +136,9 @@ export const isDeployed = wrapAsync(async (req, res, next) => {
     const account = await accountsService.findAccount(req.params.email)
     if (account && account.safe) {
       const code = await relayerWalletService.provider.getCode(account.safe)
-      return res.send(code !== '0x')
+      return res.json({ isDeployed: code !== '0x', safe: account.safe })
     }
-    res.send(false)
+    res.json({ isDeployed: false })
   } catch (err) {
     next(err)
   }
