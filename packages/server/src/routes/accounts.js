@@ -8,6 +8,8 @@ router.get('/exists/:email', accountsController.exists)
 
 router.get('/fetch-session-key', accountsController.fetchSessionKey)
 
+router.get('/is-deployed', accountsController.isDeployed)
+
 /**
  * @route POST api/v1/accounts/register
  * @desc Signup new account

@@ -96,11 +96,14 @@ export const login = async ({ email, password, apiHost }) => {
 }
 
 export const fetchSessionKey = async ({ email, apiHost }) => {
-  const response = axios.get(`${apiHost}/api/v1/accounts/fetch-session-key`, {
-    withCredentials: true
-  })
-  const { success, sessionKey } = response.data
-  return sessionKey
+  const response = await axios.get(
+    `${apiHost}/api/v1/accounts/fetch-session-key`,
+    {
+      withCredentials: true
+    }
+  )
+  const { success, sessionKey, error } = response.data
+  return { success, sessionKey, error }
 }
 
 export const extractPrivateKeyFromSession = async ({
@@ -111,4 +114,10 @@ export const extractPrivateKeyFromSession = async ({
   const sessionKey = await fetchSessionKey(email, apiHost)
   const wallet = ethers.Wallet.fromEncryptedJson(sessionKeyStore, sessionKey)
   return wallet.privateKey
+}
+
+export const isDeployed = async ({ email, apiHost }) => {
+  const response = await axios.get(`${apiHost}/api/v1/accounts/is-deployed`)
+  const { success, isDeployed, error } = response.data
+  return { success, isDeployed, error }
 }
