@@ -11,7 +11,6 @@ import { Button } from 'components/common'
 class GoogleDrivePermission extends React.Component {
   render () {
     const { accessingDrive, enableDrivePermissions, errors } = this.props
-    console.log({ errors })
     if (errors && errors.length > 0) {
       return this.renderErrorPage({ accessingDrive, enableDrivePermissions })
     }

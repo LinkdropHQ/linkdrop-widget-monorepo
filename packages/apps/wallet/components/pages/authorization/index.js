@@ -119,7 +119,7 @@ class Authorization extends React.Component {
       <h2 className={styles.title} dangerouslySetInnerHTML={{ __html: this.t('titles.signIn') }} />
       <SignInWithEmail
         show={signInWithWallet || createWallet}
-        title={this.t(`titles.${createWallet ? 'createWalletTitle' : 'signInTitle'}`)}
+        title={this.t(`titles.${createWallet ? 'createWallet' : 'emailSignIn'}`)}
         onClose={_ => this.setState({ signInWithWallet: false, createWallet: false })}
       />
       <Button loadingClassName={styles.buttonLoading} className={styles.button} inverted loading={!enableAuthorize || loading} onClick={e => this.actions().authorization.signInWithGoogle()}>
