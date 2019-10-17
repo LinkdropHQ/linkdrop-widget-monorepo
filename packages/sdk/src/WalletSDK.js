@@ -174,9 +174,6 @@ class WalletSDK {
     jsonRpcUrl = this.jsonRpcUrl,
     apiHost = this.apiHost
   }) {
-
-
-    
     return create({
       owner,
       ensName,
