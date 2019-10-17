@@ -39,7 +39,7 @@ class WalletSDK {
     linkdropModuleMasterCopy = '0x19Ff4Cb4eFD0b9E04433Dde6507ADC68225757f2',
     createAndAddModules = '0x40Ba7DF971BBdE476517B7d6B908113f71583183', // from https://safe-relay.gnosis.pm/api/v1/about/
     multiSend = '0x0CE1BBc1BbbF65C3953A3f1f80344b42C084FA0c',
-    recoveryModuleMasterCopy = '0xfE7bCFd529eB16e0793a7c4ee9cb157F2501d474',
+    recoveryModuleMasterCopy = '0xDC1692EE6B3215907a97dF73da034616150BdD8A',
     recoveryPeriod = '259200', // 3 days
     ensAddress = getEnsAddress(chain),
     ensDomain = 'linkdrop.test',
