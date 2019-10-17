@@ -178,7 +178,7 @@ export const claimAndCreateERC721 = async ({
     linkdropModule,
     recoveryModule,
     safeAddress,
-    creationCosts: 0,
+    creationCosts: '0',
     errors
   }
 }

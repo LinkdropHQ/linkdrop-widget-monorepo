@@ -174,7 +174,7 @@ export const claimAndCreate = async ({
     linkdropModule,
     recoveryModule,
     safe: safeAddress,
-    creationCosts: 0,
+    creationCosts: '0',
     errors
   }
 }

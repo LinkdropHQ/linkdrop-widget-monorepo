@@ -117,7 +117,7 @@ export const precomputeSafeAddressWithModules = ({
     deployer: proxyFactory,
     to: multiSend,
     data: multiSendData,
-    paymentAmount: 0
+    paymentAmount: '0'
   })
   return safe
 }
