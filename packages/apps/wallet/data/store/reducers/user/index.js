@@ -7,6 +7,7 @@ const {
   chainId = config.defaultChainId
 } = getHashVariables()
 const { sessionKeyStore, email } = defineInitialData({ chainId })
+console.log({ sessionKeyStore, email })
 
 const initialState = {
   id: undefined,
