@@ -8,7 +8,7 @@ router.get('/exists/:email', accountsController.exists)
 
 router.get('/fetch-session-key', accountsController.fetchSessionKey)
 
-router.get('/is-deployed', accountsController.isDeployed)
+router.get('/is-deployed/:email', accountsController.isDeployed)
 
 /**
  * @route POST api/v1/accounts/register
