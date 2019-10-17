@@ -21,6 +21,7 @@
     "build:sdk": "cd packages/sdk && yarn build",
     "test": "yarn wsrun --stages --exclude-missing test",
     "test:contracts": "cd packages/contracts && yarn test",
+    "build:widget-provider": "babel packages/provider/src -d packages/provider/dist",
     "server": "npx babel-node packages/server/index"
   },
   "dependencies": {
