@@ -14,7 +14,6 @@ const generator = function * ({ payload }) {
     return pk
   } catch (e) {
     console.error(e)
-    yield put({ type: 'USER.SET_ERRORS', payload: { errors: ['LINK_INVALID'] } })
   }
 }
 

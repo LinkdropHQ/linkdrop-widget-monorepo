@@ -4,8 +4,10 @@ import { factory } from 'app.config.js'
 
 const generator = function * ({ payload }) {
   try {
-    const { tokenType, email } = payload
+    const { tokenType } = payload
+    const email = yield select(generator.selectors.email)
     const sdk = yield select(generator.selectors.sdk)
+    console.log('here')
     const isDeployed = yield sdk.isDeployed('spacehaz@gmail.com')
     console.log({ isDeployed })
   } catch (error) {
@@ -15,5 +17,6 @@ const generator = function * ({ payload }) {
 
 export default generator
 generator.selectors = {
-  sdk: ({ user: { sdk } }) => sdk
+  sdk: ({ user: { sdk } }) => sdk,
+  email: ({ user: { email } }) => email
 }
