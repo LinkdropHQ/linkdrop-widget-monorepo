@@ -1,7 +1,4 @@
-import { put, select } from 'redux-saga/effects'
-import { initializeWalletSdk } from 'data/sdk'
-import config from 'app.config.js'
-import { defineNetworkName } from '@linkdrop/commons'
+import { select } from 'redux-saga/effects'
 
 const generator = function * ({ payload }) {
   try {
