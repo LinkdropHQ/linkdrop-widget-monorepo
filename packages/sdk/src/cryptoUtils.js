@@ -108,18 +108,20 @@ export const extractMnemonic = async (encryptedMnemonic, iv, encryptionKey) => {
  * @param {String} password Password
  * @return `passwordDerivedKey` Password derived key
  */
-export const getPasswordDerivedKey = async (email, password) => {
-  return crypto.pbkdf(
-    password,
-    email,
-    100000,
-    32,
-    'sha256',
-    (err, passwordDerivedKey) => {
-      if (err) throw err
-      return passwordDerivedKey.toString('hex')
-    }
-  )
+export const getPasswordDerivedKey = (email, password) => {
+  return new Promise((resolve, reject) => {
+    crypto.pbkdf2(
+      password,
+      email,
+      100000,
+      32,
+      'sha256',
+      (err, passwordDerivedKey) => {
+        if (err) reject(err)
+        return resolve(passwordDerivedKey.toString('hex'))
+      }
+    )
+  })
 }
 
 /**
@@ -130,19 +132,19 @@ export const getPasswordDerivedKey = async (email, password) => {
  */
 export const getPasswordHash = async (email, password) => {
   const passwordDerivedKey = await getPasswordDerivedKey(email, password)
-  return crypto
-    .pbkdf2(
+  return new Promise((resolve, reject) => {
+    crypto.pbkdf2(
       passwordDerivedKey,
       password,
       1,
       32,
       'sha256',
       (err, passwordHash) => {
-        if (err) throw err
-        return passwordHash.toString('hex')
+        if (err) reject(err)
+        return resolve(passwordHash.toString('hex'))
       }
     )
-    .toString('hex')
+  })
 }
 
 /**
