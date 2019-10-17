@@ -201,33 +201,14 @@ function () {
 
 exports.extractMnemonic = extractMnemonic;
 
-var getPasswordDerivedKey =
-/*#__PURE__*/
-function () {
-  var _ref5 = (0, _asyncToGenerator2["default"])(
-  /*#__PURE__*/
-  _regenerator["default"].mark(function _callee5(email, password) {
-    return _regenerator["default"].wrap(function _callee5$(_context5) {
-      while (1) {
-        switch (_context5.prev = _context5.next) {
-          case 0:
-            return _context5.abrupt("return", _crypto["default"].pbkdf(password, email, 100000, 32, 'sha256', function (err, passwordDerivedKey) {
-              if (err) throw err;
-              return passwordDerivedKey.toString('hex');
-            }));
-
-          case 1:
-          case "end":
-            return _context5.stop();
-        }
-      }
-    }, _callee5);
-  }));
-
-  return function getPasswordDerivedKey(_x13, _x14) {
-    return _ref5.apply(this, arguments);
-  };
-}();
+var getPasswordDerivedKey = function getPasswordDerivedKey(email, password) {
+  return new Promise(function (resolve, reject) {
+    _crypto["default"].pbkdf2(password, email, 100000, 32, 'sha256', function (err, passwordDerivedKey) {
+      if (err) reject(err);
+      return resolve(passwordDerivedKey.toString('hex'));
+    });
+  });
+};
 /**
  * Derives password hash
  * @param {String} email Email
@@ -241,34 +222,36 @@ exports.getPasswordDerivedKey = getPasswordDerivedKey;
 var getPasswordHash =
 /*#__PURE__*/
 function () {
-  var _ref6 = (0, _asyncToGenerator2["default"])(
+  var _ref5 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee6(email, password) {
+  _regenerator["default"].mark(function _callee5(email, password) {
     var passwordDerivedKey;
-    return _regenerator["default"].wrap(function _callee6$(_context6) {
+    return _regenerator["default"].wrap(function _callee5$(_context5) {
       while (1) {
-        switch (_context6.prev = _context6.next) {
+        switch (_context5.prev = _context5.next) {
           case 0:
-            _context6.next = 2;
+            _context5.next = 2;
             return getPasswordDerivedKey(email, password);
 
           case 2:
-            passwordDerivedKey = _context6.sent;
-            return _context6.abrupt("return", _crypto["default"].pbkdf2(passwordDerivedKey, password, 1, 32, 'sha256', function (err, passwordHash) {
-              if (err) throw err;
-              return passwordHash.toString('hex');
-            }).toString('hex'));
+            passwordDerivedKey = _context5.sent;
+            return _context5.abrupt("return", new Promise(function (resolve, reject) {
+              _crypto["default"].pbkdf2(passwordDerivedKey, password, 1, 32, 'sha256', function (err, passwordHash) {
+                if (err) reject(err);
+                return resolve(passwordHash.toString('hex'));
+              });
+            }));
 
           case 4:
           case "end":
-            return _context6.stop();
+            return _context5.stop();
         }
       }
-    }, _callee6);
+    }, _callee5);
   }));
 
-  return function getPasswordHash(_x15, _x16) {
-    return _ref6.apply(this, arguments);
+  return function getPasswordHash(_x13, _x14) {
+    return _ref5.apply(this, arguments);
   };
 }();
 /**
@@ -284,31 +267,31 @@ exports.getPasswordHash = getPasswordHash;
 var getPasswordDerivedKeyHash =
 /*#__PURE__*/
 function () {
-  var _ref7 = (0, _asyncToGenerator2["default"])(
+  var _ref6 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee7(email, password) {
+  _regenerator["default"].mark(function _callee6(email, password) {
     var passwordDerivedKey;
-    return _regenerator["default"].wrap(function _callee7$(_context7) {
+    return _regenerator["default"].wrap(function _callee6$(_context6) {
       while (1) {
-        switch (_context7.prev = _context7.next) {
+        switch (_context6.prev = _context6.next) {
           case 0:
-            _context7.next = 2;
+            _context6.next = 2;
             return getPasswordDerivedKey(email, password);
 
           case 2:
-            passwordDerivedKey = _context7.sent;
-            return _context7.abrupt("return", _crypto["default"].createHash('sha512').update(passwordDerivedKey).digest('hex'));
+            passwordDerivedKey = _context6.sent;
+            return _context6.abrupt("return", _crypto["default"].createHash('sha512').update(passwordDerivedKey).digest('hex'));
 
           case 4:
           case "end":
-            return _context7.stop();
+            return _context6.stop();
         }
       }
-    }, _callee7);
+    }, _callee6);
   }));
 
-  return function getPasswordDerivedKeyHash(_x17, _x18) {
-    return _ref7.apply(this, arguments);
+  return function getPasswordDerivedKeyHash(_x15, _x16) {
+    return _ref6.apply(this, arguments);
   };
 }();
 

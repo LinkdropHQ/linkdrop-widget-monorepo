@@ -170,22 +170,21 @@ exports.login = login;
 var fetchSessionKey =
 /*#__PURE__*/
 function () {
-  var _ref6 = (0, _asyncToGenerator2["default"])(
+  var _ref5 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee3(_ref5) {
-    var email, apiHost, response, _response$data3, success, sessionKey, error;
+  _regenerator["default"].mark(function _callee3(apiHost) {
+    var response, _response$data3, success, sessionKey, error;
 
     return _regenerator["default"].wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
-            email = _ref5.email, apiHost = _ref5.apiHost;
-            _context3.next = 3;
+            _context3.next = 2;
             return _axios["default"].get("".concat(apiHost, "/api/v1/accounts/fetch-session-key"), {
               withCredentials: true
             });
 
-          case 3:
+          case 2:
             response = _context3.sent;
             _response$data3 = response.data, success = _response$data3.success, sessionKey = _response$data3.sessionKey, error = _response$data3.error;
             return _context3.abrupt("return", {
@@ -194,7 +193,7 @@ function () {
               error: error
             });
 
-          case 6:
+          case 5:
           case "end":
             return _context3.stop();
         }
@@ -203,7 +202,7 @@ function () {
   }));
 
   return function fetchSessionKey(_x3) {
-    return _ref6.apply(this, arguments);
+    return _ref5.apply(this, arguments);
   };
 }();
 
@@ -212,24 +211,24 @@ exports.fetchSessionKey = fetchSessionKey;
 var extractPrivateKeyFromSession =
 /*#__PURE__*/
 function () {
-  var _ref8 = (0, _asyncToGenerator2["default"])(
+  var _ref7 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee4(_ref7) {
-    var email, sessionKeyStore, apiHost, _ref9, success, sessionKey, error, wallet;
+  _regenerator["default"].mark(function _callee4(_ref6) {
+    var sessionKeyStore, apiHost, _ref8, success, sessionKey, error, wallet;
 
     return _regenerator["default"].wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
-            email = _ref7.email, sessionKeyStore = _ref7.sessionKeyStore, apiHost = _ref7.apiHost;
+            sessionKeyStore = _ref6.sessionKeyStore, apiHost = _ref6.apiHost;
             _context4.next = 3;
-            return fetchSessionKey(email, apiHost);
+            return fetchSessionKey(apiHost);
 
           case 3:
-            _ref9 = _context4.sent;
-            success = _ref9.success;
-            sessionKey = _ref9.sessionKey;
-            error = _ref9.error;
+            _ref8 = _context4.sent;
+            success = _ref8.success;
+            sessionKey = _ref8.sessionKey;
+            error = _ref8.error;
 
             if (success === true) {
               wallet = _ethers.ethers.Wallet.fromEncryptedJson(sessionKeyStore, sessionKey);
@@ -250,7 +249,7 @@ function () {
   }));
 
   return function extractPrivateKeyFromSession(_x4) {
-    return _ref8.apply(this, arguments);
+    return _ref7.apply(this, arguments);
   };
 }();
 
@@ -259,29 +258,23 @@ exports.extractPrivateKeyFromSession = extractPrivateKeyFromSession;
 var isDeployed =
 /*#__PURE__*/
 function () {
-  var _ref11 = (0, _asyncToGenerator2["default"])(
+  var _ref10 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
-  _regenerator["default"].mark(function _callee5(_ref10) {
-    var email, apiHost, response, _response$data4, success, isDeployed, error;
-
+  _regenerator["default"].mark(function _callee5(_ref9) {
+    var email, apiHost, response;
     return _regenerator["default"].wrap(function _callee5$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
-            email = _ref10.email, apiHost = _ref10.apiHost;
+            email = _ref9.email, apiHost = _ref9.apiHost;
             _context5.next = 3;
-            return _axios["default"].get("".concat(apiHost, "/api/v1/accounts/is-deployed"));
+            return _axios["default"].get("".concat(apiHost, "/api/v1/accounts/is-deployed/").concat(email));
 
           case 3:
             response = _context5.sent;
-            _response$data4 = response.data, success = _response$data4.success, isDeployed = _response$data4.isDeployed, error = _response$data4.error;
-            return _context5.abrupt("return", {
-              success: success,
-              isDeployed: isDeployed,
-              error: error
-            });
+            return _context5.abrupt("return", response.data);
 
-          case 6:
+          case 5:
           case "end":
             return _context5.stop();
         }
@@ -290,7 +283,7 @@ function () {
   }));
 
   return function isDeployed(_x5) {
-    return _ref11.apply(this, arguments);
+    return _ref10.apply(this, arguments);
   };
 }();
 

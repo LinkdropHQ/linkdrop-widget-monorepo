@@ -596,9 +596,9 @@ class WalletSDK {
   }
 
   /**
-   * Returns whether a wallet for the given account is deployed
+   * Returns whether a wallet for the given account is deployed and safe address if exists
    * @param {String} email Email
-   * @return `isDeployed`
+   * @return `{isDeployed, safe}`
    */
   async isDeployed (email) {
     return isDeployed({ email, apiHost: this.apiHost })
