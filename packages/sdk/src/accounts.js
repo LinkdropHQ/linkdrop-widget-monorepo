@@ -95,7 +95,7 @@ export const login = async ({ email, password, apiHost }) => {
   }
 }
 
-export const fetchSessionKey = async ({ email, apiHost }) => {
+export const fetchSessionKey = async ({ apiHost }) => {
   const response = await axios.get(
     `${apiHost}/api/v1/accounts/fetch-session-key`,
     {
@@ -107,11 +107,10 @@ export const fetchSessionKey = async ({ email, apiHost }) => {
 }
 
 export const extractPrivateKeyFromSession = async ({
-  email,
   sessionKeyStore,
   apiHost
 }) => {
-  const { success, sessionKey, error } = await fetchSessionKey(email, apiHost)
+  const { success, sessionKey, error } = await fetchSessionKey(apiHost)
   let wallet
   if (success === true) {
     wallet = ethers.Wallet.fromEncryptedJson(sessionKeyStore, sessionKey)
