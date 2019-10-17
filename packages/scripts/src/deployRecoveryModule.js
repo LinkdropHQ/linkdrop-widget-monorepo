@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
-import RecoveryModule from '../contracts/build/RecoveryModule.json'
-import { CHAIN, INFURA_API_TOKEN, PRIVATE_KEY } from './config.json'
+import RecoveryModule from '../../contracts/build/RecoveryModule.json'
+import { CHAIN, INFURA_API_TOKEN, PRIVATE_KEY } from '../config/config.json'
 
 const jsonRpcUrl = `https://${CHAIN}.infura.io/v3/${INFURA_API_TOKEN}`
 const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)

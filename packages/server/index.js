@@ -14,10 +14,12 @@ const app = express()
 // Init middlewares
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json({ extended: false }))
-app.use(cors({
-  origin: 'http://localhost:9002',
-  credentials: true
-}))
+app.use(
+  cors({
+    origin: 'http://localhost:9002',
+    credentials: true
+  })
+)
 app.use(cookieParser(config.COOKIE_SECRET))
 
 morgan.token('body', function (req, res) {
@@ -34,7 +36,7 @@ app.use(
 // connect to database
 connectDB()
   .then(() => {
-    const PORT = process.env.PORT || 5050
+    const PORT = process.env.PORT || process.env.CUSTOM_PORT || 5050
 
     app.listen(PORT, () => {
       logger.info(`Safe relay service is up at http://localhost:${PORT}`)
