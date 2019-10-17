@@ -13,7 +13,7 @@ class Provider {
     this.ensName = opts.ensName
     this.network = opts.network || 'mainnet'
     this.rpcUrl = opts.rpcUrl || `https://${this.network}.infura.io/v3/d4d1a2b933e048e28fb6fe1abe3e813a`
-    this.widgetUrl = opts.widgetUrl || 'http://localhost:9002/#/receive?weiAmount=0&nftAddress=0xe1d5946ea3566013940abdad07e357cfe0e3860d&tokenId=7&expirationTime=1900000000000&version=1&chainId=4&linkKey=0x9288f55e45c71c203e0aeaebdc47ccd963ca3a2dba9b1d7c195952a7a7e64432&linkdropMasterAddress=0xaa46966f3448291068249e6f3fa8fda59c929f3e&linkdropSignerSignature=0x2fad7e7455334fd79c2b83c0385b9fb9c0b272b79fa05477c24f8a2cb1d805b61fd09688fcbe26a63cb690941ecb213ebb2a498ebb78fccafb2e6619bd07eaeb1c&campaignId=8'
+    this.widgetUrl = opts.widgetUrl || 'http://localhost:9002/#/receive?weiAmount=0&nftAddress=0x3fe9dddd4f55d04c71b80365e7d6d46f0baf4936&tokenId=6&expirationTime=1900000000000&version=1&chainId=4&linkKey=0x2525d0a68261e98d96a304359f0bdfd672081eb2c156549bb3b947f2addb9f64&linkdropMasterAddress=0xaa46966f3448291068249e6f3fa8fda59c929f3e&linkdropSignerSignature=0xd3dc33ca2a6af03068e6280da4b2324e773597ee4fe9f0251f6563f0de888b5b0a34789278eacf2247904d9c67bf0dcafca87f8e081ba258440f85335a004f451b&campaignId=9'
 
     if (!opts.ensName) {
       throw new Error('ENS name should be provided')
