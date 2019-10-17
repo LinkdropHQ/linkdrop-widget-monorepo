@@ -362,7 +362,7 @@ class WalletSDK {
    * @param {String} owner Safe owner address
    * @returns {String} safeAddress
    */
-  precomputeSafeAddressWithModules ({
+  precomputeAddress ({
     owner
   }) {
     return precomputeSafeAddressWithModules({
