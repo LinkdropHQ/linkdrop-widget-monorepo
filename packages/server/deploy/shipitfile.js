@@ -39,7 +39,9 @@ module.exports = shipit => {
 
   shipit.blTask('installDependencies', async () => {
     await shipit.remote(
-      `cd ${shipit.releasePath} && yarn cache clean && yarn install`
+      `cd ${
+        shipit.releasePath
+      } && yarn cache clean && cd packages/contracts && yarn install`
     )
     shipit.log('Installed yarn dependecies')
   })
