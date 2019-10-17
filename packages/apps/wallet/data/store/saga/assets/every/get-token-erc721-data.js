@@ -4,6 +4,15 @@ import { ethers } from 'ethers'
 import NFTMock from 'contracts/NFTMock.json'
 import { defineNetworkName } from '@linkdrop/commons'
 
+const getImage = function * ({ metadataURL }) {
+  try {
+    const data = yield call(getERC721TokenData, { erc721URL: metadataURL })
+    return data.image
+  } catch (error) {
+    return ''
+  }
+}
+
 const generator = function * ({ payload }) {
   let image = +(new Date())
   try {
@@ -15,13 +24,25 @@ const generator = function * ({ payload }) {
     const nftContract = yield new ethers.Contract(nftAddress, NFTMock.abi, provider)
     const metadataURL = yield nftContract.tokenURI(tokenId)
     const name = yield nftContract.symbol()
+    const assetsToClaim = yield select(generator.selectors.itemsToClaim)
+
     if (metadataURL !== '') {
-      const data = yield call(getERC721TokenData, { erc721URL: metadataURL })
-      if (data) {
-        image = data.image
-      }
+      image = yield getImage({ metadataURL })
     }
 
+    const newAssetToClaim = {
+      balanceFormatted: null,
+      balance: null,
+      tokenAddress: nftAddress,
+      icon: image,
+      symbol: name,
+      decimals: null,
+      type: 'erc20',
+      price: 0
+    }
+
+    const assetsUpdated = assetsToClaim.concat([newAssetToClaim])
+    yield put({ type: 'ASSETS.SET_ITEMS_TO_CLAIM', payload: { itemsToClaim: assetsUpdated } })
     yield put({ type: 'ASSETS.SET_LOADING', payload: { loading: false } })
     yield put({ type: 'USER.SET_STEP', payload: { step: 1 } })
   } catch (e) {
@@ -40,5 +61,6 @@ const generator = function * ({ payload }) {
 
 export default generator
 generator.selectors = {
+  itemsToClaim: ({ assets: { itemsToClaim } }) => itemsToClaim,
   chainId: ({ user: { chainId } }) => chainId
 }

@@ -83,6 +83,11 @@ class Wallet extends React.Component {
   }
 
   componentWillUnmount () {
+    const { items, chainId } = this.props
+    console.log({ items, chainId })
+    if (items === null) {
+      this.actions().assets.getItems({ chainId })
+    }
     this.hideLoader && window.clearTimeout(this.hideLoader)
     this.statusCheck && window.clearInterval(this.statusCheck)
   }
@@ -90,7 +95,7 @@ class Wallet extends React.Component {
   render () {
     const { sendingAssets } = this.state
     const { items, loading, chainId } = this.props
-    return <Page dynamicHeader note='⚠ T️his wallet is for testing only.<br>Use at your own risk'>
+    return <Page disableFlex dynamicHeader>
       <div className={styles.container}>
         <AccountBalance items={items} />
         {this.renderLoader({ sendingAssets })}

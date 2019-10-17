@@ -21,21 +21,23 @@ class Page extends React.Component {
   }
 
   render () {
-    const { showNote, dynamicHeader, moonpayShow, children, hideHeader, disableProfile, note } = this.props
+    const { showNote, disableFlex, dynamicHeader, moonpayShow, children, hideHeader, disableProfile, note } = this.props
     return <div className={classNames(styles.container, {
       [styles.hideHeader]: hideHeader
     })}
     >
       {this.renderHeader({ hideHeader, dynamicHeader, disableProfile })}
-      {note && showNote && <div className={styles.note}>
+      {false && note && showNote && <div className={styles.note}>
         <Note
           title={note}
           onClose={_ => this.actions().user.toggleNote({ showNote: false })}
         />
       </div>}
       <div
-        className={styles.main}
-        style={{ height: note && showNote ? 'calc(100vh - 122px)' : 'calc(100vh - 90px)' }}
+        className={classNames(styles.main, {
+          [styles.disableFlex]: disableFlex
+        })}
+        style={{ height: 'calc(100vh - 90px)' }}
       >
         {children}
       </div>

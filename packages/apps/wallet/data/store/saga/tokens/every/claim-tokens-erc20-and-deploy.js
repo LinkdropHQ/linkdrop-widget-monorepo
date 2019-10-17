@@ -4,10 +4,11 @@ import { factory } from 'app.config.js'
 
 const generator = function * ({ payload }) {
   try {
-    const { campaignId, wallet, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature } = payload
+    const { campaignId, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const sdk = yield select(generator.selectors.sdk)
     const ens = yield select(generator.selectors.ens)
+    const contractAddress = yield select(generator.selectors.contractAddress)
     const privateKey = yield select(generator.selectors.privateKey)
     const walletContractExist = yield sdk.walletContractExist(ens)
     let result = {}
@@ -19,7 +20,7 @@ const generator = function * ({ payload }) {
       linkKey,
       linkdropMasterAddress,
       linkdropSignerSignature,
-      receiverAddress: wallet,
+      receiverAddress: contractAddress,
       campaignId,
       factoryAddress: factory
     }

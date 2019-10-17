@@ -1,5 +1,4 @@
 .main {
-  
   display: flex;
   align-items: center;
   justify-content: center;
@@ -7,6 +6,9 @@
   overflow: scroll;
 }
 
+.disableFlex {
+  display: block;
+}
 
 .container {
   overflow: hidden;
@@ -22,3 +24,4 @@
   padding: 0px 30px;
   transform: translateY(-10px);
 }
+

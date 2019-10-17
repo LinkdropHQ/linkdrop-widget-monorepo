@@ -7,6 +7,7 @@ const {
   chainId = config.defaultChainId
 } = getHashVariables()
 const { sessionKeyStore, email } = defineInitialData({ chainId })
+console.log({ sessionKeyStore, email })
 
 const initialState = {
   id: undefined,
@@ -23,7 +24,7 @@ const initialState = {
   sessionKeyStore,
   avatar: ls && ls.getItem && ls.getItem('avatar'),
   showNote: true,
-  chainId: null
+  chainId
 }
 
 export default (state = initialState, action = {}) => {

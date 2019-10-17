@@ -10,6 +10,7 @@ const generator = function * ({ payload }) {
     const sdk = initializeWalletSdk({ chain: networkName, infuraPk: config.infuraPk })
     yield put({ type: 'USER.SET_CHAIN_ID', payload: { chainId } })
     yield put({ type: 'USER.SET_SDK', payload: { sdk } })
+    yield put({ type: '*USER.FETCH_PK' })
   } catch (e) {
     console.error(e)
     yield put({ type: 'USER.SET_ERRORS', payload: { errors: ['LINK_INVALID'] } })

@@ -1,0 +1,46 @@
+@import "variables";
+
+.container {
+  width: 100%;
+  text-align: left;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+
+  &.loading {
+    opacity: .3;
+  }
+}
+
+.image {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-right: 15px;
+}
+
+.imageBlank {
+  border: 1px solid $blackColor;
+}
+
+.imageMain {
+  max-height: 100%;
+}
+
+.titles {
+  text-align: left;
+}
+
+.title {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  color: $textGreyColor;
+  font-size: 14px;
+}

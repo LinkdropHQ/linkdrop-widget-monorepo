@@ -3,7 +3,7 @@ import { translate, actions } from 'decorators'
 import styles from './styles.module'
 import classNames from 'classnames'
 import { Icons } from '@linkdrop/ui-kit'
-import { AssetBalance } from 'components/common'
+import { AssetBalance, AssetBalanceERC721 } from 'components/common'
 
 @actions(({ user: { ens }, assets: { items } }) => ({
   items,
@@ -37,10 +37,12 @@ class AssetsList extends React.Component {
   }
 
   renderAssets ({ items }) {
-    if (!items || items.length === 0) {
+    if ((!items || items.length === 0)) {
       return <div className={styles.note} dangerouslySetInnerHTML={{ __html: this.t('texts.empty') }} />
     }
-    return items.map(({
+    const erc20Items = items.filter(item => item.type === 'erc20')
+    const erc721Items = items.filter(item => item.type === 'erc721')
+    const erc20Assets = erc20Items.map(({
       icon,
       symbol,
       balanceFormatted,
@@ -53,6 +55,25 @@ class AssetsList extends React.Component {
       price={price}
       icon={icon}
     />)
+
+    const erc721Assets = erc721Items.map(({
+      tokenId,
+      name,
+      tokenAddress: address,
+      symbol,
+      image
+    }) => <AssetBalanceERC721
+      key={`${address}_${tokenId}`}
+      symbol={symbol}
+      icon={image}
+      name={name}
+      tokenId={tokenId}
+    />)
+
+    return <div>
+      {erc20Assets}
+      {erc721Assets}
+    </div>
   }
 }
 
