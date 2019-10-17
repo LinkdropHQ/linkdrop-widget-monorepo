@@ -17,7 +17,6 @@ export default function * () {
   yield takeEvery('*TOKENS.CHECK_IF_CLAIMED', checkIfClaimed)
   yield takeEvery('*TOKENS.CLAIM_TOKENS', claimTokens)
   yield takeEvery('*TOKENS.CHECK_IF_CLAIMED', checkIfClaimed)
-  yield takeEvery('*TOKENS.CLAIM_TOKENS', claimTokens)
   yield takeEvery('*TOKENS.CLAIM_TOKENS_ERC20_AND_DEPLOY', claimTokensERC20AndDeploy)
   yield takeEvery('*TOKENS.CLAIM_TOKENS_ERC721_AND_DEPLOY', claimTokensERC721AndDeploy)
 }

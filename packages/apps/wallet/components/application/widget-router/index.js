@@ -25,9 +25,9 @@ class WidgetRouter extends React.Component {
     const { sdk } = this.props
     if (!sdk) {
       const {
-        chainId = config.defaultChainId
+        linkdropMasterAddress
       } = getHashVariables()
-      this.actions().user.createSdk({ chainId })
+      this.actions().user.createSdk({ linkdropMasterAddress })
     }
 
     let walletAddress = null
@@ -43,6 +43,7 @@ class WidgetRouter extends React.Component {
         return this._awaitUserConnectConfirmation()
       },
       getAccounts: () => {
+<<<<<<< HEAD
         if (!walletAddress) { 
           const { privateKey, sdk } = this.props
           console.log("WALLET: getAccounts")
@@ -50,6 +51,12 @@ class WidgetRouter extends React.Component {
           walletAddress = sdk.precomputeAddress({ owner })
         }
         return [walletAddress]
+=======
+        const { sessionKeyStore, privateKey } = this.props
+        return console.log({ sessionKeyStore, privateKey })
+
+        // return [contractAddress]
+>>>>>>> 065844f24ad8502daf65f64823075f83a2cb414b
       }
     }
 
@@ -108,7 +115,7 @@ class WidgetRouter extends React.Component {
 
   render () {
     const { sdk, privateKey, sessionKeyStore, page, connected } = this.props
-    if (!sdk) { return <Loading /> }
+    if (!sdk && privateKey === null) { return <Loading /> }
     if (sdk && !sessionKeyStore) { return <Authorization /> }
     if (connected && !page) return <AppRouter />
     if (page === 'CONNECT_SCREEN') { return <Widget.Connect /> }
