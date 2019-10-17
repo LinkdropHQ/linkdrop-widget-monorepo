@@ -22,11 +22,12 @@ const generator = function * ({ payload }) {
     const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
     const nftContract = yield new ethers.Contract(nftAddress, NFTMock.abi, provider)
-    const metadataURL = yield nftContract.tokenURI(tokenId)
+    let metadataURL = yield nftContract.tokenURI(tokenId)
     const name = yield nftContract.symbol()
     const assetsToClaim = yield select(generator.selectors.itemsToClaim)
 
     if (metadataURL !== '') {
+      // strip 'ipfs://' from hash
       image = yield getImage({ metadataURL })
     }
 
@@ -52,7 +53,7 @@ const generator = function * ({ payload }) {
     const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
     const nftContract = yield new ethers.Contract(nftAddress, NFTMock.abi, provider)
-    const name = yield nftContract.symbol()
+    // const name = yield nftContract.name()
     yield put({ type: 'CONTRACT.SET_LOADING', payload: { loading: false } })
     yield put({ type: 'USER.SET_ERRORS', payload: { errors: ['LINK_INVALID'] } })
     yield put({ type: 'USER.SET_STEP', payload: { step: 1 } })
