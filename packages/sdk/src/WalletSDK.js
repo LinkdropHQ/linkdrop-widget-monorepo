@@ -19,8 +19,9 @@ import {
   register,
   login,
   fetchSessionKey,
-  extractPrivateKeyFromSession
-} from './auth'
+  extractPrivateKeyFromSession,
+  isDeployed
+} from './accounts'
 
 import * as cryptoUtils from './cryptoUtils'
 
@@ -586,18 +587,33 @@ class WalletSDK {
   /**
    * Fetches session key from server
    * @param {String} email Email
-   * @return `sessionKey` Session key
+   * @return `{success, sessionKey, error}`
    */
   async fetchSessionKey (email) {
     return fetchSessionKey({ email, apiHost: this.apiHost })
   }
 
+  /**
+   * Fetches session key from server, decrypts session keystore and returns private key
+   * @param {String} email Email
+   * @param {Object} sessionKeyStore Encrypted session key store
+   * @return `{success, privateKey, error}`
+   */
   async extractPrivateKeyFromSession (email, sessionKeyStore) {
     return extractPrivateKeyFromSession({
       email,
       sessionKeyStore,
       apiHost: this.apiHost
     })
+  }
+
+  /**
+   * Returns whether a wallet for the given account is deployed
+   * @param {String} email Email
+   * @return `{success, isDeployed, error}`
+   */
+  async isDeployed (email) {
+    return isDeployed({ email, apiHost: this.apiHost })
   }
 }
 
