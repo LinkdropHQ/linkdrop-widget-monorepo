@@ -29,14 +29,11 @@ class ClaimingProcessPage extends React.Component {
       weiAmount,
       campaignId
     } = getHashVariables()
-    const { wallet } = this.props
 
-    return this.actions().tokens.claimTokensERC20({ campaignId, wallet, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature })
-    // if (nftAddress && tokenId) {
-    //   return this.actions().tokens.claimTokensERC721({ wallet, campaignId, nftAddress, tokenId, weiAmount, expirationTime, linkKey, linkdropSignerSignature })
-    // }
-
-    // this.actions().tokens.claimTokensERC20({ campaignId, wallet, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature })
+    if (nftAddress && tokenId) {
+      return this.actions().tokens.claimTokensERC721({ campaignId, nftAddress, tokenId, weiAmount, expirationTime, linkKey, linkdropSignerSignature })
+    }
+    return this.actions().tokens.claimTokensERC20({ campaignId, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature })
   }
 
   componentWillReceiveProps ({ transactionId: id, transactionStatus: status, chainId }) {
@@ -64,22 +61,6 @@ class ClaimingProcessPage extends React.Component {
     return <div className={commonStyles.container}>
       <AccountBalance items={itemsToClaim} loading={loading} />
       <TokensAmount chainId={chainId} transactionId={transactionId} loading={loading} symbol={symbol} amount={balanceFormatted} />
-      <div className={styles.content}>
-        {itemsToClaim.map(({
-          icon,
-          symbol,
-          balanceFormatted,
-          tokenAddress,
-          price
-        }) => <AssetBalance
-          key={tokenAddress}
-          loading={loading}
-          symbol={symbol}
-          amount={balanceFormatted}
-          price={price}
-          icon={icon}
-        />)}
-      </div>
     </div>
   }
 }

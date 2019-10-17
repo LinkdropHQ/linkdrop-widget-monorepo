@@ -1,6 +1,4 @@
 import { put, select } from 'redux-saga/effects'
-import { ERRORS } from './data'
-import { factory } from 'app.config.js'
 
 const generator = function * ({ payload }) {
   try {
@@ -10,19 +8,23 @@ const generator = function * ({ payload }) {
     const { isDeployed, safe } = yield sdk.isDeployed(email)
     if (isDeployed) {
       if (tokenType === 'erc20') {
-        yield put({ type: '*TOKENS.CLAIM_TOKENS_ERC20', payload: { ...payload, wallet: safe } })
+        console.log('claiming erc20...')
+        return yield put({ type: '*TOKENS.CLAIM_TOKENS_ERC20', payload: { ...payload, wallet: safe } })
       }
 
       if (tokenType === 'erc721') {
-        yield put({ type: '*TOKENS.CLAIM_TOKENS_ERC721', payload: { ...payload, wallet: safe } })
+        console.log('claiming erc721...')
+        return yield put({ type: '*TOKENS.CLAIM_TOKENS_ERC721', payload: { ...payload, wallet: safe } })
       }
     } else {
       if (tokenType === 'erc20') {
-        yield put({ type: '*TOKENS.CLAIM_TOKENS_ERC20_AND_DEPLOY', payload: { ...payload, email } })
+        console.log('claiming erc20 and deploy...')
+        return yield put({ type: '*TOKENS.CLAIM_TOKENS_ERC20_AND_DEPLOY', payload: { ...payload, email } })
       }
 
       if (tokenType === 'erc721') {
-        yield put({ type: '*TOKENS.CLAIM_TOKENS_ERC721_AND_DEPLOY', payload: { ...payload, email } })
+        console.log('claiming erc721 and deploy...')
+        return yield put({ type: '*TOKENS.CLAIM_TOKENS_ERC721_AND_DEPLOY', payload: { ...payload, email } })
       }
     }
   } catch (error) {

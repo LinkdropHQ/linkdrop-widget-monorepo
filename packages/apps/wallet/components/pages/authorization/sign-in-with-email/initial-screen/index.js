@@ -2,6 +2,7 @@ import React from 'react'
 import { translate, actions } from 'decorators'
 import styles from './styles.module'
 import { Input, Button } from 'components/common'
+import { validateEmail } from 'helpers'
 
 @actions(({ authorization: { loading } }) => ({ loading }))
 @translate('pages.authorization')
@@ -21,7 +22,7 @@ class InitialScreen extends React.Component {
       <Input className={styles.input} value={email} onChange={({ value }) => this.setState({ email: value })} placeholder={this.t('titles.email')} />
       <Button
         loading={loading}
-        disabled={!email}
+        disabled={!email || !validateEmail({ email })}
         className={styles.button}
         onClick={_ => checkUser && checkUser({ email })}
       >

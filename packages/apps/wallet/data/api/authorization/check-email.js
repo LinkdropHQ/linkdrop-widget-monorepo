@@ -1,4 +1,7 @@
 import fetch from '../fetch'
-import config from 'app.config.js'
+import { getApiHost } from 'helpers'
 
-export default ({ email }) => fetch(`${config.apiHostRinkeby}/api/v1/accounts/exists/${email}`)
+export default ({ email, chainId }) => {
+  const apiHost = getApiHost({ chainId })
+  return fetch(`${apiHost}/api/v1/accounts/exists/${email}`)
+}
