@@ -839,23 +839,23 @@ function () {
       return login;
     }()
     /**
-     * Fetches session key from server
-     * @param {String} email Email
-     * @return `{success, sessionKey, error}`
+     * Fetches session key from server, decrypts session keystore and returns private key
+     * @param {Object} sessionKeyStore Encrypted session key store
+     * @return `{success, privateKey, error}`
      */
 
   }, {
-    key: "fetchSessionKey",
+    key: "extractPrivateKeyFromSession",
     value: function () {
-      var _fetchSessionKey2 = (0, _asyncToGenerator2["default"])(
+      var _extractPrivateKeyFromSession2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee12(email) {
+      _regenerator["default"].mark(function _callee12(sessionKeyStore) {
         return _regenerator["default"].wrap(function _callee12$(_context12) {
           while (1) {
             switch (_context12.prev = _context12.next) {
               case 0:
-                return _context12.abrupt("return", (0, _accounts.fetchSessionKey)({
-                  email: email,
+                return _context12.abrupt("return", (0, _accounts.extractPrivateKeyFromSession)({
+                  sessionKeyStore: sessionKeyStore,
                   apiHost: this.apiHost
                 }));
 
@@ -867,32 +867,30 @@ function () {
         }, _callee12, this);
       }));
 
-      function fetchSessionKey(_x17) {
-        return _fetchSessionKey2.apply(this, arguments);
+      function extractPrivateKeyFromSession(_x17) {
+        return _extractPrivateKeyFromSession2.apply(this, arguments);
       }
 
-      return fetchSessionKey;
+      return extractPrivateKeyFromSession;
     }()
     /**
-     * Fetches session key from server, decrypts session keystore and returns private key
+     * Returns whether a wallet for the given account is deployed and safe address if exists
      * @param {String} email Email
-     * @param {Object} sessionKeyStore Encrypted session key store
-     * @return `{success, privateKey, error}`
+     * @return `{isDeployed, safe}`
      */
 
   }, {
-    key: "extractPrivateKeyFromSession",
+    key: "isDeployed",
     value: function () {
-      var _extractPrivateKeyFromSession2 = (0, _asyncToGenerator2["default"])(
+      var _isDeployed2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee13(email, sessionKeyStore) {
+      _regenerator["default"].mark(function _callee13(email) {
         return _regenerator["default"].wrap(function _callee13$(_context13) {
           while (1) {
             switch (_context13.prev = _context13.next) {
               case 0:
-                return _context13.abrupt("return", (0, _accounts.extractPrivateKeyFromSession)({
+                return _context13.abrupt("return", (0, _accounts.isDeployed)({
                   email: email,
-                  sessionKeyStore: sessionKeyStore,
                   apiHost: this.apiHost
                 }));
 
@@ -904,42 +902,7 @@ function () {
         }, _callee13, this);
       }));
 
-      function extractPrivateKeyFromSession(_x18, _x19) {
-        return _extractPrivateKeyFromSession2.apply(this, arguments);
-      }
-
-      return extractPrivateKeyFromSession;
-    }()
-    /**
-     * Returns whether a wallet for the given account is deployed
-     * @param {String} email Email
-     * @return `{success, isDeployed, error}`
-     */
-
-  }, {
-    key: "isDeployed",
-    value: function () {
-      var _isDeployed2 = (0, _asyncToGenerator2["default"])(
-      /*#__PURE__*/
-      _regenerator["default"].mark(function _callee14(email) {
-        return _regenerator["default"].wrap(function _callee14$(_context14) {
-          while (1) {
-            switch (_context14.prev = _context14.next) {
-              case 0:
-                return _context14.abrupt("return", (0, _accounts.isDeployed)({
-                  email: email,
-                  apiHost: this.apiHost
-                }));
-
-              case 1:
-              case "end":
-                return _context14.stop();
-            }
-          }
-        }, _callee14, this);
-      }));
-
-      function isDeployed(_x20) {
+      function isDeployed(_x18) {
         return _isDeployed2.apply(this, arguments);
       }
 
