@@ -59,11 +59,11 @@ class TokensAmount extends React.Component {
   }
 
   defineText ({ loading, sendLoading, sendingFinished, amount, symbol, alreadyClaimed, claimingFinished }) {
-    if (loading) return `${this.t('titles.claiming')} ${amount} ${symbol}...`
-    if (sendLoading) return `${amount} ${symbol} ${this.t('titles.sending')}...`
-    if (claimingFinished) return `${amount} ${symbol} ${this.t('titles.claimed')}`
+    if (loading) return `${this.t('titles.claiming')} ${amount || ''} ${symbol}...`
+    if (sendLoading) return `${amount || ''} ${symbol} ${this.t('titles.sending')}...`
+    if (claimingFinished) return `${amount || ''} ${symbol} ${this.t('titles.claimed')}`
     if (alreadyClaimed) return this.t('titles.alreadyClaimed')
-    if (sendingFinished) return `${amount} ${symbol} ${this.t('titles.sent')}`
+    if (sendingFinished) return `${amount || ''} ${symbol} ${this.t('titles.sent')}`
   }
 
   defineIcon ({ loading }) {

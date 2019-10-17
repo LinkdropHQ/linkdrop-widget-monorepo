@@ -14,6 +14,7 @@ import removeUserData from './remove-user-data'
 import generateRandomPassword from './generate-random-password'
 import getApiHost from './get-api-host'
 import defineError from './define-error'
+import validateEmail from './validate-email'
 
 export {
   getImages,
@@ -31,5 +32,6 @@ export {
   removeUserData,
   generateRandomPassword,
   getApiHost,
-  defineError
+  defineError,
+  validateEmail
 }

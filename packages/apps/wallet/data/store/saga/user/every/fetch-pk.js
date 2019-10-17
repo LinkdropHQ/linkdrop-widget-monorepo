@@ -1,17 +1,14 @@
-import { put, select } from 'redux-saga/effects'
-import { initializeWalletSdk } from 'data/sdk'
-import config from 'app.config.js'
-import { defineNetworkName } from '@linkdrop/commons'
+import { select, put } from 'redux-saga/effects'
 
 const generator = function * ({ payload }) {
   try {
     const sdk = yield select(generator.selectors.sdk)
     const sessionKeyStore = yield select(generator.selectors.sessionKeyStore)
-    console.log({ sessionKeyStore })
     if (!sessionKeyStore) { return false }
-    const pk = yield sdk.extractPrivateKeyFromSession(sessionKeyStore)
-    console.log({ pk })
-    return pk
+    const { privateKey, success } = yield sdk.extractPrivateKeyFromSession(sessionKeyStore)
+    if (success && privateKey) {
+      yield put({ type: 'USER.SET_PRIVATE_KEY', payload: { privateKey } })
+    }
   } catch (e) {
     console.error(e)
   }

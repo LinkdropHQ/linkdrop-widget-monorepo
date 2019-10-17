@@ -8,9 +8,7 @@ const generator = function * ({ payload }) {
     const { email, password } = payload
     const chainId = yield select(generator.selectors.chainId)
     const sdk = yield select(generator.selectors.sdk)
-    console.log('starting..')
     const { success, data: requestData } = yield sdk.login(email, password)
-    console.log('stopped..')
     if (success) {
       const { privateKey, sessionKeyStore } = requestData
       yield put({ type: '*USER.SET_USER_DATA', payload: { privateKey, email, sessionKeyStore, chainId } })
