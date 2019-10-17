@@ -85,7 +85,8 @@ class Claim extends React.Component {
   }
 
   render () {
-    return <Page dynamicHeader>
+    const { step, alreadyClaimed } = this.props
+    return <Page dynamicHeader disableFlex={step === 3 || alreadyClaimed}>
       {this.renderCurrentPage()}
     </Page>
   }
