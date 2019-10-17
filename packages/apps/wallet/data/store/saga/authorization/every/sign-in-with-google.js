@@ -9,7 +9,6 @@ const generator = function * () {
     const isSignedIn = yield gapiService.signIn()
     if (isSignedIn) {
       // if has drive permissions sync with it immediately
-      console.log(isSignedIn, gapiService.hasDrivePermissions())
       if (gapiService.hasDrivePermissions()) {
         yield syncDataWithDrive()
       } else {
@@ -17,7 +16,9 @@ const generator = function * () {
         yield put({ type: 'AUTHORIZATION.SET_AUTHORIZED', payload: { authorized: true } })
       }
     }
+    yield put({ type: 'AUTHORIZATION.SET_LOADING', payload: { loading: false } })
   } catch (e) {
+    yield put({ type: 'AUTHORIZATION.SET_LOADING', payload: { loading: false } })
     console.error(e)
   }
 }

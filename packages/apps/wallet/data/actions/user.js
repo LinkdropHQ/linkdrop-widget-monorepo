@@ -19,8 +19,8 @@ class User {
     this.actions.dispatch({ type: 'USER.SET_ERRORS', payload: { errors } })
   }
 
-  createSdk ({ chainId }) {
-    this.actions.dispatch({ type: '*USER.CREATE_SDK', payload: { chainId } })
+  createSdk ({ linkdropMasterAddress }) {
+    this.actions.dispatch({ type: '*USER.CREATE_SDK', payload: { linkdropMasterAddress } })
   }
 
   setUserData ({ privateKey, contractAddress, ens, avatar, chainId }) {

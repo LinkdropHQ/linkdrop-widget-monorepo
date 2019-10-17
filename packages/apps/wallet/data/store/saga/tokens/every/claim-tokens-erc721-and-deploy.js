@@ -1,12 +1,17 @@
 import { put, select } from 'redux-saga/effects'
 import { ERRORS } from './data'
+import { ethers } from 'ethers'
+import { getEns } from 'helpers'
 
 const generator = function * ({ payload }) {
   try {
     const { wallet, campaignId, nftAddress, tokenId, weiAmount, expirationTime, linkKey, linkdropSignerSignature } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const sdk = yield select(generator.selectors.sdk)
-    const { success, txHash, errors } = yield sdk.claimERC721({
+    const email = yield select(generator.selectors.email)
+    const chainId = yield select(generator.selectors.chainId)
+    const privateKey = yield select(generator.selectors.privateKey)
+    console.log({
       weiAmount: weiAmount || '0',
       nftAddress,
       tokenId,
@@ -14,8 +19,35 @@ const generator = function * ({ payload }) {
       linkKey,
       linkdropSignerSignature,
       receiverAddress: wallet,
-      campaignId
+      campaignId,
+      email,
+      owner: new ethers.Wallet(privateKey).address,
+      ensName: getEns({ email, chainId }),
+      saltNonce: String(+(new Date())),
+      gasPrice: '0'
     })
+    const { success, txHash, errors } = yield sdk.claimAndCreateERC721({
+      weiAmount: weiAmount || '0',
+      nftAddress,
+      tokenId,
+      expirationTime,
+      linkKey,
+      linkdropSignerSignature,
+      receiverAddress: wallet,
+      campaignId,
+      email,
+      owner: new ethers.Wallet(privateKey).address,
+      ensName: getEns({ email, chainId }),
+      saltNonce: String(+(new Date())),
+      gasPrice: '0'
+    })
+
+    // {
+    //   owner: new ethers.Wallet(privateKey).address, +
+    //   ensName: динамически создать на основе имейла, +
+    //   saltNonce: String(+(new Date())),
+    //   gasPrice: "0",
+    // }
 
     if (success) {
       yield put({ type: 'TOKENS.SET_TRANSACTION_ID', payload: { transactionId: txHash } })
@@ -37,5 +69,9 @@ const generator = function * ({ payload }) {
 
 export default generator
 generator.selectors = {
-  sdk: ({ user: { sdk } }) => sdk
+  sdk: ({ user: { sdk } }) => sdk,
+  email: ({ user: { email } }) => email,
+  ens: ({ user: { ens } }) => ens,
+  privateKey: ({ user: { privateKey } }) => privateKey,
+  chainId: ({ user: { chainId } }) => chainId
 }

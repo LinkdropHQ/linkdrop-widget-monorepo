@@ -1,13 +1,30 @@
-import { put } from 'redux-saga/effects'
-import { initializeWalletSdk } from 'data/sdk'
-import config from 'app.config.js'
+import { put, select } from 'redux-saga/effects'
+import { initializeWalletSdk, initializeSdk } from 'data/sdk'
 import { defineNetworkName } from '@linkdrop/commons'
+import config from 'app.config.js'
+import { getApiHost } from 'helpers'
 
 const generator = function * ({ payload }) {
   try {
-    const { chainId } = payload
+    const { linkdropMasterAddress } = payload
+    const chainId = yield select(generator.selectors.chainId)
+    const { factory, infuraPk } = config
     const networkName = defineNetworkName({ chainId })
     const sdk = initializeWalletSdk({ chain: networkName, infuraPk: config.infuraPk })
+
+    if (linkdropMasterAddress) {
+      // creating original sdk for claim
+      const apiHost = getApiHost({ chainId })
+      const sdkOriginal = initializeSdk({
+        chain: networkName,
+        apiHost,
+        linkdropMasterAddress,
+        jsonRpcUrl: `https://${networkName}.infura.io/v3/${infuraPk}`,
+        factoryAddress: factory
+      })
+      yield put({ type: 'USER.SET_SDK_ORIGINAL', payload: { sdkOriginal } })
+    }
+
     yield put({ type: 'USER.SET_CHAIN_ID', payload: { chainId } })
     yield put({ type: 'USER.SET_SDK', payload: { sdk } })
     yield put({ type: '*USER.FETCH_PK' })
@@ -18,3 +35,6 @@ const generator = function * ({ payload }) {
 }
 
 export default generator
+generator.selectors = {
+  chainId: ({ user: { chainId } }) => chainId
+}

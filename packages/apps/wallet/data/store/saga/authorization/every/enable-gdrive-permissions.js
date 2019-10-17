@@ -18,6 +18,7 @@ const generator = function * () {
     }
     yield put({ type: 'AUTHORIZATION.SET_LOADING', payload: { loading: false } })
   } catch (e) {
+    yield put({ type: 'AUTHORIZATION.SET_LOADING', payload: { loading: false } })
     console.error(e)
   }
 }

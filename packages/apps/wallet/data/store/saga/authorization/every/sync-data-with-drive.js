@@ -16,8 +16,6 @@ const generator = function * () {
       data = fetchResult.data[`_${chainId}`]
     } else { // if no files on drive upload new ones
       const password = generateRandomPassword()
-      // console.log({ password, apiHost })
-      console.log('registering...')
       const { success, data: requestData } = yield sdk.register(email, password)
       if (success) {
         const { privateKey, sessionKeyStore } = requestData
@@ -32,6 +30,7 @@ const generator = function * () {
     yield put({ type: 'AUTHORIZATION.SET_LOADING', payload: { loading: false } })
     return { email, avatar }
   } catch (e) {
+    yield put({ type: 'AUTHORIZATION.SET_LOADING', payload: { loading: false } })
     console.error(e)
   }
 }

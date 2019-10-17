@@ -16,6 +16,9 @@ const generator = function * ({ payload }) {
     if (result) {
       removeUserData({ chainId })
       yield put({ type: '*USER.SET_USER_DATA', payload: { privateKey: null, email: null, sessionKeyStore: null, chainId } })
+      yield put({ type: 'AUTHORIZATION.SET_AUTHORIZED', payload: { authorized: false } })
+      yield put({ type: 'AUTHORIZATION.SET_SCREEN', payload: { screen: 'initial' } })
+      yield put({ type: 'AUTHORIZATION.SET_LOADING', payload: { loading: false } })
     }
   } catch (e) {
     console.error(e)

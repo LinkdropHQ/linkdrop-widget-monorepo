@@ -24,9 +24,9 @@ class WidgetRouter extends React.Component {
     const { sdk } = this.props
     if (!sdk) {
       const {
-        chainId = config.defaultChainId
+        linkdropMasterAddress
       } = getHashVariables()
-      this.actions().user.createSdk({ chainId })
+      this.actions().user.createSdk({ linkdropMasterAddress })
     }
 
     // Methods child is exposing to parent
@@ -44,8 +44,7 @@ class WidgetRouter extends React.Component {
         const { sessionKeyStore, privateKey } = this.props
         return console.log({ sessionKeyStore, privateKey })
 
-        if (!ens) return []
-        return [contractAddress]
+        // return [contractAddress]
       }
     }
 
@@ -104,7 +103,7 @@ class WidgetRouter extends React.Component {
 
   render () {
     const { sdk, privateKey, sessionKeyStore, page, connected } = this.props
-    if (!sdk) { return <Loading /> }
+    if (!sdk && privateKey === null) { return <Loading /> }
     if (sdk && !sessionKeyStore) { return <Authorization /> }
     if (connected && !page) return <AppRouter />
     if (page === 'CONNECT_SCREEN') { return <Widget.Connect /> }

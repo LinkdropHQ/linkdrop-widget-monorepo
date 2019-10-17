@@ -10,6 +10,7 @@ import setUserData from './set-user-data'
 import toggleNote from './toggle-note'
 import setChainId from './set-chain-id'
 import setEmail from './set-email'
+import setSdkOriginal from './set-sdk-original'
 
 export default {
   changeLocale,
@@ -23,5 +24,6 @@ export default {
   setUserData,
   toggleNote,
   setChainId,
-  setEmail
+  setEmail,
+  setSdkOriginal
 }
