@@ -4,7 +4,7 @@ import { ethers } from 'ethers'
 import { signReceiverAddress } from './utils'
 import { computeLinkdropModuleAddress } from './computeLinkdropModuleAddress'
 import { computeRecoveryModuleAddress } from './computeRecoveryModuleAddress'
-import { precomputeSafeDataWithModules } from './precomputeSafeDataWithModules'
+import { precomputeSafeAddressWithModules } from './precomputeSafeAddressWithModules'
 import { getEnsOwner } from './ensUtils'
 
 const ADDRESS_ZERO = ethers.constants.AddressZero
@@ -116,7 +116,7 @@ export const claimAndCreate = async ({
   })
   assert.true(ensOwner === ADDRESS_ZERO, 'Provided name already has an owner')
 
-  const safeAddress = precomputeSafeDataWithModules({
+  const safeAddress = precomputeSafeAddressWithModules({
     gnosisSafeMasterCopy,
     proxyFactory,
     owner,
