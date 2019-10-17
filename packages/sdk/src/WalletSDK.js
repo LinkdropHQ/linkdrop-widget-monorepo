@@ -18,7 +18,6 @@ import { claim, claimERC721 } from './claim'
 import {
   register,
   login,
-  fetchSessionKey,
   extractPrivateKeyFromSession,
   isDeployed
 } from './accounts'
@@ -584,24 +583,14 @@ class WalletSDK {
     return login({ email, password, apiHost: this.apiHost })
   }
 
-  /**
-   * Fetches session key from server
-   * @param {String} email Email
-   * @return `{success, sessionKey, error}`
-   */
-  async fetchSessionKey (email) {
-    return fetchSessionKey({ email, apiHost: this.apiHost })
-  }
 
   /**
    * Fetches session key from server, decrypts session keystore and returns private key
-   * @param {String} email Email
    * @param {Object} sessionKeyStore Encrypted session key store
    * @return `{success, privateKey, error}`
    */
-  async extractPrivateKeyFromSession (email, sessionKeyStore) {
+  async extractPrivateKeyFromSession (sessionKeyStore) {
     return extractPrivateKeyFromSession({
-      email,
       sessionKeyStore,
       apiHost: this.apiHost
     })
