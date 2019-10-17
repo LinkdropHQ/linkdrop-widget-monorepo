@@ -7,6 +7,7 @@ import enableGDrivePermissions from './every/enable-gdrive-permissions'
 import syncDataWithDrive from './every/sync-data-with-drive'
 import getEmailAndAvatar from './every/get-email-and-avatar'
 import signInWithGoogle from './every/sign-in-with-google'
+import signOut from './every/sign-out'
 
 export default function * () {
   yield takeEvery('*AUTHORIZATION.CHECK_EMAIL', checkEmail)
@@ -16,4 +17,5 @@ export default function * () {
   yield takeEvery('*AUTHORIZATION.SYNC_DATA_WITH_DRIVE', syncDataWithDrive)
   yield takeEvery('*AUTHORIZATION.GET_EMAIL_AND_AVATAR', getEmailAndAvatar)
   yield takeEvery('*AUTHORIZATION.SIGN_IN_WITH_GOOGLE', signInWithGoogle)
+  yield takeEvery('AUTHORIZATION.SIGN_OUT', signOut)
 }

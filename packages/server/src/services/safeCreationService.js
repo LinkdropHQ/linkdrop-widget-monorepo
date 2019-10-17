@@ -75,6 +75,7 @@ class SafeCreationService {
       RecoveryModule.abi,
       relayerWalletService.provider
     )
+    console.log(this.multiSend.address)
   }
 
   async create ({
@@ -549,6 +550,7 @@ class SafeCreationService {
     receiverSignature,
     email
   }) {
+    console.log("In claimAndCreateERC721")
     try {
       let account = await accountsService.findAccount(email)
       if (!account) {
@@ -679,24 +681,24 @@ class SafeCreationService {
         paymentAmount: creationCosts.toString()
       })
 
-      const registerEnsData = sdkService.walletSDK.encodeParams(
-        FIFSRegistrar.abi,
-        'register',
-        [ethers.utils.keccak256(ethers.utils.toUtf8Bytes(ensName)), safe]
-      )
+      // const registerEnsData = sdkService.walletSDK.encodeParams(
+      //   FIFSRegistrar.abi,
+      //   'register',
+      //   [ethers.utils.keccak256(ethers.utils.toUtf8Bytes(ensName)), safe]
+      // )
 
-      const registrar = await sdkService.walletSDK.getEnsOwner({
-        ensAddress: ensService.ens.address,
-        ensDomain: ensService.ensDomain,
-        jsonRpcUrl: relayerWalletService.jsonRpcUrl
-      })
+      // const registrar = await sdkService.walletSDK.getEnsOwner({
+      //   ensAddress: ensService.ens.address,
+      //   ensDomain: ensService.ensDomain,
+      //   jsonRpcUrl: relayerWalletService.jsonRpcUrl
+      // })
 
-      const registerEnsMultiSendData = sdkService.walletSDK.encodeDataForMultiSend(
-        CALL_OP,
-        registrar,
-        0,
-        registerEnsData
-      )
+      // const registerEnsMultiSendData = sdkService.walletSDK.encodeDataForMultiSend(
+      //   CALL_OP,
+      //   registrar,
+      //   0,
+      //   registerEnsData
+      // )
 
       const claimData = sdkService.walletSDK.encodeParams(
         linkdropFactoryService.abi,
@@ -723,10 +725,8 @@ class SafeCreationService {
       )
 
       nestedTxData =
-        '0x' +
-        claimMultiSendData +
-        createSafeMultiSendData +
-        registerEnsMultiSendData
+        '0x' + claimMultiSendData + createSafeMultiSendData
+      // +  registerEnsMultiSendData
 
       multiSendData = sdkService.walletSDK.encodeParams(
         MultiSend.abi,
@@ -749,10 +749,16 @@ class SafeCreationService {
         deployer: safe
       })
 
+      console.log("sending tx...: ")
+      console.log({
+        to: this.multiSendWithRefund.address,
+        data: multiSendData
+      })
+      
       const tx = await relayerWalletService.wallet.sendTransaction({
         to: this.multiSendWithRefund.address,
         data: multiSendData,
-        gasPrice: ethers.utils.parseUnits(gasPrice, 'wei'),
+        gasPrice: ethers.utils.parseUnits('10', 'gwei'),
         gasLimit: 900000
       })
 

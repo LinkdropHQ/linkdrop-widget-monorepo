@@ -41,6 +41,10 @@ class Authorization {
   setScreen ({ screen }) {
     this.actions.dispatch({ type: 'AUTHORIZATION.SET_SCREEN', payload: { screen } })
   }
+
+  signOut () {
+    this.actions.dispatch({ type: 'AUTHORIZATION.SIGN_OUT' })
+  }
 }
 
 export default Authorization

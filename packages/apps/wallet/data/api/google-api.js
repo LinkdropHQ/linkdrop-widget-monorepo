@@ -1,8 +1,7 @@
 /* global gapi */
 import config from 'app.config.js'
-import { removeUserData } from 'helpers'
-import { getHashVariables } from '@linkdrop/commons'
 import EventEmitter from 'events'
+import actions from 'data/actions'
 
 class GoogleApiService {
   constructor () {
@@ -163,18 +162,6 @@ class GoogleApiService {
       console.log('gapi client inited')
 
       this.eventEmitter.emit('google-api-inited')
-    })
-  }
-
-  signOut () {
-    var auth2 = gapi.auth2.getAuthInstance()
-    const {
-      chainId = config.defaultChainId
-    } = getHashVariables()
-    auth2.signOut().then(function () {
-      auth2.disconnect()
-      removeUserData({ chainId })
-      window.location.reload(true)
     })
   }
 }

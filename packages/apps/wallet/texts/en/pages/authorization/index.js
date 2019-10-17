@@ -6,7 +6,6 @@ export default {
     grantGoogleDrive: 'Secure the wallet',
     oops: 'Oops, try again',
     createWallet: 'Create a new wallet',
-    createWalletTitle: 'Create a wallet',
     otherWallet: 'Open in other wallets',
     otherWalletSubtitle: 'Copy the link and open in<br>any browser, follow instructions',
     email: 'Email address',

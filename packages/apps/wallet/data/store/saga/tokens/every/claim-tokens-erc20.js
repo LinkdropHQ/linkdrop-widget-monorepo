@@ -7,7 +7,6 @@ const generator = function * ({ payload }) {
     const { campaignId, wallet, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const sdk = yield select(generator.selectors.sdk)
-    // const privateKey = yield select(generator.selectors.privateKey)
 
     const { success, errors, txHash } = yield sdk.claim({
       weiAmount: weiAmount || '0',
@@ -43,8 +42,5 @@ const generator = function * ({ payload }) {
 
 export default generator
 generator.selectors = {
-  sdk: ({ user: { sdk } }) => sdk,
-  ens: ({ user: { ens } }) => ens,
-  privateKey: ({ user: { privateKey } }) => privateKey,
-  contractAddress: ({ user: { contractAddress } }) => contractAddress
+  sdk: ({ user: { sdkOriginal: sdk } }) => sdk
 }

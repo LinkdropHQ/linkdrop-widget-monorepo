@@ -8,7 +8,7 @@ import {
 import { computeSafeAddress } from './computeSafeAddress'
 import { computeLinkdropModuleAddress } from './computeLinkdropModuleAddress'
 import { computeRecoveryModuleAddress } from './computeRecoveryModuleAddress'
-import { create } from './create'
+import { precomputeSafeAddressWithModules } from './precomputeSafeAddressWithModules'
 import { claimAndCreate } from './claimAndCreate'
 import { claimAndCreateERC721 } from './claimAndCreateERC721'
 import { signTx } from './signTx'
@@ -47,7 +47,7 @@ class WalletSDK {
     linkdropFactory = '0xBa051891B752ecE3670671812486fe8dd34CC1c8'
   }) {
     this.chain = chain
-    this.jsonRpcUrl = jsonRpcUrl || `https://${chain}.infura.io`
+    this.jsonRpcUrl = jsonRpcUrl || `https://${chain}.infura.io/v3/ecd43c9cd96e45ceb9131fba9b100b07`
     this.apiHost = apiHost
     this.claimHost = claimHost
     this.gnosisSafeMasterCopy = gnosisSafeMasterCopy
@@ -100,10 +100,7 @@ class WalletSDK {
 
   /**
    * Function to calculate the safe address based on given params
-   * @param {String | Number} saltNonce Random salt nonce
-   * @param {String} deployer Deployer address (optional)
-   * @param {String} gnosisSafeMasterCopy Deployed gnosis safe mastercopy address (optional)
-   * @param {String} owner Safe owner address
+   * @param {String} owner Safe's owner
    * @param {String} to To (optional)
    * @param {String} data Data (optional)
    * @param {String} paymentToken Payment token (0x0 for ether) (optional)
@@ -111,9 +108,6 @@ class WalletSDK {
    * @param {String} paymentReceiver Payment receiver (optional)
    */
   computeSafeAddress ({
-    saltNonce,
-    deployer = this.proxyFactory,
-    gnosisSafeMasterCopy = this.gnosisSafeMasterCopy,
     owner,
     to = ADDRESS_ZERO,
     data = BYTES_ZERO,
@@ -123,75 +117,14 @@ class WalletSDK {
   }) {
     return computeSafeAddress({
       owner,
-      saltNonce,
-      gnosisSafeMasterCopy,
-      deployer,
+      saltNonce: owner,
+      deployer: this.proxyFactory,
+      gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
       to,
       data,
       paymentToken,
       paymentAmount,
       paymentReceiver
-    })
-  }
-
-  /**
-   * @param  {String} owner Owner address
-   * @param  {String} ensName Ens name
-   * @param  {Number} saltNonce Random salt nonce
-   * @param  {Number} recoveryPeriod Recovery period in atomic units (seconds) (optional)
-   * @param  {Number} gasPrice Gas price in wei (optional)
-   * @param  {String} guardian Guardian address
-   * @param  {String} ensAddress Ens address
-   * @param  {String} ensDomain Ens domain (e.g. 'my-domain.eth)
-   * @param  {String} jsonRpcUrl JSON RPC URL
-   * @param  {String} apiHost API host
-   * @param  {String} gnosisSafeMasterCopy Deployed Gnosis Safe mastercopy address
-   * @param  {String} proxyFactory Deployed proxy factory address
-   * @param  {String} linkdropModuleMasterCopy Deployed linkdrop module mastercopy address
-   * @param  {String} recoveryModuleMasterCopy Deployed recovery module mastercopy address
-   * @param  {String} multiSend Deployed MultiSend library address
-   * @param  {String} createAndAddModules Deployed CreateAndAddModules library address
-   */
-  async create ({
-    owner,
-    ensName,
-    saltNonce,
-    gasPrice,
-    email,
-    passwordHash,
-    passwordDerivedKeyHash,
-    encryptedEncryptionKey,
-    encryptedMnemonicPhrase,
-    recoveryPeriod = this.recoveryPeriod,
-    guardian = this.guardian,
-    ensAddress = this.ensAddress,
-    ensDomain = this.ensDomain,
-    gnosisSafeMasterCopy = this.gnosisSafeMasterCopy,
-    proxyFactory = this.proxyFactory,
-    linkdropModuleMasterCopy = this.linkdropModuleMasterCopy,
-    recoveryModuleMasterCopy = this.recoveryModuleMasterCopy,
-    multiSend = this.multiSend,
-    createAndAddModules = this.createAndAddModules,
-    jsonRpcUrl = this.jsonRpcUrl,
-    apiHost = this.apiHost
-  }) {
-    return create({
-      owner,
-      ensName,
-      saltNonce,
-      gasPrice,
-      recoveryPeriod,
-      guardian,
-      ensAddress,
-      ensDomain,
-      gnosisSafeMasterCopy,
-      proxyFactory,
-      linkdropModuleMasterCopy,
-      recoveryModuleMasterCopy,
-      multiSend,
-      createAndAddModules,
-      jsonRpcUrl,
-      apiHost
     })
   }
 
@@ -311,23 +244,8 @@ class WalletSDK {
    * @param {String} linkdropMasterAddress Linkdrop master address
    * @param {String} linkdropSignerSignature Linkdrop signer signature
    * @param {String} campaignId Campaign id
-   * @param {String} gnosisSafeMasterCopy Deployed gnosis safe mastercopy address
-   * @param {String} proxyFactory Deployed proxy factory address
    * @param {String} owner Safe owner address
-   * @param {String} linkdropModuleMasterCopy Deployed linkdrop module master copy address
-   * @param {String} createAndAddModules Deployed createAndAddModules library address
-   * @param {String} multiSend Deployed multiSend library address
-   * @param {String} apiHost API host
-   * @param {String} saltNonce Random salt nonce
-   * @param {String} guardian Guardian address
-   * @param {String} recoveryPeriod Recovery period
-   * @param {String} recoveryModuleMasterCopy Deployed recovery moduel mastercopy address
-   * @param {String} gasPrice Gas price in wei
    * @param {String} ensName ENS name (e.g. 'alice')
-   * @param {String} ensDomain ENS domain (e.g. 'my-domain.eth)
-   * @param {String} ensAddress ENS address
-   * @param {String} jsonRpcUrl JSON RPC URL
-   * @param {String} linkdropFactory Deployed linkdrop factory address
    * @param {String} email Email
    * @returns {Object} {success, txHash,safe, linkdropModule, recoveryModule, errors}
    */
@@ -342,21 +260,6 @@ class WalletSDK {
     campaignId,
     owner,
     ensName,
-    saltNonce,
-    gasPrice,
-    gnosisSafeMasterCopy = this.gnosisSafeMasterCopy,
-    proxyFactory = this.proxyFactory,
-    linkdropModuleMasterCopy = this.linkdropModuleMasterCopy,
-    createAndAddModules = this.createAndAddModules,
-    multiSend = this.multiSend,
-    apiHost = this.apiHost,
-    guardian = this.guardian,
-    recoveryPeriod = this.recoveryPeriod,
-    recoveryModuleMasterCopy = this.recoveryModuleMasterCopy,
-    ensDomain = this.ensDomain,
-    ensAddress = this.ensAddress,
-    jsonRpcUrl = this.jsonRpcUrl,
-    linkdropFactory = this.linkdropFactory,
     email
   }) {
     return claimAndCreate({
@@ -368,23 +271,21 @@ class WalletSDK {
       linkdropMasterAddress,
       linkdropSignerSignature,
       campaignId,
-      gnosisSafeMasterCopy,
-      proxyFactory,
       owner,
-      linkdropModuleMasterCopy,
-      createAndAddModules,
-      multiSend,
-      apiHost,
-      saltNonce,
-      guardian,
-      recoveryPeriod,
-      recoveryModuleMasterCopy,
-      gasPrice,
+      saltNonce: owner,
       ensName,
-      ensDomain,
-      ensAddress,
-      jsonRpcUrl,
-      linkdropFactory,
+      gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
+      proxyFactory: this.proxyFactory,
+      linkdropModuleMasterCopy: this.linkdropModuleMasterCopy,
+      createAndAddModules: this.createAndAddModules,
+      multiSend: this.multiSend,
+      apiHost: this.apiHost,
+      guardian: this.guardian,
+      recoveryPeriod: this.recoveryPeriod,
+      recoveryModuleMasterCopy: this.recoveryModuleMasterCopy,
+      ensDomain: this.ensDomain,
+      ensAddress: this.ensAddress,
+      jsonRpcUrl: this.jsonRpcUrl,
       email
     })
   }
@@ -410,7 +311,6 @@ class WalletSDK {
    * @param {String} guardian Guardian address
    * @param {String} recoveryPeriod Recovery period
    * @param {String} recoveryModuleMasterCopy Deployed recovery moduel mastercopy address
-   * @param {String} gasPrice Gas price in wei
    * @param {String} ensName ENS name (e.g. 'alice')
    * @param {String} ensDomain ENS domain (e.g. 'my-domain.eth)
    * @param {String} ensAddress ENS address
@@ -430,21 +330,6 @@ class WalletSDK {
     campaignId,
     owner,
     ensName,
-    saltNonce,
-    gasPrice,
-    gnosisSafeMasterCopy = this.gnosisSafeMasterCopy,
-    proxyFactory = this.proxyFactory,
-    linkdropModuleMasterCopy = this.linkdropModuleMasterCopy,
-    createAndAddModules = this.createAndAddModules,
-    multiSend = this.multiSend,
-    apiHost = this.apiHost,
-    guardian = this.guardian,
-    recoveryPeriod = this.recoveryPeriod,
-    recoveryModuleMasterCopy = this.recoveryModuleMasterCopy,
-    ensDomain = this.ensDomain,
-    ensAddress = this.ensAddress,
-    jsonRpcUrl = this.jsonRpcUrl,
-    linkdropFactory = this.linkdropFactory,
     email
   }) {
     return claimAndCreateERC721({
@@ -456,27 +341,49 @@ class WalletSDK {
       linkdropMasterAddress,
       linkdropSignerSignature,
       campaignId,
-      gnosisSafeMasterCopy,
-      proxyFactory,
       owner,
-      linkdropModuleMasterCopy,
-      createAndAddModules,
-      multiSend,
-      apiHost,
-      saltNonce,
-      guardian,
-      recoveryPeriod,
-      recoveryModuleMasterCopy,
-      gasPrice,
+      saltNonce: owner,
       ensName,
-      ensDomain,
-      ensAddress,
-      jsonRpcUrl,
-      linkdropFactory,
+      gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
+      proxyFactory: this.proxyFactory,
+      linkdropModuleMasterCopy: this.linkdropModuleMasterCopy,
+      createAndAddModules: this.createAndAddModules,
+      multiSend: this.multiSend,
+      apiHost: this.apiHost,
+      guardian: this.guardian,
+      recoveryPeriod: this.recoveryPeriod,
+      recoveryModuleMasterCopy: this.recoveryModuleMasterCopy,
+      ensDomain: this.ensDomain,
+      ensAddress: this.ensAddress,
+      jsonRpcUrl: this.jsonRpcUrl,
+      linkdropFactory: this.linkdropFactory,
       email
     })
   }
 
+  /**
+   * Function to precompute Safe address with specific params and gas price 0
+   * @param {String} owner Safe owner address
+   * @returns {String} safeAddress
+   */
+  precomputeAddress ({
+    owner
+  }) {
+    return precomputeSafeAddressWithModules({
+      owner,
+      saltNonce: owner,
+      gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
+      proxyFactory: this.proxyFactory,
+      linkdropModuleMasterCopy: this.linkdropModuleMasterCopy,
+      createAndAddModules: this.createAndAddModules,
+      multiSend: this.multiSend,
+      guardian: this.guardian,
+      recoveryPeriod: this.recoveryPeriod,
+      recoveryModuleMasterCopy: this.recoveryModuleMasterCopy
+    })
+  }
+  
+  
   /**
    * Function to calculate the linkdrop module address based on given params
    * @param {String} owner Safe owner address

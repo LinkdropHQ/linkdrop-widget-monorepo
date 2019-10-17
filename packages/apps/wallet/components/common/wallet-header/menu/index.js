@@ -31,9 +31,7 @@ class Menu extends React.Component {
         onClick: _ => window.open('https://www.notion.so/Terms-and-Privacy-dfa7d9b85698491d9926cbfe3c9a0a58', '_blank')
       }, {
         title: text('common.walletHeader.menu.logOut'),
-        onClick: _ => {
-          gapiService.signOut()
-        },
+        onClick: _ => this.actions().authorization.signOut(),
         color: variables.redColor
       }
     ]

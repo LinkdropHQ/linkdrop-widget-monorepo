@@ -10,26 +10,25 @@ import { Button } from 'components/common'
 @translate('pages.authorization')
 class GoogleDrivePermission extends React.Component {
   render () {
-    const { accessingDrive, enableDrivePermissions, errors } = this.props
-    console.log({ errors })
+    const { enableDrivePermissions, errors, loading } = this.props
     if (errors && errors.length > 0) {
-      return this.renderErrorPage({ accessingDrive, enableDrivePermissions })
+      return this.renderErrorPage({ enableDrivePermissions, loading })
     }
     return <div className={styles.container}>
       <div className={styles.title} dangerouslySetInnerHTML={{ __html: this.t('titles.grantGoogleDrive') }} />
       <div className={styles.text} dangerouslySetInnerHTML={{ __html: this.t('texts.googleDrive') }} />
-      <Button className={styles.button} loading={accessingDrive} onClick={_ => enableDrivePermissions && enableDrivePermissions()}>
+      <Button loading={loading} className={styles.button} onClick={_ => enableDrivePermissions && enableDrivePermissions()}>
         {this.t('buttons.secure')}
       </Button>
       <div className={styles.note} dangerouslySetInnerHTML={{ __html: this.t('texts.googleDriveAttention') }} />
     </div>
   }
 
-  renderErrorPage ({ enableDrivePermissions, accessingDrive }) {
+  renderErrorPage ({ enableDrivePermissions, loading }) {
     return <div className={styles.container}>
       <div className={styles.title} dangerouslySetInnerHTML={{ __html: this.t('titles.oops') }} />
       <div className={styles.text} dangerouslySetInnerHTML={{ __html: this.t('texts.grantPermission') }} />
-      <Button className={styles.button} onClick={_ => enableDrivePermissions && enableDrivePermissions()}>
+      <Button loading={loading} className={styles.button} onClick={_ => enableDrivePermissions && enableDrivePermissions()}>
         {this.t('buttons.grant')}
       </Button>
       <div className={styles.note} dangerouslySetInnerHTML={{ __html: this.t('texts.googleDriveAttention') }} />

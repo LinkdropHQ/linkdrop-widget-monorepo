@@ -7,6 +7,7 @@ const generator = function * ({ payload }) {
     const sdk = yield select(generator.selectors.sdk)
     const { isDeployed, safe } = yield sdk.isDeployed(email)
     if (isDeployed) {
+      // linkdrop sdk
       if (tokenType === 'erc20') {
         console.log('claiming erc20...')
         return yield put({ type: '*TOKENS.CLAIM_TOKENS_ERC20', payload: { ...payload, wallet: safe } })
@@ -17,6 +18,7 @@ const generator = function * ({ payload }) {
         return yield put({ type: '*TOKENS.CLAIM_TOKENS_ERC721', payload: { ...payload, wallet: safe } })
       }
     } else {
+      // wallet sdk
       if (tokenType === 'erc20') {
         console.log('claiming erc20 and deploy...')
         return yield put({ type: '*TOKENS.CLAIM_TOKENS_ERC20_AND_DEPLOY', payload: { ...payload, email } })

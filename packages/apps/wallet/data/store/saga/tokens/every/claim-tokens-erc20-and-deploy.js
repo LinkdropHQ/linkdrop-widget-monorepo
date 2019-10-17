@@ -1,41 +1,41 @@
 import { put, select } from 'redux-saga/effects'
 import { ERRORS } from './data'
+import { ethers } from 'ethers'
 import { factory } from 'app.config.js'
+import { getEns } from 'helpers'
 
 const generator = function * ({ payload }) {
   try {
     const { campaignId, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const sdk = yield select(generator.selectors.sdk)
-    const ens = yield select(generator.selectors.ens)
-    const contractAddress = yield select(generator.selectors.contractAddress)
+    const chainId = yield select(generator.selectors.chainId)
+    const email = yield select(generator.selectors.email)
     const privateKey = yield select(generator.selectors.privateKey)
-    const walletContractExist = yield sdk.walletContractExist(ens)
-    let result = {}
-    const claimParams = {
+    const result = yield sdk.claimAndCreate({
       weiAmount: weiAmount || '0',
       tokenAddress,
+      email,
       tokenAmount: tokenAmount || '0',
       expirationTime,
       linkKey,
       linkdropMasterAddress,
       linkdropSignerSignature,
-      receiverAddress: contractAddress,
       campaignId,
-      factoryAddress: factory
-    }
+      factoryAddress: factory,
+      owner: new ethers.Wallet(privateKey).address,
+      ensName: getEns({ email, chainId }),
+      saltNonce: String(+(new Date())),
+      gasPrice: '0'
+    })
 
-    if (walletContractExist) {
-      console.log('...claiming')
-      result = yield sdk.claim(claimParams)
-    } else {
-      const deployParams = {
-        privateKey,
-        ensName: ens
-      }
-      console.log('...claiming and deploy')
-      result = yield sdk.claimAndDeploy(claimParams, deployParams)
-    }
+    // {
+    //   owner: new ethers.Wallet(privateKey).address, +
+    //   ensName: динамически создать на основе имейла, +
+    //   saltNonce: String(+(new Date())),
+    //   gasPrice: "0",
+    // }
+
     const { success, errors, txHash } = result
     if (success) {
       yield put({ type: 'TOKENS.SET_TRANSACTION_ID', payload: { transactionId: txHash } })
@@ -59,7 +59,8 @@ const generator = function * ({ payload }) {
 export default generator
 generator.selectors = {
   sdk: ({ user: { sdk } }) => sdk,
+  chainId: ({ user: { chainId } }) => chainId,
+  email: ({ user: { email } }) => email,
   ens: ({ user: { ens } }) => ens,
-  privateKey: ({ user: { privateKey } }) => privateKey,
-  contractAddress: ({ user: { contractAddress } }) => contractAddress
+  privateKey: ({ user: { privateKey } }) => privateKey
 }

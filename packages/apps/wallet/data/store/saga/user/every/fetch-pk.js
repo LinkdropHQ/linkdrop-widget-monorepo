@@ -8,8 +8,11 @@ const generator = function * ({ payload }) {
     const { privateKey, success } = yield sdk.extractPrivateKeyFromSession(sessionKeyStore)
     if (success && privateKey) {
       yield put({ type: 'USER.SET_PRIVATE_KEY', payload: { privateKey } })
+    } else {
+      yield put({ type: 'USER.SET_PRIVATE_KEY', payload: { privateKey: false } })
     }
   } catch (e) {
+    yield put({ type: 'USER.SET_PRIVATE_KEY', payload: { privateKey: false } })
     console.error(e)
   }
 }

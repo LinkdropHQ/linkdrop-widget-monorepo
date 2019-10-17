@@ -3,20 +3,21 @@ import { RetinaImage } from '@linkdrop/ui-kit'
 import styles from './styles.module'
 import { Page } from 'components/pages'
 import { Button } from 'components/common'
-import { getEns, getImages } from 'helpers'
+import { getImages } from 'helpers'
 import { actions, translate } from 'decorators'
 import gapiService from 'data/api/google-api'
 import SignInWithEmail from './sign-in-with-email'
 import GoogleDrivePermission from './google-drive-permission'
 
-@actions(({ authorization: { authorized }, user: { sdk, privateKey, contractAddress, ens, loading, chainId } }) => ({
+@actions(({ authorization: { authorized, loading: authorizationLoading }, user: { sdk, privateKey, contractAddress, ens, loading, chainId } }) => ({
   loading,
   sdk,
   contractAddress,
   privateKey,
   ens,
   chainId,
-  authorized
+  authorized,
+  authorizationLoading
 }))
 @translate('pages.authorization')
 class Authorization extends React.Component {
@@ -113,16 +114,22 @@ class Authorization extends React.Component {
   // }
 
   renderAuthorizationScreen () {
-    const { loading } = this.props
+    const { loading, authorizationLoading } = this.props
     const { enableAuthorize, signInWithWallet, createWallet } = this.state
     return <div className={styles.container}>
       <h2 className={styles.title} dangerouslySetInnerHTML={{ __html: this.t('titles.signIn') }} />
       <SignInWithEmail
         show={signInWithWallet || createWallet}
-        title={this.t(`titles.${createWallet ? 'createWalletTitle' : 'signInTitle'}`)}
+        title={this.t(`titles.${createWallet ? 'createWallet' : 'emailSignIn'}`)}
         onClose={_ => this.setState({ signInWithWallet: false, createWallet: false })}
       />
-      <Button loadingClassName={styles.buttonLoading} className={styles.button} inverted loading={!enableAuthorize || loading} onClick={e => this.actions().authorization.signInWithGoogle()}>
+      <Button
+        loadingClassName={styles.buttonLoading}
+        className={styles.button}
+        inverted
+        loading={!enableAuthorize || loading || authorizationLoading}
+        onClick={e => this.actions().authorization.signInWithGoogle()}
+      >
         <RetinaImage width={30} {...getImages({ src: 'google' })} />
         {this.t('titles.googleSignIn')}
       </Button>
