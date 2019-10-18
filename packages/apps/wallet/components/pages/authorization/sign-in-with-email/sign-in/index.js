@@ -28,7 +28,7 @@ class SignIn extends React.Component {
       />
       {this.renderErrors({ errors })}
       <Button
-        disabled={this.defineIfDisabled({ password })}
+        disabled={this.defineIfDisabled({ password, loading })}
         loading={loading}
         className={styles.button}
         onClick={_ => signIn && signIn({ email, password })}
@@ -46,8 +46,8 @@ class SignIn extends React.Component {
     return <div className={styles.error}>{this.t(`errors.${errors[0]}`)}</div>
   }
 
-  defineIfDisabled ({ password }) {
-    return !password || password.length < 8
+  defineIfDisabled ({ password, loading }) {
+    return !password || password.length < 8 || loading
   }
 }
 

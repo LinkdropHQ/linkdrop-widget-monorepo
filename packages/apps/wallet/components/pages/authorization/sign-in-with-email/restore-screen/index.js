@@ -9,7 +9,12 @@ class RestoreScreen extends React.Component {
     return <div className={styles.container}>
       <div className={styles.title}>{this.t('titles.restoreWallet')}</div>
       <div className={styles.text} dangerouslySetInnerHTML={{ __html: this.t('texts.restoreWallet') }} />
-      <Button className={styles.button}>{this.t('buttons.contactUs')}</Button>
+      <Button
+        className={styles.button}
+        href='mailto:help@linkdrop.io'
+      >
+        {this.t('buttons.contactUs')}
+      </Button>
       <div className={styles.link} dangerouslySetInnerHTML={{ __html: this.t('titles.sendToEmail', { email: 'help@linkdrop.io' }) }} />
     </div>
   }

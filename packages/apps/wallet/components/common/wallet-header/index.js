@@ -11,7 +11,7 @@ import { Scrollbars } from 'react-custom-scrollbars'
 import variables from 'variables'
 import { prepareRedirectUrl } from 'helpers'
 
-@actions(({ user: { ens, avatar, chainId } }) => ({ chainId, ens, avatar }))
+@actions(({ user: { email, avatar, chainId } }) => ({ chainId, email, avatar }))
 @translate('common.walletHeader')
 class WalletHeader extends React.Component {
   constructor (props) {
@@ -23,7 +23,7 @@ class WalletHeader extends React.Component {
 
   render () {
     const { opened } = this.state
-    const { avatar, ens, chainId, disableProfile } = this.props
+    const { avatar, email, chainId, disableProfile } = this.props
 
     return <div className={classNames(styles.container, {
       [styles.opened]: opened
@@ -43,6 +43,9 @@ class WalletHeader extends React.Component {
         <div className={styles.bodyHeader}>
           <div className={styles.bodyHeaderQrIcon} onClick={_ => { window.location.href = prepareRedirectUrl({ link: '/#/get' }) }}>
             <Icons.Qr />
+          </div>
+          <div className={styles.email}>
+            {email}
           </div>
           <div
             className={styles.bodyHeaderCloseIcon} onClick={_ => this.setState({
@@ -83,7 +86,7 @@ class WalletHeader extends React.Component {
 
   renderProfileIcon ({ avatar }) {
     if (!avatar || avatar === 'undefined') {
-      return <Icons.Profile />
+      return <Icons.Profile fill={variables.dbBlue} />
     }
     return <div
       className={classNames(styles.avatar, styles.avatarSmall)}

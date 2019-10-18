@@ -21,10 +21,11 @@ export default {
     choosePassword: 'Choose a password',
     passwordConfirm: 'Confirm password',
     signInAs: 'Sign in as',
-    signInTitle: 'Sign in'
+    signInTitle: 'Sign in',
+    passwordLength: 'Password must be at least 8 characters'
   },
   texts: {
-    backup: 'You will access your wallet with your Google<br/>account on other devices <a target="_blank" href={{href}}>Learn more</a>',
+    backup: 'By creating a wallet or signing in,<br/>you agree to our <a target="_blank" href={{href}}>Terms & Privacy</a>',
     googleDrive: 'We\'ll save your private key<br>in your Google Drive',
     restoreWallet: 'Just contact us by email address with<br>which you created a wallet so that<br>we can help recover your wallet',
     verifyEmail: 'We sent verification code to<br><span>{{email}}</span>',
@@ -33,13 +34,13 @@ export default {
   },
   buttons: {
     copyLink: 'Copy link',
-    signIn: 'Sign in',
-    contactUs: 'Contact us',
+    signIn: 'Sign In',
+    contactUs: 'Contact Us',
     grant: 'Grant',
     confirm: 'Confirm',
     secure: 'Secure',
     tryAgain: 'Try Again',
-    signUp: 'Sign up',
+    signUp: 'Sign Up',
     next: 'Next'
   },
   errors: {
