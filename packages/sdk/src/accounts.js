@@ -13,7 +13,7 @@ import {
 
 import { ethers } from 'ethers'
 
-export const register = async ({ email, password, apiHost }) => {
+export const register = async ({ email, password, apiHost, ownerWallet, walletAddress }) => {
   const encryptionKey = generateEncryptionKey()
   const encryptedEncryptionKey = await getEncryptedEncryptionKey(
     email,
@@ -25,9 +25,8 @@ export const register = async ({ email, password, apiHost }) => {
   //   email,
   //   password
   // )
-
-  const wallet = ethers.Wallet.createRandom()
-  const mnemonic = wallet.mnemonic
+  
+  const mnemonic = ownerWallet.mnemonic
   const iv = generateIV()
 
   const encryptedMnemonic = await getEncryptedMnemonic(
@@ -35,12 +34,13 @@ export const register = async ({ email, password, apiHost }) => {
     encryptionKey,
     iv
   )
-
+  
   const response = await axios.post(
     `${apiHost}/api/v1/accounts/register`,
     {
       email,
       passwordHash,
+      walletAddress,
       passwordDerivedKeyHash,
       encryptedEncryptionKey,
       encryptedMnemonic
@@ -52,12 +52,12 @@ export const register = async ({ email, password, apiHost }) => {
 
   const { account, sessionKey, success, error } = response.data
 
-  const sessionKeyStore = await wallet.encrypt(sessionKey, { scrypt: { N: 1024 } })
+  const sessionKeyStore = await ownerWallet.encrypt(sessionKey, { scrypt: { N: 1024 } })
   console.log({ sessionKeyStore })
 
   return {
     success,
-    data: { privateKey: wallet.privateKey, sessionKeyStore },
+    data: { privateKey: ownerWallet.privateKey, sessionKeyStore },
     error
   }
 }
