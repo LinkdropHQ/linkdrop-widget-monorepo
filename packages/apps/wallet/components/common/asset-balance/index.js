@@ -25,7 +25,6 @@ class AssetBalance extends React.Component {
   }
 
   renderTokenERC721 ({ symbol, icon, iconType, onClick, loading, className }) {
-    console.log({ icon })
     const image = this.renderImage({ iconType, icon })
     return this.renderBody({ image, onClick, loading, symbol, className, iconType })
   }

@@ -12,9 +12,9 @@ const generator = function * ({ payload }) {
     if (receipt && receipt.status === 0) {
       yield put({ type: 'TOKENS.SET_TRANSACTION_STATUS', payload: { transactionStatus: 'failed' } })
       yield put({ type: 'TOKENS.SET_TRANSACTION_ID', payload: { transactionId: null } })
+      yield put({ type: 'USER.SET_ERRORS', payload: { errors: ['SERVER_ERROR_OCCURED'] } })
       return yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
     }
-    console.log({ receipt })
     if (receipt && receipt.confirmations != null && receipt.confirmations > 0) {
       yield put({ type: 'TOKENS.SET_TRANSACTION_ID', payload: { transactionId: null } })
       yield put({ type: 'TOKENS.SET_TRANSACTION_STATUS', payload: { transactionStatus: statusToAdd } })
