@@ -12,11 +12,16 @@ class Provider {
   constructor (opts) {
     this.network = opts.network || 'mainnet'
     this.rpcUrl = opts.rpcUrl || `https://${this.network}.infura.io/v3/d4d1a2b933e048e28fb6fe1abe3e813a`
-    this.widgetUrl = opts.widgetUrl || 'http://localhost:9002'
+    this.widgetUrl = opts.widgetUrl || `https://${this.network}-widget.linkdrop.io`
 
     if (!opts.network) {
       throw new Error('network should be provided')
     }
+
+    if (opts.network !== 'mainnet' && opts.network !== 'rinkeby') {
+      throw new Error(`Wrong network "${opts.network}" provided. Should one of: "mainnet", "rinkeby"`)
+    }
+    
     this.provider = this._initProvider()
   }
 
