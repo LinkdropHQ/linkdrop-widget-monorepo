@@ -27,7 +27,6 @@ class Provider {
 
     iconEl.addEventListener('click', (event) => {
       // Log the clicked element in the console
-      console.log(event.target)
 
       // hide or show widget window
       this._toggleWidget()
@@ -78,8 +77,8 @@ class Provider {
           iframe,
           // Methods the parent is exposing to the child
           methods: {
-            showWidget: this._showWidget.bind(this),
-            hideWidget: this._hideWidget.bind(this)
+            showWidget: this.showWidget.bind(this),
+            hideWidget: this.hideWidget.bind(this)
           }
         })
 
@@ -95,14 +94,14 @@ class Provider {
     })
   }
 
-  _showWidget () {
+  showWidget () {
     if (this.widget) {
       this.widget.iframe.style.display = 'block'
       this.toggleOpenIconClass(true)
     }
   }
 
-  _hideWidget () {
+  hideWidget () {
     if (this.widget) {
       this.widget.iframe.style.display = 'none'
       this.toggleOpenIconClass(false)
@@ -195,7 +194,7 @@ class Provider {
     }
     const VERSION = 0.1 // #TODO move to auto
     const fixtureSubprovider = new FixtureSubprovider({
-      web3_clientVersion: `LD/v${VERSION}/javascript`,
+      web3_clientVersion: `LW/v${VERSION}/javascript`,
       net_listening: true,
       eth_hashrate: '0x00',
       eth_mining: false,
@@ -210,7 +209,6 @@ class Provider {
         let result, error
         try {
           result = await this.widget.communication.getAccounts()
-          console.log({ result })
           address = result[0]
         } catch (err) {
           error = err

@@ -45,7 +45,7 @@ class WidgetRouter extends React.Component {
       getAccounts: () => {
         if (!walletAddress) {
           const { privateKey, sdk } = this.props
-          console.log('WALLET: getAccounts')
+          console.log('WALLET: getAccounts', { sdk, privateKey })
           const owner = new ethers.Wallet(privateKey).address
           walletAddress = sdk.precomputeAddress({ owner })
         }
@@ -54,7 +54,6 @@ class WidgetRouter extends React.Component {
     }
 
     this.actions().widget.connectToDapp({ methods })
-    // widgetService.connectToDapp({ methods })
   }
 
   _awaitUserTransactionConfirmation () {
