@@ -129,7 +129,7 @@ export const claimAndCreateERC721 = async ({
     recoveryPeriod,
     recoveryModuleMasterCopy
   })
-  
+
   const receiverSignature = await signReceiverAddress(linkKey, safeAddress)
   const linkId = new ethers.Wallet(linkKey).address
 
