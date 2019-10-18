@@ -8,7 +8,6 @@ import { translate, actions } from 'decorators'
 @translate('pages.dappConnect')
 class DappConnect extends React.Component {
   componentDidMount() {
-    console.log("Confirm screen mounted")
     this.actions().widget.confirm({})
   }
   
