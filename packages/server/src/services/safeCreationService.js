@@ -256,7 +256,7 @@ class SafeCreationService {
         to: this.multiSendWithRefund.address,
         data: multiSendData,
         gasPrice: ethers.utils.parseUnits(gasPrice, 'wei'),
-        gasLimit: 900000
+        gasLimit: 1000000
       })
 
       logger.json(
@@ -425,24 +425,24 @@ class SafeCreationService {
         paymentAmount: creationCosts.toString()
       })
 
-      const registerEnsData = sdkService.walletSDK.encodeParams(
-        FIFSRegistrar.abi,
-        'register',
-        [ethers.utils.keccak256(ethers.utils.toUtf8Bytes(ensName)), safe]
-      )
+      // const registerEnsData = sdkService.walletSDK.encodeParams(
+      //   FIFSRegistrar.abi,
+      //   'register',
+      //   [ethers.utils.keccak256(ethers.utils.toUtf8Bytes(ensName)), safe]
+      // )
 
-      const registrar = await sdkService.walletSDK.getEnsOwner({
-        ensAddress: ensService.ens.address,
-        ensDomain: ensService.ensDomain,
-        jsonRpcUrl: relayerWalletService.jsonRpcUrl
-      })
+      // const registrar = await sdkService.walletSDK.getEnsOwner({
+      //   ensAddress: ensService.ens.address,
+      //   ensDomain: ensService.ensDomain,
+      //   jsonRpcUrl: relayerWalletService.jsonRpcUrl
+      // })
 
-      const registerEnsMultiSendData = sdkService.walletSDK.encodeDataForMultiSend(
-        CALL_OP,
-        registrar,
-        0,
-        registerEnsData
-      )
+      // const registerEnsMultiSendData = sdkService.walletSDK.encodeDataForMultiSend(
+      //   CALL_OP,
+      //   registrar,
+      //   0,
+      //   registerEnsData
+      // )
 
       const claimData = sdkService.walletSDK.encodeParams(
         linkdropFactoryService.abi,
@@ -471,8 +471,8 @@ class SafeCreationService {
       nestedTxData =
         '0x' +
         claimMultiSendData +
-        createSafeMultiSendData +
-        registerEnsMultiSendData
+            createSafeMultiSendData
+	    // + registerEnsMultiSendData
 
       multiSendData = sdkService.walletSDK.encodeParams(
         MultiSend.abi,
@@ -498,8 +498,8 @@ class SafeCreationService {
       const tx = await relayerWalletService.wallet.sendTransaction({
         to: this.multiSendWithRefund.address,
         data: multiSendData,
-        gasPrice: ethers.utils.parseUnits(gasPrice, 'wei'),
-        gasLimit: 900000
+        gasPrice: ethers.utils.parseUnits('10', 'gwei'),
+        gasLimit: 1000000
       })
 
       account = await accountsService.update({
@@ -759,7 +759,7 @@ class SafeCreationService {
         to: this.multiSendWithRefund.address,
         data: multiSendData,
         gasPrice: ethers.utils.parseUnits('10', 'gwei'),
-        gasLimit: 900000
+        gasLimit: 1000000
       })
 
       account = await accountsService.update({
