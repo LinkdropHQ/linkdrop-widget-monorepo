@@ -16,7 +16,7 @@ const getImage = function * ({ metadataURL }) {
   }
 }
 
-const getTokenDataERC20 = function * ({ address, symbol, decimals, chainId, provider, contractAddress }) {
+const getTokenDataERC20 = function * ({ address, symbol, decimals, chainId, provider, wallet }) {
   let assetPrice = 0
   if (Number(chainId) === 1) {
     assetPrice = yield call(getAssetPrice, { symbol })
@@ -24,7 +24,7 @@ const getTokenDataERC20 = function * ({ address, symbol, decimals, chainId, prov
 
   const tokenContract = new ethers.Contract(address, TokenMock.abi, provider)
 
-  const balance = yield tokenContract.balanceOf(contractAddress)
+  const balance = yield tokenContract.balanceOf(wallet)
   // currentAddress - кошелек пользователя
   // account
   const amountFormatted = yield utils.formatUnits(balance, decimals)
@@ -41,7 +41,7 @@ const getTokenDataERC20 = function * ({ address, symbol, decimals, chainId, prov
   }
 }
 
-const getTokenDataERC721 = function * ({ tokenId, name, address, chainId, provider, contractAddress }) {
+const getTokenDataERC721 = function * ({ tokenId, name, address, chainId, provider }) {
   const nftContract = yield new ethers.Contract(address, NFTMock.abi, provider)
   const metadataURL = yield nftContract.tokenURI(tokenId)
   const symbol = yield nftContract.symbol()
@@ -62,24 +62,26 @@ const getTokenDataERC721 = function * ({ tokenId, name, address, chainId, provid
 const generator = function * () {
   try {
     const chainId = yield select(generator.selectors.chainId)
-    // const contractAddress = yield select(generator.selectors.contractAddress)
-    const contractAddress = '0xAa46966f3448291068249E6f3fa8FDA59C929f3E'
+    const wallet = yield select(generator.selectors.wallet)
+    if (!wallet) {
+      return
+    }
     const networkName = defineNetworkName({ chainId })
 
-    const { status = 0, result = [], message } = yield call(getItems, { address: contractAddress, networkName })
-    const { assets: resultERC721 } = yield call(getItemsERC721, { address: contractAddress, networkName })
+    const { status = 0, result = [], message } = yield call(getItems, { address: wallet, networkName })
+    const { assets: resultERC721 } = yield call(getItemsERC721, { address: wallet, networkName })
     const provider = yield ethers.getDefaultProvider(networkName)
-    const ethBalance = yield provider.getBalance(contractAddress)
+    const ethBalance = yield provider.getBalance(wallet)
 
     let assetsStorage = []
     if (status && status === '1' && message === 'OK') {
       const erc20Assets = result.filter(asset => asset.type === 'ERC-20')
-      const erc20AssetsFormatted = yield all(erc20Assets.map(({ contractAddress: address, symbol, decimals }) => getTokenDataERC20({ address, symbol, decimals, chainId, provider, contractAddress })))
+      const erc20AssetsFormatted = yield all(erc20Assets.map(({ contractAddress: address, symbol, decimals }) => getTokenDataERC20({ address, symbol, decimals, chainId, provider, wallet })))
       assetsStorage = assetsStorage.concat(erc20AssetsFormatted)
     }
 
     if (resultERC721 && resultERC721.length > 0) {
-      const erc721AssetsFormatted = yield all(resultERC721.map(({ token_id: tokenId, asset_contract: { address }, name }) => getTokenDataERC721({ tokenId, name, address, chainId, provider, contractAddress })))
+      const erc721AssetsFormatted = yield all(resultERC721.map(({ token_id: tokenId, asset_contract: { address }, name }) => getTokenDataERC721({ tokenId, name, address, chainId, provider, wallet })))
       assetsStorage = assetsStorage.concat(erc721AssetsFormatted)
     }
 
@@ -110,5 +112,7 @@ export default generator
 generator.selectors = {
   contractAddress: ({ user: { contractAddress } }) => contractAddress,
   sdk: ({ user: { sdk } }) => sdk,
-  chainId: ({ user: { chainId } }) => chainId
+  chainId: ({ user: { chainId } }) => chainId,
+  privateKey: ({ user: { privateKey } }) => privateKey,
+  wallet: ({ user: { wallet } }) => wallet
 }

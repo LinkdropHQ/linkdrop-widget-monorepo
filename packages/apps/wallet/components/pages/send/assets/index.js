@@ -33,6 +33,7 @@ class Assets extends React.Component {
       if (a.tokenAddress === currentAsset) { return -1 }
       return 0
     })
+    const assetsList = this.createAssetsList({ items, onChange })
     return <div
       style={style}
       onClick={e => {
@@ -46,26 +47,35 @@ class Assets extends React.Component {
       >
         <Icons.ExpandArrow />
       </div>
-      {items.map(({
-        icon,
-        symbol,
-        balanceFormatted,
-        tokenAddress,
-        price
-      }) => <AssetBalance
-        onClick={_ => {
-          this.setState({
-            expanded: false
-          }, _ => onChange && onChange({ currentAsset: tokenAddress }))
-        }}
-        key={tokenAddress}
-        className={styles.asset}
-        symbol={symbol}
-        amount={balanceFormatted}
-        price={price}
-        icon={icon}
-      />)}
+      {assetsList}
     </div>
+  }
+
+  createAssetsList ({ items, onChange }) {
+    // const erc20Items = items.filter(item => item.type === 'erc20')
+    return items.map(({
+      icon,
+      symbol,
+      balanceFormatted,
+      tokenAddress,
+      price,
+      type,
+      image
+    }) => <AssetBalance
+      onClick={_ => {
+        this.setState({
+          expanded: false
+        }, _ => onChange && onChange({ currentAsset: tokenAddress }))
+      }}
+      image={image}
+      type={type}
+      key={tokenAddress}
+      className={styles.asset}
+      symbol={symbol}
+      amount={balanceFormatted}
+      price={price}
+      icon={icon}
+    />)
   }
 }
 

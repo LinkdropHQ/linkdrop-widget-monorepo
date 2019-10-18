@@ -12,7 +12,7 @@ export default {
     password: 'Password',
     forgotPassport: 'Forgot your password?',
     restoreWallet: 'Restore your wallet',
-    sendToEmail: 'Send email to {{email}}',
+    sendToEmail: 'Send email to <a href="mailto:{{email}}">{{email}}</a>',
     verifyEmail: 'Verify your email',
     sendAgainBlocked: 'Send again ({{count}} sec)',
     sendAgain: 'Send again',
@@ -38,6 +38,7 @@ export default {
     grant: 'Grant',
     confirm: 'Confirm',
     secure: 'Secure',
+    tryAgain: 'Try Again',
     signUp: 'Sign up',
     next: 'Next'
   },

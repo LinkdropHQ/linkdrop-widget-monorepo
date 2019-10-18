@@ -22,7 +22,7 @@ const generator = function * ({ payload }) {
     const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
     const nftContract = yield new ethers.Contract(nftAddress, NFTMock.abi, provider)
-    let metadataURL = yield nftContract.tokenURI(tokenId)
+    const metadataURL = yield nftContract.tokenURI(tokenId)
     const name = yield nftContract.symbol()
     const assetsToClaim = yield select(generator.selectors.itemsToClaim)
 
@@ -36,9 +36,11 @@ const generator = function * ({ payload }) {
       balance: null,
       tokenAddress: nftAddress,
       icon: image,
+      image,
       symbol: name,
+      name,
       decimals: null,
-      type: 'erc20',
+      type: 'erc721',
       price: 0
     }
 

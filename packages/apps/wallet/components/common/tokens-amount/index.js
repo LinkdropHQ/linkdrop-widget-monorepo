@@ -37,6 +37,7 @@ class TokensAmount extends React.Component {
       sendLoading,
       sendingFinished
     } = this.props
+
     const text = this.defineText({ sendLoading, sendingFinished, loading, symbol, amount, claimingFinished, alreadyClaimed })
     const icon = this.defineIcon({ loading: loading || sendLoading })
     return <div className={styles.wrapper}>

@@ -24,7 +24,8 @@ const initialState = {
   sessionKeyStore,
   avatar: ls && ls.getItem && ls.getItem('avatar'),
   showNote: true,
-  chainId
+  chainId,
+  wallet: null
 }
 
 export default (state = initialState, action = {}) => {
@@ -49,5 +50,6 @@ const ACTIONS = {
   'USER.SET_USER_DATA': reducers.setUserData,
   'USER.TOGGLE_NOTE': reducers.toggleNote,
   'USER.SET_CHAIN_ID': reducers.setChainId,
-  'USER.SET_EMAIL': reducers.setEmail
+  'USER.SET_EMAIL': reducers.setEmail,
+  'USER.SET_WALLET': reducers.setWallet
 }

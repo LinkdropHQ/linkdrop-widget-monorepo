@@ -31,7 +31,6 @@ class Claim extends React.Component {
       campaignId
     } = getHashVariables()
     this.actions().tokens.checkIfClaimed({ linkKey, chainId, linkdropMasterAddress, campaignId })
-    this.actions().assets.getItems({ wallet: contractAddress, chainId })
   }
 
   componentWillReceiveProps ({ readyToClaim, alreadyClaimed, chainId }) {
@@ -103,7 +102,7 @@ class Claim extends React.Component {
     }
 
     if (alreadyClaimed) {
-      // if tokens we already claimed (if wallet is totally empty).
+      // if tokens we already claimed
       return <ClaimingFinishedPage
         {...commonData}
         alreadyClaimed
@@ -127,7 +126,7 @@ class Claim extends React.Component {
           claimingFinished
         />
       default:
-        // зloading
+        // loading
         return <Loading />
     }
   }

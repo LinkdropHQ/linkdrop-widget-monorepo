@@ -29,7 +29,7 @@ class GoogleDrivePermission extends React.Component {
       <div className={styles.title} dangerouslySetInnerHTML={{ __html: this.t('titles.oops') }} />
       <div className={styles.text} dangerouslySetInnerHTML={{ __html: this.t('texts.grantPermission') }} />
       <Button loading={loading} className={styles.button} onClick={_ => enableDrivePermissions && enableDrivePermissions()}>
-        {this.t('buttons.grant')}
+        {this.t('buttons.tryAgain')}
       </Button>
       <div className={styles.note} dangerouslySetInnerHTML={{ __html: this.t('texts.googleDriveAttention') }} />
     </div>

@@ -54,15 +54,16 @@ class WalletHeader extends React.Component {
         </div>
         <div className={styles.bodyMain}>
           <Scrollbars style={{
-            height: '100vh',
+            height: 'calc(100vh - 90px)',
             width: '100%'
           }}
           >
-            <div className={styles.bodyContent}>
+            {/* decided to hide it for better times... */}
+            {false && <div className={styles.bodyContent}>
               {this.renderAvatar({ avatar })}
               {this.renderName({ ens, chainId })}
               <Note title='⚠ T️his wallet is for testing only. Use at your own risk' />
-            </div>
+            </div>}
             <Menu />
             <Footer />
           </Scrollbars>

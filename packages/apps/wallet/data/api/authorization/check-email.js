@@ -1,7 +1,7 @@
 import fetch from '../fetch'
-import { getApiHost } from 'helpers'
+import { getApiHostWallet } from 'helpers'
 
 export default ({ email, chainId }) => {
-  const apiHost = getApiHost({ chainId })
+  const apiHost = getApiHostWallet({ chainId })
   return fetch(`${apiHost}/api/v1/accounts/exists/${email}`)
 }

@@ -5,6 +5,9 @@
   API_HOST_MAINNET,
   API_HOST_RINKEBY,
   API_HOST_GOERLI,
+  API_HOST_WALLET_RINKEBY,
+  API_HOST_WALLET_MAINNET,
+  API_HOST_WALLET_GOERLI,
   INITIAL_BLOCK_MAINNET,
   INITIAL_BLOCK_RINKEBY,
   INITIAL_BLOCK_GOERLI,
@@ -37,12 +40,11 @@ try {
 const masterCopy = MASTER_COPY || String(config.masterCopy)
 const factory = FACTORY || String(config.factory)
 const claimHost = CLAIM_HOST || String(config.claimHost)
-const apiHostRinkeby = API_HOST_RINKEBY || String(config.apiHostRinkeby)
-const apiHostMainnet = API_HOST_MAINNET || String(config.apiHostMainnet)
-const apiHostGoerli = API_HOST_GOERLI || String(config.apiHostGoerli)
+
 const initialBlockMainnet = INITIAL_BLOCK_MAINNET || config.initialBlockMainnet
 const initialBlockRinkeby = INITIAL_BLOCK_RINKEBY || config.initialBlockRinkeby
 const initialBlockGoerli = INITIAL_BLOCK_GOERLI || config.initialBlockGoerli
+
 const infuraPk = INFURA_PK || config.infuraPk
 const authClientId = AUTH_CLIENT_ID || authConfig.clientId
 const authApiKey = AUTH_API_KEY || authConfig.apiKey
@@ -53,11 +55,22 @@ const authScopeContacts = AUTH_SCOPE_CONTACTS || authConfig.scopes.contacts
 const authScopeDrive = AUTH_SCOPE_DRIVE || authConfig.scopes.drive
 const defaultChainId = DEFAULT_CHAIN_ID || config.defaultChainId
 
+const apiHostRinkeby = API_HOST_RINKEBY || String(config.apiHostRinkeby)
+const apiHostMainnet = API_HOST_MAINNET || String(config.apiHostMainnet)
+const apiHostGoerli = API_HOST_GOERLI || String(config.apiHostGoerli)
+
+const apiHostWalletRinkeby = API_HOST_WALLET_RINKEBY || String(config.apiHostWalletRinkeby)
+const apiHostWalletMainnet = API_HOST_WALLET_MAINNET || String(config.apiHostWalletMainnet)
+const apiHostWalletGoerli = API_HOST_WALLET_GOERLI || String(config.apiHostWalletGoerli)
+
 module.exports = {
   claimHost,
   apiHostMainnet,
   apiHostRinkeby,
   apiHostGoerli,
+  apiHostWalletRinkeby,
+  apiHostWalletMainnet,
+  apiHostWalletGoerli,
   masterCopy,
   factory,
   initialBlockMainnet,

@@ -1,7 +1,6 @@
 @import "variables";
 
 .wrapper {
-  min-height: 68px;
   margin-bottom: 10px;
   display: flex;
   flex-direction: column;
@@ -20,7 +19,6 @@
   padding: 10px 12px;
   border-radius: 20px;
   display: flex;
-  margin-bottom: 6px;
   align-items: center;
   background-color: $greenColorTransparent;
   color: $greenColor;
