@@ -40,10 +40,14 @@ function () {
     (0, _classCallCheck2["default"])(this, Provider);
     this.network = opts.network || 'mainnet';
     this.rpcUrl = opts.rpcUrl || "https://".concat(this.network, ".infura.io/v3/d4d1a2b933e048e28fb6fe1abe3e813a");
-    this.widgetUrl = opts.widgetUrl || 'https://rinkeby-widget.linkdrop.io'; // 'http://localhost:9002'
+    this.widgetUrl = opts.widgetUrl || "https://".concat(this.network, "-widget.linkdrop.io"); // 'http://localhost:9002'
 
     if (!opts.network) {
       throw new Error('network should be provided');
+    }
+
+    if (opts.network !== 'mainnet' && opts.network !== 'rinkeby') {
+      throw new Error("Wrong network \"".concat(opts.network, "\" provided. Should one of: \"mainnet\", \"rinkeby\""));
     }
 
     this.provider = this._initProvider();
