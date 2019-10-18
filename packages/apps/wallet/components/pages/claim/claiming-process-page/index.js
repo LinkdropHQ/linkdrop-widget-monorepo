@@ -69,13 +69,14 @@ class ClaimingProcessPage extends React.Component {
 
   renderPreview ({ mainAsset, loading, itemsToClaim }) {
     if (mainAsset.type === 'erc721') {
-      const { image } = mainAsset
+      const { image, name } = mainAsset
+      console.log({ image })
       return <div className={styles.tokenPreview}>
         <div className={styles.tokenPreviewImage}>
           <img src={image} />
         </div>
         <div className={styles.tokenPreviewTitle}>
-          blabla
+          {name}
         </div>
       </div>
     }

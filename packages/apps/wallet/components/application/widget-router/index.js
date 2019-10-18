@@ -108,7 +108,6 @@ class WidgetRouter extends React.Component {
 
   render () {
     const { sdk, privateKey, sessionKeyStore, page, connected } = this.props
-    console.log({ privateKey })
     if (!sdk && privateKey === null) { return <Loading /> }
     if (sdk && !sessionKeyStore) { return <Authorization /> }
     if (connected && !page) return <AppRouter />

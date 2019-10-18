@@ -1,5 +1,5 @@
 import React from 'react'
-import { Alert, Icons, Button } from '@linkdrop/ui-kit'
+import { Alert, Icons, Button, Loading } from '@linkdrop/ui-kit'
 import { translate } from 'decorators'
 import { getCurrentAsset } from 'helpers'
 import text from 'texts'
@@ -21,7 +21,7 @@ class InitialPage extends React.Component {
     const { onClick, loading, wallet, itemsToClaim } = this.props
     const assetToShow = getCurrentAsset({ itemsToClaim })
     const { nftAddress } = getHashVariables()
-    if (!assetToShow) { return null }
+    if (!assetToShow) { return <Loading /> }
     const { balanceFormatted, icon, symbol } = assetToShow
     const { iconType } = this.state
     const finalIcon = iconType === 'default' ? <img onError={_ => this.setState({ iconType: 'blank' })} className={styles.icon} src={icon} /> : <Icons.Star />

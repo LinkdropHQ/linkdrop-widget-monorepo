@@ -36,7 +36,9 @@ const generator = function * ({ payload }) {
       balance: null,
       tokenAddress: nftAddress,
       icon: image,
+      image,
       symbol: name,
+      name,
       decimals: null,
       type: 'erc721',
       price: 0

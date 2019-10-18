@@ -9,11 +9,14 @@ import classNames from 'classnames'
 @translate('pages.page')
 class Page extends React.Component {
   componentDidMount () {
-    const { chainId } = this.props
+    const { chainId, privateKey } = this.props
 
     const interval = window.checkAssets
     if (interval) {
       interval && window.clearInterval(interval)
+    }
+    if (privateKey) {
+      this.actions().assets.getItems({ chainId })
     }
     window.checkAssets = window.setInterval(_ => {
       const { privateKey } = this.props

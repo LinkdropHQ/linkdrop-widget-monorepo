@@ -13,6 +13,7 @@ import saveUserData from './save-user-data'
 import removeUserData from './remove-user-data'
 import generateRandomPassword from './generate-random-password'
 import getApiHost from './get-api-host'
+import getApiHostWallet from './get-api-host-wallet'
 import defineError from './define-error'
 import validateEmail from './validate-email'
 
@@ -33,5 +34,6 @@ export {
   generateRandomPassword,
   getApiHost,
   defineError,
-  validateEmail
+  validateEmail,
+  getApiHostWallet
 }

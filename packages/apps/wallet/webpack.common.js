@@ -107,6 +107,9 @@ module.exports = {
       API_HOST_GOERLI: JSON.stringify(process.env.API_HOST_GOERLI),
       INFURA_PK: JSON.stringify(process.env.INFURA_PK),
       DEFAULT_CHAIN_ID: JSON.stringify(process.env.DEFAULT_CHAIN_ID),
+      API_HOST_WALLET_RINKEBY: JSON.stringify(process.env.API_HOST_WALLET_RINKEBY),
+      API_HOST_WALLET_MAINNET: JSON.stringify(process.env.API_HOST_WALLET_MAINNET),
+      API_HOST_WALLET_GOERLI: JSON.stringify(process.env.API_HOST_WALLET_GOERLI),
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development')
       }
