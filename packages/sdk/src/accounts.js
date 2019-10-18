@@ -21,10 +21,10 @@ export const register = async ({ email, password, apiHost }) => {
     encryptionKey
   )
   const passwordHash = await getPasswordHash(email, password)
-  const passwordDerivedKeyHash = await getPasswordDerivedKeyHash(
-    email,
-    password
-  )
+  const passwordDerivedKeyHash = passwordHash // await getPasswordDerivedKeyHash(
+  //   email,
+  //   password
+  // )
 
   const wallet = ethers.Wallet.createRandom()
   const mnemonic = wallet.mnemonic
@@ -52,7 +52,8 @@ export const register = async ({ email, password, apiHost }) => {
 
   const { account, sessionKey, success, error } = response.data
 
-  const sessionKeyStore = await wallet.encrypt(sessionKey)
+  const sessionKeyStore = await wallet.encrypt(sessionKey, { scrypt: { N: 1024 } })
+  console.log({ sessionKeyStore })
 
   return {
     success,
@@ -96,8 +97,9 @@ export const login = async ({ email, password, apiHost }) => {
 
   const wallet = ethers.Wallet.fromMnemonic(mnemonic)
 
-  const sessionKeyStore = await wallet.encrypt(sessionKey)
-
+  const sessionKeyStore = await wallet.encrypt(sessionKey, { scrypt: { N: 1024 } })
+  console.log({ sessionKeyStore })
+  
   return {
     success,
     data: { privateKey: wallet.privateKey, sessionKeyStore },

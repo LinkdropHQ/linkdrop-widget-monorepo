@@ -113,7 +113,7 @@ export const getPasswordDerivedKey = (email, password) => {
     crypto.pbkdf2(
       password,
       email,
-      100000,
+      2,
       32,
       'sha256',
       (err, passwordDerivedKey) => {
