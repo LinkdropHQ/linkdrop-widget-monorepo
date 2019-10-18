@@ -30,7 +30,7 @@ const main = async () => {
     .toString(36)
     .substring(2, 15)
 
-  const email = 'email3'
+  const email = 'email4'
 
   const saltNonce = new Date().getTime().toString()
   console.log('ensName: ', ensName)

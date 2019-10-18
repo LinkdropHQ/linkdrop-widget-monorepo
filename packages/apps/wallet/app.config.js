@@ -59,9 +59,12 @@ const apiHostRinkeby = API_HOST_RINKEBY || String(config.apiHostRinkeby)
 const apiHostMainnet = API_HOST_MAINNET || String(config.apiHostMainnet)
 const apiHostGoerli = API_HOST_GOERLI || String(config.apiHostGoerli)
 
-const apiHostWalletRinkeby = API_HOST_WALLET_RINKEBY || String(config.apiHostWalletRinkeby)
-const apiHostWalletMainnet = API_HOST_WALLET_MAINNET || String(config.apiHostWalletMainnet)
-const apiHostWalletGoerli = API_HOST_WALLET_GOERLI || String(config.apiHostWalletGoerli)
+const apiHostWalletRinkeby =
+  API_HOST_WALLET_RINKEBY || String(config.apiHostWalletRinkeby)
+const apiHostWalletMainnet =
+  API_HOST_WALLET_MAINNET || String(config.apiHostWalletMainnet)
+const apiHostWalletGoerli =
+  API_HOST_WALLET_GOERLI || String(config.apiHostWalletGoerli)
 
 module.exports = {
   claimHost,

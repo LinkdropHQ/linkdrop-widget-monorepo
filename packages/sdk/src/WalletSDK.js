@@ -47,7 +47,9 @@ class WalletSDK {
     linkdropFactory = '0xBa051891B752ecE3670671812486fe8dd34CC1c8'
   }) {
     this.chain = chain
-    this.jsonRpcUrl = jsonRpcUrl || `https://${chain}.infura.io/v3/ecd43c9cd96e45ceb9131fba9b100b07`
+    this.jsonRpcUrl =
+      jsonRpcUrl ||
+      `https://${chain}.infura.io/v3/ecd43c9cd96e45ceb9131fba9b100b07`
     this.apiHost = apiHost
     this.claimHost = claimHost
     this.gnosisSafeMasterCopy = gnosisSafeMasterCopy
@@ -366,9 +368,7 @@ class WalletSDK {
    * @param {String} owner Safe owner address
    * @returns {String} safeAddress
    */
-  precomputeAddress ({
-    owner
-  }) {
+  precomputeAddress ({ owner }) {
     return precomputeSafeAddressWithModules({
       owner,
       saltNonce: owner,
@@ -382,8 +382,7 @@ class WalletSDK {
       recoveryModuleMasterCopy: this.recoveryModuleMasterCopy
     })
   }
-  
-  
+
   /**
    * Function to calculate the linkdrop module address based on given params
    * @param {String} owner Safe owner address

@@ -22,18 +22,29 @@ const generator = function * ({ payload }) {
     }
     if (!address) {
       yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
-      return yield put({ type: 'USER.SET_ERRORS', payload: { errors: ['ENS_INVALID'] } })
+      return yield put({
+        type: 'USER.SET_ERRORS',
+        payload: { errors: ['ENS_INVALID'] }
+      })
     }
-    const message = {
-      from: contractAddress,
+
+    const owner = new ethers.Wallet(privateKey).address
+    const walletAddress = sdk.precomputeAddress({ owner })
+
+    const params = {
+      safe: walletAddress,
       to: address,
       data: '0x',
-      value: amountFormatted
+      value: amountFormatted.toString(),
+      privateKey
     }
-    const result = yield sdk.execute(message, privateKey)
+    const result = yield sdk.executeTx(params)
     const { success, errors, txHash } = result
     if (success) {
-      yield put({ type: 'TOKENS.SET_TRANSACTION_ID', payload: { transactionId: txHash } })
+      yield put({
+        type: 'TOKENS.SET_TRANSACTION_ID',
+        payload: { transactionId: txHash }
+      })
       yield put({
         type: 'TOKENS.SET_TRANSACTION_DATA',
         payload: {
