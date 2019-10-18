@@ -17,8 +17,10 @@ const generator = function * ({ payload }) {
     }
     yield put({ type: 'AUTHORIZATION.SET_LOADING', payload: { loading: false } })
   } catch (error) {
-    const { response: { data: { message = '' } = {} } = {} } = error
+    const { response: { data: { error: { message = '' } = {} } = {} } = {} } = error
     if (message) {
+      yield put({ type: 'AUTHORIZATION.SET_LOADING', payload: { loading: false } })
+      console.log({ message })
       yield put({ type: 'AUTHORIZATION.SET_ERRORS', payload: { errors: [defineError({ error: message })] } })
     }
   }

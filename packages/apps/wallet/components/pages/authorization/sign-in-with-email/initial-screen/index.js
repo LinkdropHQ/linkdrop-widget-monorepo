@@ -15,18 +15,23 @@ class InitialScreen extends React.Component {
   }
 
   render () {
-    const { startRestorePassword, checkUser, title, loading } = this.props
+    const { checkUser, title, loading } = this.props
     const { email } = this.state
     return <div className={styles.container}>
       <div className={styles.title}>{title}</div>
-      <Input className={styles.input} value={email} onChange={({ value }) => this.setState({ email: value })} placeholder={this.t('titles.email')} />
+      <Input
+        className={styles.input}
+        value={email}
+        onChange={({ value }) => this.setState({ email: String((value || '')).toLowerCase() })}
+        placeholder={this.t('titles.email')}
+      />
       <Button
         loading={loading}
         disabled={!email || !validateEmail({ email })}
         className={styles.button}
         onClick={_ => checkUser && checkUser({ email })}
       >
-        {this.t('buttons.signIn')}
+        {this.t('buttons.next')}
       </Button>
     </div>
   }

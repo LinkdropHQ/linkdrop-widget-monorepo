@@ -58,7 +58,7 @@ class SignInWithEmail extends React.Component {
       case 'sign-in':
         return <SignIn
           email={email}
-          startRestorePassword={_ => this.setState({ screen: 'restore' })}
+          startRestorePassword={_ => this.actions().authorization.setScreen({ screen: 'restore' })}
           signIn={({ email, password }) => this.actions().authorization.signIn({ email, password })}
         />
       case 'sign-up':

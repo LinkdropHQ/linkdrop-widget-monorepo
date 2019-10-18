@@ -2,6 +2,7 @@ import React from 'react'
 import { translate, actions } from 'decorators'
 import styles from './styles.module'
 import classNames from 'classnames'
+import variables from 'variables'
 import { Icons } from '@linkdrop/ui-kit'
 import { AssetBalance, AssetBalanceERC721 } from 'components/common'
 
@@ -25,7 +26,7 @@ class AssetsList extends React.Component {
       <div className={classNames(styles.assets, { [styles.assetsExpanded]: expanded })}>
         <div className={styles.assetsHeader} onClick={_ => this.setState({ expanded: !expanded })}>
           {this.t('titles.digitalAssets')}
-          <Icons.PolygonArrow fill='#000' />
+          <Icons.PolygonArrow fill={variables.dbBlue} />
         </div>
         <div className={styles.assetsContent}>
           <div className={styles.assetsContentItems}>
