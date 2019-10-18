@@ -32,7 +32,6 @@ class Widget {
   }
 
   close () {
-    console.log('hello')
     this.actions.dispatch({ type: '*WIDGET.CLOSE' })
   }
 

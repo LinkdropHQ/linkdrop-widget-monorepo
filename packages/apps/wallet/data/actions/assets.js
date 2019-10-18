@@ -32,8 +32,7 @@ class Assets {
   }
 
   sendErc721 ({ to, chainId, tokenId, tokenAddress }) {
-    console.log({ to, chainId, tokenId, tokenAddress })
-    // this.actions.dispatch({ type: '*ASSETS.SEND_ERC721', payload: { to, chainId, tokenId, tokenAddress } })
+    this.actions.dispatch({ type: '*ASSETS.SEND_ERC721', payload: { to, chainId, tokenId, tokenAddress } })
   }
 
   sendEth ({ to, amount, chainId }) {
