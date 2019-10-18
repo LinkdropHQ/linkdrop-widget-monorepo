@@ -27,18 +27,13 @@ const generator = function * ({ payload }) {
         payload: { errors: ['ENS_INVALID'] }
       })
     }
-
-    const owner = new ethers.Wallet(privateKey).address
-    const walletAddress = sdk.precomputeAddress({ owner })
-
-    const params = {
-      safe: walletAddress,
+    const message = {
+      from: contractAddress,
       to: address,
       data: '0x',
-      value: amountFormatted.toString(),
-      privateKey
+      value: amountFormatted
     }
-    const result = yield sdk.executeTx(params)
+    const result = yield sdk.execute(message, privateKey)
     const { success, errors, txHash } = result
     if (success) {
       yield put({
