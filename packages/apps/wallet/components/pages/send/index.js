@@ -17,10 +17,13 @@ import classNames from 'classnames'
 class Send extends React.Component {
   constructor (props) {
     super(props)
+    const initialAsset = ((props.items || [])[0]) || {}
     this.state = {
       sendTo: '',
-      currentAsset: ((props.items || {})[0] || {}).tokenAddress,
+      tokenType: initialAsset.type,
+      currentAsset: initialAsset.tokenAddress,
       amount: null,
+      tokenId: initialAsset.tokenId,
       showTx: false,
       error: null
     }
@@ -35,8 +38,11 @@ class Send extends React.Component {
       }), 2000)
     }
     if (items != null && (items || {}).length !== 0 && (prevItems || {}).length === 0) {
+      const currentAsset = items[0] || {}
       this.setState({
-        currentAsset: (items[0] || {}).tokenAddress
+        currentAsset: currentAsset.tokenAddress,
+        tokenType: currentAsset.type,
+        tokenId: currentAsset.tokenId
       })
     }
     if (status != null && status === 'sent' && prevStatus === null) {
@@ -66,13 +72,14 @@ class Send extends React.Component {
   }
 
   render () {
-    const { sendTo, currentAsset, amount, showTx, error } = this.state
+    const { sendTo, currentAsset, amount, showTx, error, tokenType } = this.state
     const { loading, transactionId, chainId, errors } = this.props
     return <Page hideHeader>
       <div className={styles.container}>
         <Header
           sendTo={sendTo}
           error={error}
+          tokenType={tokenType}
           amount={amount}
           onChange={({ amount }) => this.changeAmount({ amount })}
           onSend={_ => this.onSend()}
@@ -83,7 +90,15 @@ class Send extends React.Component {
         }}
         >
           <div className={styles.content}>
-            <Assets onChange={({ currentAsset }) => this.changeAsset({ asset: currentAsset })} currentAsset={currentAsset} />
+            <Assets
+              onChange={({ currentAsset, tokenType, tokenId }) => {
+                this.changeAsset({
+                  asset: currentAsset,
+                  tokenType,
+                  tokenId
+                })
+              }} currentAsset={currentAsset}
+            />
             <Input
               onChange={({ value }) => this.setState({
                 sendTo: value
@@ -128,10 +143,12 @@ class Send extends React.Component {
     }, _ => this.checkBalance({ amount }))
   }
 
-  changeAsset ({ asset }) {
+  changeAsset ({ asset, tokenType, tokenId }) {
     const { amount } = this.state
     this.setState({
-      currentAsset: asset
+      currentAsset: asset,
+      tokenType,
+      tokenId
     }, _ => this.checkBalance({ amount }))
   }
 
@@ -146,12 +163,16 @@ class Send extends React.Component {
 
   onSend () {
     const { items, chainId } = this.props
-    const { sendTo, currentAsset, amount } = this.state
+    const { sendTo, currentAsset, amount, tokenId, tokenType } = this.state
     const { decimals } = items.find(item => item.tokenAddress === currentAsset)
     if (currentAsset === ethers.constants.AddressZero) {
       this.actions().assets.sendEth({ to: sendTo, amount, chainId })
     } else {
-      this.actions().assets.sendErc20({ to: sendTo, chainId, amount, tokenAddress: currentAsset, decimals })
+      if (tokenType === 'erc721') {
+        this.actions().assets.sendErc721({ to: sendTo, chainId, tokenId, tokenAddress: currentAsset })
+      } else {
+        this.actions().assets.sendErc20({ to: sendTo, chainId, amount, tokenAddress: currentAsset, decimals })
+      }
     }
   }
 }

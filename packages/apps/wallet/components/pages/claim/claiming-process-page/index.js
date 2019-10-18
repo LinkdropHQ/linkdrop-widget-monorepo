@@ -2,10 +2,11 @@ import React from 'react'
 import { translate, actions } from 'decorators'
 import commonStyles from '../styles.module'
 import { getHashVariables } from '@linkdrop/commons'
-import { TokensAmount, AssetBalance, AccountBalance } from 'components/common'
+import { TokensAmount, AccountBalance } from 'components/common'
 import { getCurrentAsset } from 'helpers'
 import styles from './styles.module'
-import { Alert } from '@linkdrop/ui-kit'
+import { Alert, Icons } from '@linkdrop/ui-kit'
+import classNames from 'classnames'
 
 @actions(({ user: { chainId }, tokens: { transactionId, transactionStatus } }) => ({ transactionId, chainId, transactionStatus }))
 @translate('pages.claim')
@@ -13,7 +14,8 @@ class ClaimingProcessPage extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      loading: true
+      loading: true,
+      iconType: 'default'
     }
   }
 
@@ -45,11 +47,9 @@ class ClaimingProcessPage extends React.Component {
     if (status != null && status === 'claimed' && prevStatus === null) {
       this.statusCheck && window.clearInterval(this.statusCheck)
       this.actions().tokens.setTransactionStatus({ transactionStatus: null })
-      window.setTimeout(_ => {
-        this.setState({
-          loading: false
-        }, _ => this.actions().assets.saveClaimedAssets())
-      }, 1000)
+      this.setState({
+        loading: false
+      }, _ => this.actions().assets.saveClaimedAssets())
     }
   }
 
@@ -69,11 +69,15 @@ class ClaimingProcessPage extends React.Component {
 
   renderPreview ({ mainAsset, loading, itemsToClaim }) {
     if (mainAsset.type === 'erc721') {
-      const { image, name } = mainAsset
+      const { iconType } = this.state
+      const { image, name, symbol } = mainAsset
+      const finalIcon = iconType === 'default' ? <img onError={_ => this.setState({ iconType: 'blank' })} className={styles.icon} src={image} /> : <Icons.Star />
       return <div className={styles.tokenPreview}>
-        <div className={styles.tokenPreviewImage}>
-          <img src={image} />
-        </div>
+        <Alert
+          noBorder={iconType === 'default' && symbol !== 'ETH'} className={classNames(styles.tokenIcon, {
+            [styles.tokenIconNft]: iconType === 'default'
+          })} icon={finalIcon}
+        />
         <div className={styles.tokenPreviewTitle}>
           {name}
         </div>

@@ -24,16 +24,19 @@ const generator = function * ({ payload }) {
 
     const privateKey = yield select(generator.selectors.privateKey)
     const tokenContract = new ethers.Contract(tokenAddress, TokenMock.abi, provider)
-    const contractAddress = yield select(generator.selectors.contractAddress)
+    const wallet = yield select(generator.selectors.wallet)
     const amountFormatted = utils.parseUnits(String(amount.trim()), decimals)
     const data = yield tokenContract.interface.functions.transfer.encode([address, amountFormatted])
-    const message = {
-      from: contractAddress,
+
+    const params = {
+      safe: wallet,
       to: tokenAddress,
-      data,
-      value: '0'
+      data: data,
+      value: '0',
+      privateKey
     }
-    const result = yield sdk.execute(message, privateKey)
+
+    const result = yield sdk.executeTx(params)
     const { success, errors, txHash } = result
     if (success) {
       yield put({ type: 'TOKENS.SET_TRANSACTION_ID', payload: { transactionId: txHash } })
@@ -64,7 +67,7 @@ const generator = function * ({ payload }) {
 export default generator
 generator.selectors = {
   sdk: ({ user: { sdk } }) => sdk,
-  contractAddress: ({ user: { contractAddress } }) => contractAddress,
+  wallet: ({ user: { wallet } }) => wallet,
   privateKey: ({ user: { privateKey } }) => privateKey,
   chainId: ({ user: { chainId } }) => chainId
 }
