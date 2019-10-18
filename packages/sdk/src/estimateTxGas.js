@@ -1,11 +1,11 @@
-import assert from 'assert-js'
+// import assert from 'assert-js'
 import { ethers } from 'ethers'
 import GnosisSafe from '@gnosis.pm/safe-contracts/build/contracts/GnosisSafe'
 import { encodeParams } from './utils'
 import BigNumber from 'bignumber.js'
 import Web3 from 'web3'
-import { signTx } from './signTx'
-import { AddressZero } from 'ethers/constants'
+// import { signTx } from './signTx'
+// import { AddressZero } from 'ethers/constants'
 
 const baseGasValue = hexValue => {
   switch (hexValue) {
@@ -75,12 +75,12 @@ export const estimateGasCosts = async ({
 }) => {
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
 
-  let currentGasPriceGwei = await provider.getGasPrice()
-  currentGasPriceGwei = ethers.utils.formatUnits(
-    currentGasPriceGwei.toString(),
-    'gwei'
-  )
-  currentGasPriceGwei = parseInt(Math.ceil(currentGasPriceGwei))
+  // let currentGasPriceGwei = await provider.getGasPrice()
+  // currentGasPriceGwei = ethers.utils.formatUnits(
+  //   currentGasPriceGwei.toString(),
+  //   'gwei'
+  // )
+  // currentGasPriceGwei = parseInt(Math.ceil(currentGasPriceGwei))
 
   const web3 = new Web3(jsonRpcUrl)
   const gnosisSafe = new web3.eth.Contract(GnosisSafe.abi, safe)
@@ -103,7 +103,7 @@ export const estimateGasCosts = async ({
 
   let txGasEstimate = new BigNumber(estimateResponse.substring(138), 16)
   // Add 10k else we will fail in case of nested calls
-  txGasEstimate = txGasEstimate.toNumber() + 10000
+  txGasEstimate = txGasEstimate.toNumber() + 100000
 
   const gasCosts = []
 
@@ -125,14 +125,16 @@ export const estimateGasCosts = async ({
     safeTxGas: txGasEstimate
   })
 
-  for (
-    let gasPriceGwei = currentGasPriceGwei;
-    gasPriceGwei <= currentGasPriceGwei + 5;
-    gasPriceGwei++
-  ) {
-    const gasPrice = ethers.utils
-      .parseUnits(gasPriceGwei.toString(), 'gwei')
-      .toNumber()
+  // for (
+  //   let gasPriceGwei = currentGasPriceGwei;
+  //   gasPriceGwei <= currentGasPriceGwei + 5;
+  //   gasPriceGwei++
+  // ) {
+
+  let gasPriceGwei = 0
+  const gasPrice = ethers.utils
+        .parseUnits(gasPriceGwei.toString(), 'gwei')
+        .toNumber()
 
     const baseGasEstimate = estimateBaseGas({
       safe,
@@ -148,12 +150,12 @@ export const estimateGasCosts = async ({
       nonce
     })
 
-    gasCosts.push({
-      gasPrice,
-      baseGas: baseGasEstimate,
-      safeTxGas: txGasEstimate
-    })
-  }
+  gasCosts.push({
+    gasPrice,
+    baseGas: baseGasEstimate,
+    safeTxGas: txGasEstimate
+  })
+  // }
 
   return gasCosts
 }

@@ -38,27 +38,76 @@ var Provider =
 function () {
   function Provider(opts) {
     (0, _classCallCheck2["default"])(this, Provider);
-    this.ensName = opts.ensName;
     this.network = opts.network || 'mainnet';
     this.rpcUrl = opts.rpcUrl || "https://".concat(this.network, ".infura.io/v3/d4d1a2b933e048e28fb6fe1abe3e813a");
-    this.widgetUrl = opts.widgetUrl;
-
-    if (!opts.ensName) {
-      throw new Error('ENS name should be provided');
-    }
+    this.widgetUrl = opts.widgetUrl || 'http://localhost:9002';
 
     if (!opts.network) {
       throw new Error('network should be provided');
     }
 
-    this.widget = null;
     this.provider = this._initProvider();
   }
 
   (0, _createClass2["default"])(Provider, [{
+    key: "_addWidgetIcon",
+    value: function _addWidgetIcon() {
+      var _this = this;
+
+      var iconEl = document.createElement('div');
+      iconEl.className = 'ld-widget-icon';
+      document.body.appendChild(iconEl);
+      iconEl.addEventListener('click', function (event) {
+        // Log the clicked element in the console
+        console.log(event.target); // hide or show widget window
+
+        _this._toggleWidget();
+      }, false);
+    }
+  }, {
+    key: "_toggleWidget",
+    value: function () {
+      var _toggleWidget2 = (0, _asyncToGenerator2["default"])(
+      /*#__PURE__*/
+      _regenerator["default"].mark(function _callee() {
+        var currentIsBlock;
+        return _regenerator["default"].wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                currentIsBlock = this.widget.iframe.style.display === 'block';
+                this.widget.iframe.style.display = currentIsBlock ? 'none' : 'block';
+                this.toggleOpenIconClass(!currentIsBlock);
+
+              case 3:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function _toggleWidget() {
+        return _toggleWidget2.apply(this, arguments);
+      }
+
+      return _toggleWidget;
+    }()
+  }, {
+    key: "toggleOpenIconClass",
+    value: function toggleOpenIconClass(widgetOpened) {
+      var container = this.widget.iframe.closest('body').querySelector('.ld-widget-icon');
+
+      if (widgetOpened) {
+        return container.classList.add('ld-widget-icon-opened');
+      }
+
+      return container.classList.remove('ld-widget-icon-opened');
+    }
+  }, {
     key: "_initWidget",
     value: function _initWidget() {
-      var _this = this;
+      var _this2 = this;
 
       return new Promise(function (resolve, reject) {
         var onload =
@@ -66,18 +115,24 @@ function () {
         function () {
           var _ref = (0, _asyncToGenerator2["default"])(
           /*#__PURE__*/
-          _regenerator["default"].mark(function _callee() {
-            var style, container, iframe, connection, communication;
-            return _regenerator["default"].wrap(function _callee$(_context) {
+          _regenerator["default"].mark(function _callee2() {
+            var container, style, iframe, iframeSrc, connection, communication;
+            return _regenerator["default"].wrap(function _callee2$(_context2) {
               while (1) {
-                switch (_context.prev = _context.next) {
+                switch (_context2.prev = _context2.next) {
                   case 0:
-                    style = document.createElement('style');
-                    style.innerHTML = _styles.styles;
                     container = document.createElement('div');
                     container.className = 'ld-widget-container';
+                    style = document.createElement('style');
+                    style.innerHTML = _styles.styles;
                     iframe = document.createElement('iframe');
-                    iframe.src = _this.widgetUrl || 'https://demo.wallet.linkdrop.io/#/widget';
+                    iframeSrc = _this2.widgetUrl; // propagate claim params to iframe window
+
+                    if (window.location.hash.indexOf('#/receive') > -1) {
+                      iframeSrc += window.location.hash;
+                    }
+
+                    iframe.src = iframeSrc;
                     iframe.className = 'ld-widget-iframe';
                     container.appendChild(iframe);
                     document.body.appendChild(container);
@@ -87,26 +142,26 @@ function () {
                       iframe: iframe,
                       // Methods the parent is exposing to the child
                       methods: {
-                        showWidget: _this._showWidget.bind(_this),
-                        hideWidget: _this._hideWidget.bind(_this)
+                        showWidget: _this2._showWidget.bind(_this2),
+                        hideWidget: _this2._hideWidget.bind(_this2)
                       }
                     });
-                    _context.next = 13;
+                    _context2.next = 15;
                     return connection.promise;
 
-                  case 13:
-                    communication = _context.sent;
+                  case 15:
+                    communication = _context2.sent;
                     resolve({
                       iframe: iframe,
                       communication: communication
                     });
 
-                  case 15:
+                  case 17:
                   case "end":
-                    return _context.stop();
+                    return _context2.stop();
                 }
               }
-            }, _callee);
+            }, _callee2);
           }));
 
           return function onload() {
@@ -117,24 +172,62 @@ function () {
         if (['loaded', 'interactive', 'complete'].indexOf(document.readyState) > -1) {
           onload();
         } else {
-          window.addEventListener('load', onload.bind(_this), false);
+          window.addEventListener('load', onload.bind(_this2), false);
         }
       });
     }
   }, {
     key: "_showWidget",
     value: function _showWidget() {
-      this.widget.iframe.style.display = 'block';
+      if (this.widget) {
+        this.widget.iframe.style.display = 'block';
+        this.toggleOpenIconClass(true);
+      }
     }
   }, {
     key: "_hideWidget",
     value: function _hideWidget() {
-      this.widget.iframe.style.display = 'none';
+      if (this.widget) {
+        this.widget.iframe.style.display = 'none';
+        this.toggleOpenIconClass(false);
+      }
     }
+  }, {
+    key: "_initWidgetFrame",
+    value: function () {
+      var _initWidgetFrame2 = (0, _asyncToGenerator2["default"])(
+      /*#__PURE__*/
+      _regenerator["default"].mark(function _callee3() {
+        return _regenerator["default"].wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _context3.next = 2;
+                return this._initWidget();
+
+              case 2:
+                this.widget = _context3.sent;
+
+                this._addWidgetIcon();
+
+              case 4:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this);
+      }));
+
+      function _initWidgetFrame() {
+        return _initWidgetFrame2.apply(this, arguments);
+      }
+
+      return _initWidgetFrame;
+    }()
   }, {
     key: "_initProvider",
     value: function _initProvider() {
-      var _this2 = this;
+      var _this3 = this;
 
       var engine = new ProviderEngine();
       var address;
@@ -142,25 +235,34 @@ function () {
       /*#__PURE__*/
       (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee2() {
-        return _regenerator["default"].wrap(function _callee2$(_context2) {
+      _regenerator["default"].mark(function _callee4() {
+        return _regenerator["default"].wrap(function _callee4$(_context4) {
           while (1) {
-            switch (_context2.prev = _context2.next) {
+            switch (_context4.prev = _context4.next) {
               case 0:
-                _context2.next = 2;
-                return _this2._initWidget();
+                _context4.next = 2;
+                return _this3._initWidgetFrame();
 
               case 2:
-                _this2.widget = _context2.sent;
-                _context2.next = 5;
-                return _this2.widget.communication.connect();
+                _context4.prev = 2;
+                _context4.next = 5;
+                return _this3.widget.communication.connect();
 
               case 5:
+                _context4.next = 10;
+                break;
+
+              case 7:
+                _context4.prev = 7;
+                _context4.t0 = _context4["catch"](2);
+                throw _context4.t0;
+
+              case 10:
               case "end":
-                return _context2.stop();
+                return _context4.stop();
             }
           }
-        }, _callee2);
+        }, _callee4, null, [[2, 7]]);
       }));
 
       function _handleRequest2(_x) {
@@ -170,25 +272,25 @@ function () {
       function _handleRequest() {
         _handleRequest = (0, _asyncToGenerator2["default"])(
         /*#__PURE__*/
-        _regenerator["default"].mark(function _callee7(payload) {
+        _regenerator["default"].mark(function _callee9(payload) {
           var result, message;
-          return _regenerator["default"].wrap(function _callee7$(_context7) {
+          return _regenerator["default"].wrap(function _callee9$(_context9) {
             while (1) {
-              switch (_context7.prev = _context7.next) {
+              switch (_context9.prev = _context9.next) {
                 case 0:
                   result = null;
-                  _context7.prev = 1;
-                  _context7.t0 = payload.method;
-                  _context7.next = _context7.t0 === 'eth_accounts' ? 5 : _context7.t0 === 'eth_coinbase' ? 7 : _context7.t0 === 'eth_chainId' ? 9 : _context7.t0 === 'net_version' ? 10 : _context7.t0 === 'eth_uninstallFilter' ? 11 : 14;
+                  _context9.prev = 1;
+                  _context9.t0 = payload.method;
+                  _context9.next = _context9.t0 === 'eth_accounts' ? 5 : _context9.t0 === 'eth_coinbase' ? 7 : _context9.t0 === 'eth_chainId' ? 9 : _context9.t0 === 'net_version' ? 10 : _context9.t0 === 'eth_uninstallFilter' ? 11 : 14;
                   break;
 
                 case 5:
                   result = [address];
-                  return _context7.abrupt("break", 16);
+                  return _context9.abrupt("break", 16);
 
                 case 7:
                   result = address;
-                  return _context7.abrupt("break", 16);
+                  return _context9.abrupt("break", 16);
 
                 case 9:
                   throw new Error('eth_chainId call not implemented');
@@ -201,23 +303,23 @@ function () {
                     return _;
                   });
                   result = true;
-                  return _context7.abrupt("break", 16);
+                  return _context9.abrupt("break", 16);
 
                 case 14:
-                  message = "Card Web3 object does not support synchronous methods like ".concat(payload.method, " without a callback parameter.");
+                  message = "Linkdrop Widget Web3 object does not support synchronous methods like ".concat(payload.method, " without a callback parameter.");
                   throw new Error(message);
 
                 case 16:
-                  _context7.next = 21;
+                  _context9.next = 21;
                   break;
 
                 case 18:
-                  _context7.prev = 18;
-                  _context7.t1 = _context7["catch"](1);
-                  throw _context7.t1;
+                  _context9.prev = 18;
+                  _context9.t1 = _context9["catch"](1);
+                  throw _context9.t1;
 
                 case 21:
-                  return _context7.abrupt("return", {
+                  return _context9.abrupt("return", {
                     id: payload.id,
                     jsonrpc: payload.jsonrpc,
                     result: result
@@ -225,10 +327,10 @@ function () {
 
                 case 22:
                 case "end":
-                  return _context7.stop();
+                  return _context9.stop();
               }
             }
-          }, _callee7, null, [[1, 18]]);
+          }, _callee9, null, [[1, 18]]);
         }));
         return _handleRequest.apply(this, arguments);
       }
@@ -238,18 +340,18 @@ function () {
       function () {
         var _ref3 = (0, _asyncToGenerator2["default"])(
         /*#__PURE__*/
-        _regenerator["default"].mark(function _callee3(payload, callback) {
+        _regenerator["default"].mark(function _callee5(payload, callback) {
           var res;
-          return _regenerator["default"].wrap(function _callee3$(_context3) {
+          return _regenerator["default"].wrap(function _callee5$(_context5) {
             while (1) {
-              switch (_context3.prev = _context3.next) {
+              switch (_context5.prev = _context5.next) {
                 case 0:
                   if (!(typeof payload === 'string')) {
-                    _context3.next = 2;
+                    _context5.next = 2;
                     break;
                   }
 
-                  return _context3.abrupt("return", new Promise(function (resolve, reject) {
+                  return _context5.abrupt("return", new Promise(function (resolve, reject) {
                     engine.sendAsync({
                       jsonrpc: '2.0',
                       id: 42,
@@ -266,27 +368,27 @@ function () {
 
                 case 2:
                   if (!callback) {
-                    _context3.next = 5;
+                    _context5.next = 5;
                     break;
                   }
 
                   engine.sendAsync(payload, callback);
-                  return _context3.abrupt("return");
+                  return _context5.abrupt("return");
 
                 case 5:
-                  _context3.next = 7;
+                  _context5.next = 7;
                   return _handleRequest2(payload, callback);
 
                 case 7:
-                  res = _context3.sent;
-                  return _context3.abrupt("return", res);
+                  res = _context5.sent;
+                  return _context5.abrupt("return", res);
 
                 case 9:
                 case "end":
-                  return _context3.stop();
+                  return _context5.stop();
               }
             }
-          }, _callee3);
+          }, _callee5);
         }));
 
         return function (_x2, _x3) {
@@ -310,35 +412,39 @@ function () {
         getAccounts: function () {
           var _getAccounts = (0, _asyncToGenerator2["default"])(
           /*#__PURE__*/
-          _regenerator["default"].mark(function _callee4(cb) {
+          _regenerator["default"].mark(function _callee6(cb) {
             var result, error;
-            return _regenerator["default"].wrap(function _callee4$(_context4) {
+            return _regenerator["default"].wrap(function _callee6$(_context6) {
               while (1) {
-                switch (_context4.prev = _context4.next) {
+                switch (_context6.prev = _context6.next) {
                   case 0:
-                    _context4.prev = 0;
-                    _context4.next = 3;
-                    return _this2.widget.communication.getAccounts();
+                    _context6.prev = 0;
+                    _context6.next = 3;
+                    return _this3.widget.communication.getAccounts();
 
                   case 3:
-                    result = _context4.sent;
-                    _context4.next = 9;
+                    result = _context6.sent;
+                    console.log({
+                      result: result
+                    });
+                    address = result[0];
+                    _context6.next = 11;
                     break;
 
-                  case 6:
-                    _context4.prev = 6;
-                    _context4.t0 = _context4["catch"](0);
-                    error = _context4.t0;
+                  case 8:
+                    _context6.prev = 8;
+                    _context6.t0 = _context6["catch"](0);
+                    error = _context6.t0;
 
-                  case 9:
+                  case 11:
                     cb(error, result);
 
-                  case 10:
+                  case 12:
                   case "end":
-                    return _context4.stop();
+                    return _context6.stop();
                 }
               }
-            }, _callee4, null, [[0, 6]]);
+            }, _callee6, null, [[0, 8]]);
           }));
 
           function getAccounts(_x4) {
@@ -350,19 +456,19 @@ function () {
         processTransaction: function () {
           var _processTransaction = (0, _asyncToGenerator2["default"])(
           /*#__PURE__*/
-          _regenerator["default"].mark(function _callee5(txParams, cb) {
+          _regenerator["default"].mark(function _callee7(txParams, cb) {
             var result, error, _ref4, txHash, success, errors;
 
-            return _regenerator["default"].wrap(function _callee5$(_context5) {
+            return _regenerator["default"].wrap(function _callee7$(_context7) {
               while (1) {
-                switch (_context5.prev = _context5.next) {
+                switch (_context7.prev = _context7.next) {
                   case 0:
-                    _context5.prev = 0;
-                    _context5.next = 3;
-                    return _this2.widget.communication.sendTransaction(txParams);
+                    _context7.prev = 0;
+                    _context7.next = 3;
+                    return _this3.widget.communication.sendTransaction(txParams);
 
                   case 3:
-                    _ref4 = _context5.sent;
+                    _ref4 = _context7.sent;
                     txHash = _ref4.txHash;
                     success = _ref4.success;
                     errors = _ref4.errors;
@@ -373,23 +479,23 @@ function () {
                       error = errors[0] || 'Error while sending transaction';
                     }
 
-                    _context5.next = 13;
+                    _context7.next = 13;
                     break;
 
                   case 10:
-                    _context5.prev = 10;
-                    _context5.t0 = _context5["catch"](0);
-                    error = _context5.t0;
+                    _context7.prev = 10;
+                    _context7.t0 = _context7["catch"](0);
+                    error = _context7.t0;
 
                   case 13:
                     cb(error, result);
 
                   case 14:
                   case "end":
-                    return _context5.stop();
+                    return _context7.stop();
                 }
               }
-            }, _callee5, null, [[0, 10]]);
+            }, _callee7, null, [[0, 10]]);
           }));
 
           function processTransaction(_x5, _x6) {
@@ -415,35 +521,35 @@ function () {
         handleRequest: function () {
           var _handleRequest3 = (0, _asyncToGenerator2["default"])(
           /*#__PURE__*/
-          _regenerator["default"].mark(function _callee6(payload, next, end) {
+          _regenerator["default"].mark(function _callee8(payload, next, end) {
             var _ref5, result;
 
-            return _regenerator["default"].wrap(function _callee6$(_context6) {
+            return _regenerator["default"].wrap(function _callee8$(_context8) {
               while (1) {
-                switch (_context6.prev = _context6.next) {
+                switch (_context8.prev = _context8.next) {
                   case 0:
-                    _context6.prev = 0;
-                    _context6.next = 3;
+                    _context8.prev = 0;
+                    _context8.next = 3;
                     return _handleRequest2(payload);
 
                   case 3:
-                    _ref5 = _context6.sent;
+                    _ref5 = _context8.sent;
                     result = _ref5.result;
                     end(null, result);
-                    _context6.next = 11;
+                    _context8.next = 11;
                     break;
 
                   case 8:
-                    _context6.prev = 8;
-                    _context6.t0 = _context6["catch"](0);
-                    end(_context6.t0);
+                    _context8.prev = 8;
+                    _context8.t0 = _context8["catch"](0);
+                    end(_context8.t0);
 
                   case 11:
                   case "end":
-                    return _context6.stop();
+                    return _context8.stop();
                 }
               }
-            }, _callee6, null, [[0, 8]]);
+            }, _callee8, null, [[0, 8]]);
           }));
 
           function handleRequest(_x7, _x8, _x9) {

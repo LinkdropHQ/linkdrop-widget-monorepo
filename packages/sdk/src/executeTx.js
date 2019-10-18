@@ -20,7 +20,7 @@ const getGasSpectrum = async ({
   const web3 = new Web3(jsonRpcUrl)
   const gnosisSafe = new web3.eth.Contract(GnosisSafe.abi, safe)
   const nonce = await gnosisSafe.methods.nonce().call()
-
+  
   const gasSpectrum = await estimateGasCosts({
     jsonRpcUrl,
     safe,
@@ -34,6 +34,7 @@ const getGasSpectrum = async ({
   })
 
   for (let i = 0; i < gasSpectrum.length; i++) {
+    
     gasSpectrum[i].signature = await signTx({
       safe,
       privateKey,
@@ -69,9 +70,8 @@ const getGasSpectrum = async ({
       })
 
     // Add the txGasEstimate and an additional 10k to the estimate to ensure that there is enough gas for the safe transaction
-    gasSpectrum[i].gasLimit = estimate + gasSpectrum[i].safeTxGas + 10000
+    gasSpectrum[i].gasLimit = estimate + gasSpectrum[i].safeTxGas + 100000
   }
-  console.log('gasSpectrum: ', gasSpectrum)
   return gasSpectrum
 }
 
@@ -113,7 +113,7 @@ export const executeTx = async ({
   assert.string(data, 'Data is required')
   assert.string(gasToken, 'Gas token is required')
   assert.string(refundReceiver, 'Refund receiver address is required')
-
+  
   const gasSpectrum = await getGasSpectrum({
     jsonRpcUrl,
     safe,
