@@ -12,7 +12,7 @@ class Provider {
   constructor (opts) {
     this.network = opts.network || 'mainnet'
     this.rpcUrl = opts.rpcUrl || `https://${this.network}.infura.io/v3/d4d1a2b933e048e28fb6fe1abe3e813a`
-    this.widgetUrl = opts.widgetUrl || 'http://localhost:9002'
+    this.widgetUrl = opts.widgetUrl || 'https://rinkeby-widget.linkdrop.io' // 'http://localhost:9002'
 
     if (!opts.network) {
       throw new Error('network should be provided')
