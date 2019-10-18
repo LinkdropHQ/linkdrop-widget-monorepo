@@ -26,7 +26,7 @@ const generator = function * () {
       }
     }
     const { privateKey, sessionKeyStore } = data
-    yield put({ type: '*USER.SET_USER_DATA', payload: { privateKey, sessionKeyStore, avatar, chainId } })
+    yield put({ type: '*USER.SET_USER_DATA', payload: { privateKey, sessionKeyStore, email, avatar, chainId } })
     yield put({ type: 'AUTHORIZATION.SET_LOADING', payload: { loading: false } })
     return { email, avatar }
   } catch (e) {
