@@ -40,6 +40,7 @@
     "cryptocompare": "^1.0.0",
     "css-loader": "^0.28.0",
     "eslint-config-standard": "^13.0.1",
+    "eth-sig-util": "2.4.4",
     "ethereum-waffle": "^2.0.12",
     "ethers": "^4.0.27",
     "express": "^4.16.4",

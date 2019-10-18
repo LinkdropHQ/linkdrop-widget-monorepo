@@ -16,7 +16,7 @@ class TransactionRelayService {
     gasSpectrum
   }) {
     try {
-      const i = 1
+      const i = 0
 
       const gnosisSafe = new ethers.Contract(
         safe,
@@ -25,6 +25,7 @@ class TransactionRelayService {
       )
 
       logger.debug('Submitting safe transaction...')
+      
       const tx = await gnosisSafe.execTransaction(
         to,
         value,
@@ -36,7 +37,9 @@ class TransactionRelayService {
         gasToken,
         refundReceiver,
         gasSpectrum[i].signature,
-        { gasPrice: gasSpectrum[i].gasPrice, gasLimit: gasSpectrum[i].gasLimit }
+        {
+          gasPrice: ethers.utils.parseUnits('10', 'gwei'), // gasSpectrum[i].gasPrice,
+          gasLimit: gasSpectrum[i].gasLimit }
       )
       logger.info(`Tx hash: ${tx.hash}`)
       return { success: true, txHash: tx.hash }

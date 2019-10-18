@@ -48,7 +48,7 @@ export const signTx = ({
   }
 
   privateKey = Buffer.from(privateKey, 'hex')
-
+  
   const typedData = getTypedData({
     safe,
     to,
@@ -62,13 +62,12 @@ export const signTx = ({
     refundReceiver,
     nonce
   })
-
+  
   /**
     r: new BigNumber(signature.slice(2, 66), 16).toString(10),
     s: new BigNumber(signature.slice(66, 130), 16).toString(10),
     v: new BigNumber(signature.slice(130, 132), 16).toString(10)
    */
-
   return sigUtil.signTypedData(privateKey, {
     data: typedData
   })
