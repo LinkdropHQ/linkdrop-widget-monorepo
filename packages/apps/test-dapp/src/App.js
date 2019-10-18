@@ -34,7 +34,6 @@ class App extends React.Component {
     const network = urlParams.network
     const widgetUrl = urlParams.widgetUrl
 
-    console.log('getting provider...')
     this.widget = new WalletProvider({
       ensName: 'wallet.linkdrop.io',
       network,
@@ -65,12 +64,10 @@ class App extends React.Component {
     try {
       await this.widget.provider.enable()
 
-      console.log('got provider')
 
       this.web3 = new Web3(this.widget.provider)
 
       const accs = await this.web3.eth.getAccounts()
-      console.log({ accs })
       const address = accs[0]
       this.setState({ address })
 
@@ -78,14 +75,9 @@ class App extends React.Component {
       this.setState({
         connected: true
       })
-      console.log({
-        balance
-      })
 
       this._openZrxInstantModal()
     } catch (error) {
-      const errMsg = 'Error connecting with ENS'
-      console.log(errMsg)
       console.log(error)
     }
   }
@@ -134,7 +126,7 @@ class App extends React.Component {
           className={styles.button}
           inverted
           onClick={() => {
-            this.widget._showWidget()
+            this.widget.showWidget()
             // this._connect(this.state.ensNameInput)
           }}
         >

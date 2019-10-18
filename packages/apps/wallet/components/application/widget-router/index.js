@@ -45,7 +45,6 @@ class WidgetRouter extends React.Component {
       getAccounts: () => {
         if (!walletAddress) {
           const { privateKey, sdk } = this.props
-          console.log('WALLET: getAccounts')
           const owner = new ethers.Wallet(privateKey).address
           walletAddress = sdk.precomputeAddress({ owner })
         }
@@ -54,7 +53,6 @@ class WidgetRouter extends React.Component {
     }
 
     this.actions().widget.connectToDapp({ methods })
-    // widgetService.connectToDapp({ methods })
   }
 
   _awaitUserTransactionConfirmation () {
@@ -90,10 +88,10 @@ class WidgetRouter extends React.Component {
         // resolve or close modal
         if (action === 'confirm') {
           resolve(payload)
-          setTimeout(() => {
-            this.actions().widget.setPage({ page: null })
-            this.actions().widget.setConnected({ connected: true })
-          }, 500)
+          // setTimeout(() => {
+          this.actions().widget.setPage({ page: null })
+          this.actions().widget.setConnected({ connected: true })
+          // }, 500)
 
           // hide widget if it's not a claim link
           if (window.location.hash.indexOf('/receive') === -1) {
@@ -108,10 +106,13 @@ class WidgetRouter extends React.Component {
 
   render () {
     const { sdk, privateKey, sessionKeyStore, page, connected } = this.props
-    if (!sdk && privateKey === null) { return <Loading /> }
+    if (!sdk) { return <Loading /> }
     if (sdk && !sessionKeyStore) { return <Authorization /> }
-    if (connected && !page) return <AppRouter />
-    if (page === 'CONNECT_SCREEN') { return <Widget.Connect /> }
+    if (connected && !page) return <AppRouter /> 
+      if (page === 'CONNECT_SCREEN') {
+        if (!privateKey) { return <Loading /> }
+        return <Widget.Connect />
+      }
     if (page === 'CONFIRM_TRANSACTION_SCREEN') { return <Widget.Confirm /> }
     return <AppRouter />
   }
