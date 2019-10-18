@@ -45,7 +45,6 @@ class WidgetRouter extends React.Component {
       getAccounts: () => {
         if (!walletAddress) {
           const { privateKey, sdk } = this.props
-          console.log('WALLET: getAccounts', { sdk, privateKey })
           const owner = new ethers.Wallet(privateKey).address
           walletAddress = sdk.precomputeAddress({ owner })
         }
