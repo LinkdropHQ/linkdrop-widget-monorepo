@@ -15,7 +15,10 @@ const deploy = async () => {
     deployer
   )
 
-  const gnosisSafe = await gnosisSafeFactory.deploy()
+  const gnosisSafe = await gnosisSafeFactory.deploy({
+    gasPrice: ethers.utils.parseUnits('20', 'gwei'),
+    gasLimit: 6900000
+  })
 
   console.log('Gnosis Safe deployed at: ', gnosisSafe.address)
   console.log('Tx hash:', gnosisSafe.deployTransaction.hash)
