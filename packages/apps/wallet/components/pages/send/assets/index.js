@@ -60,16 +60,21 @@ class Assets extends React.Component {
       tokenAddress,
       price,
       type,
+      tokenId,
       image
     }) => <AssetBalance
       onClick={_ => {
         this.setState({
           expanded: false
-        }, _ => onChange && onChange({ currentAsset: tokenAddress }))
+        }, _ => onChange && onChange({
+          currentAsset: tokenAddress,
+          tokenType: type,
+          tokenId
+        }))
       }}
       image={image}
       type={type}
-      key={tokenAddress}
+      key={`${tokenAddress}${tokenId ? `_${tokenId}` : ''}`}
       className={styles.asset}
       symbol={symbol}
       amount={balanceFormatted}

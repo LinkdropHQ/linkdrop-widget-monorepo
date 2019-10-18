@@ -9,6 +9,7 @@ import saveClaimedAssets from './every/save-claimed-assets'
 import getItems from './every/get-items'
 import sendErc20 from './every/send-erc20'
 import sendEth from './every/send-eth'
+import sendErc721 from './every/send-erc721'
 
 export default function * () {
   yield takeEvery('*ASSETS.GET_TOKEN_ERC20_DATA', getTokenERC20Data)
@@ -20,4 +21,5 @@ export default function * () {
   yield takeEvery('*ASSETS.GET_ITEMS', getItems)
   yield takeEvery('*ASSETS.SEND_ERC20', sendErc20)
   yield takeEvery('*ASSETS.SEND_ETH', sendEth)
+  yield takeEvery('*ASSETS.SEND_ERC721', sendErc721)
 }

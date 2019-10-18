@@ -18,7 +18,7 @@ class InitialPage extends React.Component {
   }
 
   render () {
-    const { onClick, loading, wallet, itemsToClaim } = this.props
+    const { onClick, loading, itemsToClaim } = this.props
     const assetToShow = getCurrentAsset({ itemsToClaim })
     const { nftAddress } = getHashVariables()
     if (!assetToShow) { return <Loading /> }

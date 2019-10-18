@@ -4,7 +4,7 @@ export default {
     claimed: 'claimed',
     sent: 'sent',
     sending: 'sending',
-    alreadyClaimed: 'Tokens already claimed',
+    alreadyClaimed: 'Already claimed',
     loadingNote: 'It may take a few minutes. <a target="_blank" href={{link}}>Details</a>'
   }
 }

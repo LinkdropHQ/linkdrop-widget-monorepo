@@ -103,8 +103,10 @@ const generator = function * () {
       }])
     }
     yield put({ type: 'ASSETS.SET_ITEMS', payload: { items: assetsStorage || [] } })
-  } catch (e) {
-    console.error(e)
+  } catch (error) {
+    const items = yield select(generator.selectors.items)
+    yield put({ type: 'ASSETS.SET_ITEMS', payload: { items: items || [] } })
+    console.error(error)
   }
 }
 
@@ -114,5 +116,6 @@ generator.selectors = {
   sdk: ({ user: { sdk } }) => sdk,
   chainId: ({ user: { chainId } }) => chainId,
   privateKey: ({ user: { privateKey } }) => privateKey,
-  wallet: ({ user: { wallet } }) => wallet
+  wallet: ({ user: { wallet } }) => wallet,
+  items: ({ assets: { items } }) => items
 }

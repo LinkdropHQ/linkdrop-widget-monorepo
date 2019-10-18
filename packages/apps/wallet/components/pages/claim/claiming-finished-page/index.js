@@ -1,46 +1,104 @@
 import React from 'react'
 import { translate, actions } from 'decorators'
 import commonStyles from '../styles.module'
-import { TokensAmount, AccountBalance, Confetti } from 'components/common'
-import { Loading, Button } from '@linkdrop/ui-kit'
+import { Confetti, TokensAmount } from 'components/common'
+import { Alert, Icons, Button, Loading } from '@linkdrop/ui-kit'
 import { getCurrentAsset } from 'helpers'
-import { AssetsList } from 'components/pages/common'
 import styles from './styles.module'
+import { getHashVariables } from '@linkdrop/commons'
+import classNames from 'classnames'
 
-@actions(({ assets: { items, itemsToClaim }, user: { ens } }) => ({ items, ens }))
+@actions(({
+  assets: {
+    items,
+    itemsToClaim
+  }, user: {
+    chainId
+  }, tokens: {
+    transactionId
+  }
+}) => ({
+  items,
+  chainId,
+  transactionId,
+  itemsToClaim
+}))
 @translate('pages.claim')
 class ClaimingFinishedPage extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      showAssets: false,
+      showButton: false,
+      iconType: 'default',
       showConfetti: props.claimingFinished
     }
   }
 
   componentDidMount () {
-    window.setTimeout(_ => this.setState({ showAssets: true }), 3000)
+    window.setTimeout(_ => this.setState({ showButton: true }), 4000)
   }
 
   render () {
-    const { items, itemsToClaim, alreadyClaimed, loading, claimingFinished } = this.props
-    const { showAssets, showConfetti } = this.state
-    const mainAsset = getCurrentAsset({ itemsToClaim: ((itemsToClaim.length > 0 ? itemsToClaim : items) || []) })
+    const { itemsToClaim, loading, claimingFinished, alreadyClaimed, chainId, transactionId } = this.props
+    const { showConfetti, showButton } = this.state
+    const { nftAddress } = getHashVariables()
+    const assetToShow = getCurrentAsset({ itemsToClaim })
+    if (!assetToShow) { return <Loading withOverlay /> }
+    const { balanceFormatted, icon, symbol } = assetToShow
+    const { iconType } = this.state
+    const finalIcon = iconType === 'default' ? <img onError={_ => this.setState({ iconType: 'blank' })} className={styles.icon} src={icon} /> : <Icons.Star />
 
-    if (!mainAsset) { return null }
-    const { balanceFormatted, symbol } = mainAsset
     return <div className={commonStyles.container}>
-      {showConfetti && <Confetti recycle={!showAssets} onConfettiComplete={_ => this.setState({ showConfetti: false })} />}
+      {showConfetti && <Confetti recycle={!showButton} onConfettiComplete={_ => this.setState({ showConfetti: false })} />}
       {loading && <Loading withOverlay />}
-      <AccountBalance items={items} />
-      {!showAssets && <TokensAmount alreadyClaimed={alreadyClaimed} claimingFinished={claimingFinished} symbol={symbol} amount={balanceFormatted} />}
-      {showAssets && <AssetsList />}
-      {this.renderDappButton()}
+      <Alert
+        noBorder={iconType === 'default' && symbol !== 'ETH'} className={classNames(styles.tokenIcon, {
+          [styles.tokenIconNft]: nftAddress && iconType === 'default'
+        })} icon={finalIcon}
+      />
+      <div className={styles.title}>
+        <span>{balanceFormatted}</span> {symbol}
+      </div>
+      {this.renderDappButton({
+        showButton,
+        alreadyClaimed,
+        claimingFinished,
+        symbol,
+        chainId,
+        transactionId,
+        balanceFormatted
+      })}
     </div>
   }
 
-  renderDappButton () {
-    return <Button className={styles.button} onClick={() => this.actions().widget.hide()}>{this.t('buttons.continue')}</Button>
+  renderDappButton ({
+    showButton,
+    alreadyClaimed,
+    claimingFinished,
+    symbol,
+    chainId,
+    transactionId,
+    balanceFormatted
+  }) {
+    if (!showButton) {
+      return <TokensAmount
+        chainId={chainId}
+        transactionId={transactionId}
+        alreadyClaimed={alreadyClaimed}
+        claimingFinished={claimingFinished}
+        symbol={symbol}
+        amount={balanceFormatted}
+      />
+    }
+    return <Button
+      className={styles.button}
+      onClick={() => {
+        window.location.href = '/#/'
+        this.actions().widget.hide()
+      }}
+    >
+      {this.t('buttons.continue')}
+    </Button>
   }
 }
 

@@ -85,13 +85,13 @@ class Claim extends React.Component {
 
   render () {
     const { step, alreadyClaimed } = this.props
-    return <Page dynamicHeader disableFlex={step === 3 || alreadyClaimed}>
+    return <Page dynamicHeader disableFlex>
       {this.renderCurrentPage()}
     </Page>
   }
 
   renderCurrentPage () {
-    const { step, chainId, itemsToClaim, userLoading, errors, alreadyClaimed, contractAddress, loading } = this.props
+    const { step, widgetShow, chainId, itemsToClaim, userLoading, errors, alreadyClaimed, contractAddress, loading } = this.props
     const {
       linkdropMasterAddress
     } = getHashVariables()
@@ -108,6 +108,7 @@ class Claim extends React.Component {
         alreadyClaimed
       />
     }
+
     switch (step) {
       case 1:
         return <InitialPage

@@ -37,7 +37,7 @@ class Header extends React.Component {
   }
 
   render () {
-    const { sendTo, onSend, amount, onChange, loading, error, transactionId } = this.props
+    const { sendTo, onSend, tokenType, amount, onChange, loading, error, transactionId } = this.props
     const { finished } = this.state
     return <div className={classNames(styles.container, { [styles.loading]: loading && !transactionId })}>
       <div className={styles.content}>
@@ -53,9 +53,9 @@ class Header extends React.Component {
           <Input
             type='number'
             numberInput
-            placeholder='0'
-            value={amount}
-            disabled={loading}
+            placeholder={tokenType === 'erc721' ? 'NFT' : '0'}
+            value={tokenType === 'erc721' ? '' : amount}
+            disabled={tokenType === 'erc721' || loading}
             onChange={({ value }) => onChange({ amount: value })}
             className={classNames(styles.input, {
               [styles.empty]: amount === null || Number(amount) === 0,
@@ -64,13 +64,13 @@ class Header extends React.Component {
           />
         </div>
         <div className={styles.controls}>
-          {this.renderButton({ error, loading, sendTo, amount, onSend, finished })}
+          {this.renderButton({ tokenType, error, loading, sendTo, amount, onSend, finished })}
         </div>
       </div>
     </div>
   }
 
-  renderButton ({ loading, sendTo, amount, onSend, finished, error }) {
+  renderButton ({ loading, tokenType, sendTo, amount, onSend, finished, error }) {
     if (finished) {
       return <Button
         disabled
@@ -81,7 +81,7 @@ class Header extends React.Component {
     }
     return <Button
       loading={loading}
-      disabled={error || !sendTo || sendTo.length === 0 || Number(amount) === 0 || loading}
+      disabled={(error || !sendTo || sendTo.length === 0 || Number(amount) === 0 || loading) && tokenType !== 'erc721'}
       className={styles.button}
       onClick={_ => onSend && onSend()}
     >
