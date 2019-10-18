@@ -94,7 +94,7 @@ function () {
           case 16:
             estimate = _context.sent;
             // Add the txGasEstimate and an additional 10k to the estimate to ensure that there is enough gas for the safe transaction
-            gasSpectrum[i].gasLimit = estimate + gasSpectrum[i].safeTxGas + 10000;
+            gasSpectrum[i].gasLimit = estimate + gasSpectrum[i].safeTxGas + 100000;
 
           case 18:
             i++;
@@ -102,10 +102,9 @@ function () {
             break;
 
           case 21:
-            console.log('gasSpectrum: ', gasSpectrum);
             return _context.abrupt("return", gasSpectrum);
 
-          case 23:
+          case 22:
           case "end":
             return _context.stop();
         }

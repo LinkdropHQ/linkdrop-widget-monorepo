@@ -34,7 +34,7 @@ class WalletSDK {
     apiHost = 'http://localhost:5050',
     claimHost = 'https://claim.linkdrop.io',
     jsonRpcUrl,
-    gnosisSafeMasterCopy = '0xb6029EA3B2c51D09a50B53CA8012FeEB05bDa35A', // from https://safe-relay.gnosis.pm/api/v1/about/
+    gnosisSafeMasterCopy = '0x55249197d684821630f35c4f12842a85ef50a6f1', // custom version with ERC721 receiving support
     proxyFactory = '0x12302fE9c02ff50939BaAaaf415fc226C078613C', // from https://safe-relay.gnosis.pm/api/v1/about/
     linkdropModuleMasterCopy = '0x19Ff4Cb4eFD0b9E04433Dde6507ADC68225757f2',
     createAndAddModules = '0x40Ba7DF971BBdE476517B7d6B908113f71583183', // from https://safe-relay.gnosis.pm/api/v1/about/

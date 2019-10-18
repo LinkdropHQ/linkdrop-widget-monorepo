@@ -234,17 +234,25 @@ function () {
             sessionKey = _ref8.sessionKey;
             error = _ref8.error;
 
-            if (success === true) {
-              wallet = _ethers.ethers.Wallet.fromEncryptedJson(sessionKeyStore, sessionKey);
+            if (!(success === true)) {
+              _context4.next = 11;
+              break;
             }
 
+            _context4.next = 10;
+            return _ethers.ethers.Wallet.fromEncryptedJson(sessionKeyStore, sessionKey);
+
+          case 10:
+            wallet = _context4.sent;
+
+          case 11:
             return _context4.abrupt("return", {
               success: success,
               privateKey: wallet.privateKey,
               error: error
             });
 
-          case 9:
+          case 12:
           case "end":
             return _context4.stop();
         }

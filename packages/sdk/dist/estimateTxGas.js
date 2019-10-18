@@ -11,8 +11,6 @@ var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"))
 
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 
-var _assertJs = _interopRequireDefault(require("assert-js"));
-
 var _ethers = require("ethers");
 
 var _GnosisSafe = _interopRequireDefault(require("@gnosis.pm/safe-contracts/build/contracts/GnosisSafe"));
@@ -23,10 +21,9 @@ var _bignumber = _interopRequireDefault(require("bignumber.js"));
 
 var _web = _interopRequireDefault(require("web3"));
 
-var _signTx = require("./signTx");
-
-var _constants = require("ethers/constants");
-
+// import assert from 'assert-js'
+// import { signTx } from './signTx'
+// import { AddressZero } from 'ethers/constants'
 var baseGasValue = function baseGasValue(hexValue) {
   switch (hexValue) {
     case '0x':
@@ -79,30 +76,29 @@ function () {
   var _ref3 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
   _regenerator["default"].mark(function _callee(_ref2) {
-    var jsonRpcUrl, safe, to, value, data, operation, gasToken, refundReceiver, _ref2$signatureCount, signatureCount, provider, currentGasPriceGwei, web3, gnosisSafe, nonce, estimateData, estimateResponse, txGasEstimate, gasCosts, gasPriceGwei, gasPrice, baseGasEstimate;
+    var jsonRpcUrl, safe, to, value, data, operation, gasToken, refundReceiver, _ref2$signatureCount, signatureCount, provider, web3, gnosisSafe, nonce, estimateData, estimateResponse, txGasEstimate, gasCosts, gasPriceGwei, gasPrice, baseGasEstimate;
 
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             jsonRpcUrl = _ref2.jsonRpcUrl, safe = _ref2.safe, to = _ref2.to, value = _ref2.value, data = _ref2.data, operation = _ref2.operation, gasToken = _ref2.gasToken, refundReceiver = _ref2.refundReceiver, _ref2$signatureCount = _ref2.signatureCount, signatureCount = _ref2$signatureCount === void 0 ? 1 : _ref2$signatureCount;
-            provider = new _ethers.ethers.providers.JsonRpcProvider(jsonRpcUrl);
-            _context.next = 4;
-            return provider.getGasPrice();
+            provider = new _ethers.ethers.providers.JsonRpcProvider(jsonRpcUrl); // let currentGasPriceGwei = await provider.getGasPrice()
+            // currentGasPriceGwei = ethers.utils.formatUnits(
+            //   currentGasPriceGwei.toString(),
+            //   'gwei'
+            // )
+            // currentGasPriceGwei = parseInt(Math.ceil(currentGasPriceGwei))
 
-          case 4:
-            currentGasPriceGwei = _context.sent;
-            currentGasPriceGwei = _ethers.ethers.utils.formatUnits(currentGasPriceGwei.toString(), 'gwei');
-            currentGasPriceGwei = parseInt(Math.ceil(currentGasPriceGwei));
             web3 = new _web["default"](jsonRpcUrl);
             gnosisSafe = new web3.eth.Contract(_GnosisSafe["default"].abi, safe);
-            _context.next = 11;
+            _context.next = 6;
             return gnosisSafe.methods.nonce().call();
 
-          case 11:
+          case 6:
             nonce = _context.sent;
             estimateData = (0, _utils.encodeParams)(_GnosisSafe["default"].abi, 'requiredTxGas', [to, value, data, operation]);
-            _context.next = 15;
+            _context.next = 10;
             return provider.call({
               from: safe,
               to: safe,
@@ -111,11 +107,11 @@ function () {
               gasPrice: 0
             });
 
-          case 15:
+          case 10:
             estimateResponse = _context.sent;
             txGasEstimate = new _bignumber["default"](estimateResponse.substring(138), 16); // Add 10k else we will fail in case of nested calls
 
-            txGasEstimate = txGasEstimate.toNumber() + 10000;
+            txGasEstimate = txGasEstimate.toNumber() + 100000;
             gasCosts = [];
             gasCosts.push({
               gasPrice: 0,
@@ -133,33 +129,36 @@ function () {
                 nonce: nonce
               }),
               safeTxGas: txGasEstimate
-            });
+            }); // for (
+            //   let gasPriceGwei = currentGasPriceGwei;
+            //   gasPriceGwei <= currentGasPriceGwei + 5;
+            //   gasPriceGwei++
+            // ) {
 
-            for (gasPriceGwei = currentGasPriceGwei; gasPriceGwei <= currentGasPriceGwei + 5; gasPriceGwei++) {
-              gasPrice = _ethers.ethers.utils.parseUnits(gasPriceGwei.toString(), 'gwei').toNumber();
-              baseGasEstimate = estimateBaseGas({
-                safe: safe,
-                to: to,
-                value: value,
-                data: data,
-                operation: operation,
-                txGasEstimate: txGasEstimate,
-                gasToken: gasToken,
-                gasPrice: gasPrice,
-                refundReceiver: refundReceiver,
-                signatureCount: signatureCount,
-                nonce: nonce
-              });
-              gasCosts.push({
-                gasPrice: gasPrice,
-                baseGas: baseGasEstimate,
-                safeTxGas: txGasEstimate
-              });
-            }
+            gasPriceGwei = 0;
+            gasPrice = _ethers.ethers.utils.parseUnits(gasPriceGwei.toString(), 'gwei').toNumber();
+            baseGasEstimate = estimateBaseGas({
+              safe: safe,
+              to: to,
+              value: value,
+              data: data,
+              operation: operation,
+              txGasEstimate: txGasEstimate,
+              gasToken: gasToken,
+              gasPrice: gasPrice,
+              refundReceiver: refundReceiver,
+              signatureCount: signatureCount,
+              nonce: nonce
+            });
+            gasCosts.push({
+              gasPrice: gasPrice,
+              baseGas: baseGasEstimate,
+              safeTxGas: txGasEstimate
+            }); // }
 
             return _context.abrupt("return", gasCosts);
 
-          case 22:
+          case 20:
           case "end":
             return _context.stop();
         }

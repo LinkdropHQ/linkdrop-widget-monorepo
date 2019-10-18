@@ -24,13 +24,13 @@ const main = async () => {
     linkdropMasterAddress,
     linkdropSignerSignature,
     campaignId
-  } = await getUrlParams('erc721', 0)
+  } = await getUrlParams('erc721', 7)
 
   const ensName = Math.random()
     .toString(36)
     .substring(2, 15)
 
-  const email = 'email4'
+  const email = 'email5'
 
   const saltNonce = new Date().getTime().toString()
   console.log('ensName: ', ensName)
