@@ -353,9 +353,9 @@ contract GnosisSafe is MasterCopy, BaseSafe, SignatureDecoder, SecuredTokenTrans
         return keccak256(encodeTransactionData(to, value, data, operation, safeTxGas, baseGas, gasPrice, gasToken, refundReceiver, _nonce));
     }
 
-    function onERC721Received(address, address, uint256, bytes calldata)
-        external
-        returns(bytes4)
+    function onERC721Received(address, address, uint256, bytes memory)
+        public
+        returns (bytes4)
     {
         return 0x150b7a02;
     }
