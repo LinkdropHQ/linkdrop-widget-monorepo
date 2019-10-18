@@ -566,7 +566,9 @@ class WalletSDK {
    * @param {String} password Password
    */
   async register (email, password) {
-    return register({ email, password, apiHost: this.apiHost })
+    const ownerWallet = ethers.Wallet.createRandom()
+    const walletAddress = this.precomputeAddress({ owner: ownerWallet.address })
+    return register({ email, password, apiHost: this.apiHost, ownerWallet, walletAddress })
   }
 
   /**
