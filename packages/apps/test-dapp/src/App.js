@@ -22,7 +22,13 @@ class App extends React.Component {
   async componentDidMount () {
     const { network } = this._getParamsFromUrl()
     this.network = network
-    this._initProvider()
+    try { 
+      this._initProvider()
+    } catch (err) {
+      console.log('Error initing provider')
+      console.log(err)
+      throw err
+    }
 
     this.setState({
       loading: false
@@ -35,7 +41,6 @@ class App extends React.Component {
     const widgetUrl = urlParams.widgetUrl
 
     this.widget = new WalletProvider({
-      ensName: 'wallet.linkdrop.io',
       network,
       widgetUrl
     })
@@ -46,12 +51,12 @@ class App extends React.Component {
   _getParamsFromUrl () {
     let ensName
     let widgetUrl
-    let network = 'mainnet'
+    let network = 'rinkeby'
 
     const paramsFragment = document.location.search.substr(1)
     if (paramsFragment) {
       const query = qs.parse(paramsFragment)
-      network = query.network || 'mainnet'
+      network = query.network || 'rinkeby'
       ensName = query.user
       if (query.widgetUrl) {
         widgetUrl = decodeURIComponent(query.widgetUrl)

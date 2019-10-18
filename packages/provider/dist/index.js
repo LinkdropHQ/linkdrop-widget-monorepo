@@ -40,7 +40,7 @@ function () {
     (0, _classCallCheck2["default"])(this, Provider);
     this.network = opts.network || 'mainnet';
     this.rpcUrl = opts.rpcUrl || "https://".concat(this.network, ".infura.io/v3/d4d1a2b933e048e28fb6fe1abe3e813a");
-    this.widgetUrl = opts.widgetUrl || 'http://localhost:9002';
+    this.widgetUrl = opts.widgetUrl || 'https://rinkeby-widget.linkdrop.io'; // 'http://localhost:9002'
 
     if (!opts.network) {
       throw new Error('network should be provided');
@@ -59,8 +59,7 @@ function () {
       document.body.appendChild(iconEl);
       iconEl.addEventListener('click', function (event) {
         // Log the clicked element in the console
-        console.log(event.target); // hide or show widget window
-
+        // hide or show widget window
         _this._toggleWidget();
       }, false);
     }
@@ -142,8 +141,8 @@ function () {
                       iframe: iframe,
                       // Methods the parent is exposing to the child
                       methods: {
-                        showWidget: _this2._showWidget.bind(_this2),
-                        hideWidget: _this2._hideWidget.bind(_this2)
+                        showWidget: _this2.showWidget.bind(_this2),
+                        hideWidget: _this2.hideWidget.bind(_this2)
                       }
                     });
                     _context2.next = 15;
@@ -177,16 +176,16 @@ function () {
       });
     }
   }, {
-    key: "_showWidget",
-    value: function _showWidget() {
+    key: "showWidget",
+    value: function showWidget() {
       if (this.widget) {
         this.widget.iframe.style.display = 'block';
         this.toggleOpenIconClass(true);
       }
     }
   }, {
-    key: "_hideWidget",
-    value: function _hideWidget() {
+    key: "hideWidget",
+    value: function hideWidget() {
       if (this.widget) {
         this.widget.iframe.style.display = 'none';
         this.toggleOpenIconClass(false);
@@ -399,7 +398,7 @@ function () {
       var VERSION = 0.1; // #TODO move to auto
 
       var fixtureSubprovider = new FixtureSubprovider({
-        web3_clientVersion: "LD/v".concat(VERSION, "/javascript"),
+        web3_clientVersion: "LW/v".concat(VERSION, "/javascript"),
         net_listening: true,
         eth_hashrate: '0x00',
         eth_mining: false,
@@ -424,27 +423,24 @@ function () {
 
                   case 3:
                     result = _context6.sent;
-                    console.log({
-                      result: result
-                    });
                     address = result[0];
-                    _context6.next = 11;
+                    _context6.next = 10;
                     break;
 
-                  case 8:
-                    _context6.prev = 8;
+                  case 7:
+                    _context6.prev = 7;
                     _context6.t0 = _context6["catch"](0);
                     error = _context6.t0;
 
-                  case 11:
+                  case 10:
                     cb(error, result);
 
-                  case 12:
+                  case 11:
                   case "end":
                     return _context6.stop();
                 }
               }
-            }, _callee6, null, [[0, 8]]);
+            }, _callee6, null, [[0, 7]]);
           }));
 
           function getAccounts(_x4) {
