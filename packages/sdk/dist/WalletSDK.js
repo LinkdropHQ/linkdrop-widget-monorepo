@@ -27,7 +27,7 @@ var _computeLinkdropModuleAddress2 = require("./computeLinkdropModuleAddress");
 
 var _computeRecoveryModuleAddress2 = require("./computeRecoveryModuleAddress");
 
-var _create3 = require("./create");
+var _precomputeSafeAddressWithModules = require("./precomputeSafeAddressWithModules");
 
 var _claimAndCreate3 = require("./claimAndCreate");
 
@@ -62,7 +62,7 @@ function () {
         claimHost = _ref$claimHost === void 0 ? 'https://claim.linkdrop.io' : _ref$claimHost,
         jsonRpcUrl = _ref.jsonRpcUrl,
         _ref$gnosisSafeMaster = _ref.gnosisSafeMasterCopy,
-        gnosisSafeMasterCopy = _ref$gnosisSafeMaster === void 0 ? '0xb6029EA3B2c51D09a50B53CA8012FeEB05bDa35A' : _ref$gnosisSafeMaster,
+        gnosisSafeMasterCopy = _ref$gnosisSafeMaster === void 0 ? '0x55249197d684821630f35c4f12842a85ef50a6f1' : _ref$gnosisSafeMaster,
         _ref$proxyFactory = _ref.proxyFactory,
         proxyFactory = _ref$proxyFactory === void 0 ? '0x12302fE9c02ff50939BaAaaf415fc226C078613C' : _ref$proxyFactory,
         _ref$linkdropModuleMa = _ref.linkdropModuleMasterCopy,
@@ -72,7 +72,7 @@ function () {
         _ref$multiSend = _ref.multiSend,
         multiSend = _ref$multiSend === void 0 ? '0x0CE1BBc1BbbF65C3953A3f1f80344b42C084FA0c' : _ref$multiSend,
         _ref$recoveryModuleMa = _ref.recoveryModuleMasterCopy,
-        recoveryModuleMasterCopy = _ref$recoveryModuleMa === void 0 ? '0xfE7bCFd529eB16e0793a7c4ee9cb157F2501d474' : _ref$recoveryModuleMa,
+        recoveryModuleMasterCopy = _ref$recoveryModuleMa === void 0 ? '0xDC1692EE6B3215907a97dF73da034616150BdD8A' : _ref$recoveryModuleMa,
         _ref$recoveryPeriod = _ref.recoveryPeriod,
         recoveryPeriod = _ref$recoveryPeriod === void 0 ? '259200' : _ref$recoveryPeriod,
         _ref$ensAddress = _ref.ensAddress,
@@ -85,7 +85,7 @@ function () {
         linkdropFactory = _ref$linkdropFactory === void 0 ? '0xBa051891B752ecE3670671812486fe8dd34CC1c8' : _ref$linkdropFactory;
     (0, _classCallCheck2["default"])(this, WalletSDK);
     this.chain = chain;
-    this.jsonRpcUrl = jsonRpcUrl || "https://".concat(chain, ".infura.io");
+    this.jsonRpcUrl = jsonRpcUrl || "https://".concat(chain, ".infura.io/v3/ecd43c9cd96e45ceb9131fba9b100b07");
     this.apiHost = apiHost;
     this.claimHost = claimHost;
     this.gnosisSafeMasterCopy = gnosisSafeMasterCopy;
@@ -165,10 +165,7 @@ function () {
     }()
     /**
      * Function to calculate the safe address based on given params
-     * @param {String | Number} saltNonce Random salt nonce
-     * @param {String} deployer Deployer address (optional)
-     * @param {String} gnosisSafeMasterCopy Deployed gnosis safe mastercopy address (optional)
-     * @param {String} owner Safe owner address
+     * @param {String} owner Safe's owner
      * @param {String} to To (optional)
      * @param {String} data Data (optional)
      * @param {String} paymentToken Payment token (0x0 for ether) (optional)
@@ -179,12 +176,7 @@ function () {
   }, {
     key: "computeSafeAddress",
     value: function computeSafeAddress(_ref2) {
-      var saltNonce = _ref2.saltNonce,
-          _ref2$deployer = _ref2.deployer,
-          deployer = _ref2$deployer === void 0 ? this.proxyFactory : _ref2$deployer,
-          _ref2$gnosisSafeMaste = _ref2.gnosisSafeMasterCopy,
-          gnosisSafeMasterCopy = _ref2$gnosisSafeMaste === void 0 ? this.gnosisSafeMasterCopy : _ref2$gnosisSafeMaste,
-          owner = _ref2.owner,
+      var owner = _ref2.owner,
           _ref2$to = _ref2.to,
           to = _ref2$to === void 0 ? ADDRESS_ZERO : _ref2$to,
           _ref2$data = _ref2.data,
@@ -197,9 +189,9 @@ function () {
           paymentReceiver = _ref2$paymentReceiver === void 0 ? ADDRESS_ZERO : _ref2$paymentReceiver;
       return (0, _computeSafeAddress2.computeSafeAddress)({
         owner: owner,
-        saltNonce: saltNonce,
-        gnosisSafeMasterCopy: gnosisSafeMasterCopy,
-        deployer: deployer,
+        saltNonce: owner,
+        deployer: this.proxyFactory,
+        gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
         to: to,
         data: data,
         paymentToken: paymentToken,
@@ -207,71 +199,6 @@ function () {
         paymentReceiver: paymentReceiver
       });
     }
-    /**
-     * @param  {String} owner Owner address
-     * @param  {String} ensName Ens name
-     * @param  {Number} saltNonce Random salt nonce
-     * @param  {Number} recoveryPeriod Recovery period in atomic units (seconds) (optional)
-     * @param  {Number} gasPrice Gas price in wei (optional)
-     * @param  {String} guardian Guardian address
-     * @param  {String} ensAddress Ens address
-     * @param  {String} ensDomain Ens domain (e.g. 'my-domain.eth)
-     * @param  {String} jsonRpcUrl JSON RPC URL
-     * @param  {String} apiHost API host
-     * @param  {String} gnosisSafeMasterCopy Deployed Gnosis Safe mastercopy address
-     * @param  {String} proxyFactory Deployed proxy factory address
-     * @param  {String} linkdropModuleMasterCopy Deployed linkdrop module mastercopy address
-     * @param  {String} recoveryModuleMasterCopy Deployed recovery module mastercopy address
-     * @param  {String} multiSend Deployed MultiSend library address
-     * @param  {String} createAndAddModules Deployed CreateAndAddModules library address
-     */
-
-  }, {
-    key: "create",
-    value: function () {
-      var _create2 = (0, _asyncToGenerator2["default"])(
-      /*#__PURE__*/
-      _regenerator["default"].mark(function _callee2(_ref3) {
-        var owner, ensName, saltNonce, gasPrice, email, passwordHash, passwordDerivedKeyHash, encryptedEncryptionKey, encryptedMnemonicPhrase, _ref3$recoveryPeriod, recoveryPeriod, _ref3$guardian, guardian, _ref3$ensAddress, ensAddress, _ref3$ensDomain, ensDomain, _ref3$gnosisSafeMaste, gnosisSafeMasterCopy, _ref3$proxyFactory, proxyFactory, _ref3$linkdropModuleM, linkdropModuleMasterCopy, _ref3$recoveryModuleM, recoveryModuleMasterCopy, _ref3$multiSend, multiSend, _ref3$createAndAddMod, createAndAddModules, _ref3$jsonRpcUrl, jsonRpcUrl, _ref3$apiHost, apiHost;
-
-        return _regenerator["default"].wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                owner = _ref3.owner, ensName = _ref3.ensName, saltNonce = _ref3.saltNonce, gasPrice = _ref3.gasPrice, email = _ref3.email, passwordHash = _ref3.passwordHash, passwordDerivedKeyHash = _ref3.passwordDerivedKeyHash, encryptedEncryptionKey = _ref3.encryptedEncryptionKey, encryptedMnemonicPhrase = _ref3.encryptedMnemonicPhrase, _ref3$recoveryPeriod = _ref3.recoveryPeriod, recoveryPeriod = _ref3$recoveryPeriod === void 0 ? this.recoveryPeriod : _ref3$recoveryPeriod, _ref3$guardian = _ref3.guardian, guardian = _ref3$guardian === void 0 ? this.guardian : _ref3$guardian, _ref3$ensAddress = _ref3.ensAddress, ensAddress = _ref3$ensAddress === void 0 ? this.ensAddress : _ref3$ensAddress, _ref3$ensDomain = _ref3.ensDomain, ensDomain = _ref3$ensDomain === void 0 ? this.ensDomain : _ref3$ensDomain, _ref3$gnosisSafeMaste = _ref3.gnosisSafeMasterCopy, gnosisSafeMasterCopy = _ref3$gnosisSafeMaste === void 0 ? this.gnosisSafeMasterCopy : _ref3$gnosisSafeMaste, _ref3$proxyFactory = _ref3.proxyFactory, proxyFactory = _ref3$proxyFactory === void 0 ? this.proxyFactory : _ref3$proxyFactory, _ref3$linkdropModuleM = _ref3.linkdropModuleMasterCopy, linkdropModuleMasterCopy = _ref3$linkdropModuleM === void 0 ? this.linkdropModuleMasterCopy : _ref3$linkdropModuleM, _ref3$recoveryModuleM = _ref3.recoveryModuleMasterCopy, recoveryModuleMasterCopy = _ref3$recoveryModuleM === void 0 ? this.recoveryModuleMasterCopy : _ref3$recoveryModuleM, _ref3$multiSend = _ref3.multiSend, multiSend = _ref3$multiSend === void 0 ? this.multiSend : _ref3$multiSend, _ref3$createAndAddMod = _ref3.createAndAddModules, createAndAddModules = _ref3$createAndAddMod === void 0 ? this.createAndAddModules : _ref3$createAndAddMod, _ref3$jsonRpcUrl = _ref3.jsonRpcUrl, jsonRpcUrl = _ref3$jsonRpcUrl === void 0 ? this.jsonRpcUrl : _ref3$jsonRpcUrl, _ref3$apiHost = _ref3.apiHost, apiHost = _ref3$apiHost === void 0 ? this.apiHost : _ref3$apiHost;
-                return _context2.abrupt("return", (0, _create3.create)({
-                  owner: owner,
-                  ensName: ensName,
-                  saltNonce: saltNonce,
-                  gasPrice: gasPrice,
-                  recoveryPeriod: recoveryPeriod,
-                  guardian: guardian,
-                  ensAddress: ensAddress,
-                  ensDomain: ensDomain,
-                  gnosisSafeMasterCopy: gnosisSafeMasterCopy,
-                  proxyFactory: proxyFactory,
-                  linkdropModuleMasterCopy: linkdropModuleMasterCopy,
-                  recoveryModuleMasterCopy: recoveryModuleMasterCopy,
-                  multiSend: multiSend,
-                  createAndAddModules: createAndAddModules,
-                  jsonRpcUrl: jsonRpcUrl,
-                  apiHost: apiHost
-                }));
-
-              case 2:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2, this);
-      }));
-
-      function create(_x5) {
-        return _create2.apply(this, arguments);
-      }
-
-      return create;
-    }()
     /**
      * Function to execute safe transaction
      * @param {String} safe Safe address
@@ -295,15 +222,15 @@ function () {
     value: function () {
       var _executeTx2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee3(_ref4) {
-        var safe, privateKey, to, value, _ref4$data, data, _ref4$operation, operation, _ref4$gasToken, gasToken, _ref4$refundReceiver, refundReceiver, _ref4$apiHost, apiHost, _ref4$jsonRpcUrl, jsonRpcUrl;
+      _regenerator["default"].mark(function _callee2(_ref3) {
+        var safe, privateKey, to, value, _ref3$data, data, _ref3$operation, operation, _ref3$gasToken, gasToken, _ref3$refundReceiver, refundReceiver, _ref3$apiHost, apiHost, _ref3$jsonRpcUrl, jsonRpcUrl;
 
-        return _regenerator["default"].wrap(function _callee3$(_context3) {
+        return _regenerator["default"].wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
-                safe = _ref4.safe, privateKey = _ref4.privateKey, to = _ref4.to, value = _ref4.value, _ref4$data = _ref4.data, data = _ref4$data === void 0 ? '0x' : _ref4$data, _ref4$operation = _ref4.operation, operation = _ref4$operation === void 0 ? 0 : _ref4$operation, _ref4$gasToken = _ref4.gasToken, gasToken = _ref4$gasToken === void 0 ? '0x0000000000000000000000000000000000000000' : _ref4$gasToken, _ref4$refundReceiver = _ref4.refundReceiver, refundReceiver = _ref4$refundReceiver === void 0 ? '0x0000000000000000000000000000000000000000' : _ref4$refundReceiver, _ref4$apiHost = _ref4.apiHost, apiHost = _ref4$apiHost === void 0 ? this.apiHost : _ref4$apiHost, _ref4$jsonRpcUrl = _ref4.jsonRpcUrl, jsonRpcUrl = _ref4$jsonRpcUrl === void 0 ? this.jsonRpcUrl : _ref4$jsonRpcUrl;
-                return _context3.abrupt("return", (0, _executeTx3.executeTx)({
+                safe = _ref3.safe, privateKey = _ref3.privateKey, to = _ref3.to, value = _ref3.value, _ref3$data = _ref3.data, data = _ref3$data === void 0 ? '0x' : _ref3$data, _ref3$operation = _ref3.operation, operation = _ref3$operation === void 0 ? 0 : _ref3$operation, _ref3$gasToken = _ref3.gasToken, gasToken = _ref3$gasToken === void 0 ? '0x0000000000000000000000000000000000000000' : _ref3$gasToken, _ref3$refundReceiver = _ref3.refundReceiver, refundReceiver = _ref3$refundReceiver === void 0 ? '0x0000000000000000000000000000000000000000' : _ref3$refundReceiver, _ref3$apiHost = _ref3.apiHost, apiHost = _ref3$apiHost === void 0 ? this.apiHost : _ref3$apiHost, _ref3$jsonRpcUrl = _ref3.jsonRpcUrl, jsonRpcUrl = _ref3$jsonRpcUrl === void 0 ? this.jsonRpcUrl : _ref3$jsonRpcUrl;
+                return _context2.abrupt("return", (0, _executeTx3.executeTx)({
                   apiHost: apiHost,
                   jsonRpcUrl: jsonRpcUrl,
                   safe: safe,
@@ -318,13 +245,13 @@ function () {
 
               case 2:
               case "end":
-                return _context3.stop();
+                return _context2.stop();
             }
           }
-        }, _callee3, this);
+        }, _callee2, this);
       }));
 
-      function executeTx(_x6) {
+      function executeTx(_x5) {
         return _executeTx2.apply(this, arguments);
       }
 
@@ -349,26 +276,26 @@ function () {
 
   }, {
     key: "signTx",
-    value: function signTx(_ref5) {
-      var safe = _ref5.safe,
-          privateKey = _ref5.privateKey,
-          to = _ref5.to,
-          value = _ref5.value,
-          _ref5$data = _ref5.data,
-          data = _ref5$data === void 0 ? '0x' : _ref5$data,
-          _ref5$operation = _ref5.operation,
-          operation = _ref5$operation === void 0 ? 0 : _ref5$operation,
-          _ref5$safeTxGas = _ref5.safeTxGas,
-          safeTxGas = _ref5$safeTxGas === void 0 ? 0 : _ref5$safeTxGas,
-          _ref5$baseGas = _ref5.baseGas,
-          baseGas = _ref5$baseGas === void 0 ? 0 : _ref5$baseGas,
-          _ref5$gasPrice = _ref5.gasPrice,
-          gasPrice = _ref5$gasPrice === void 0 ? 0 : _ref5$gasPrice,
-          _ref5$gasToken = _ref5.gasToken,
-          gasToken = _ref5$gasToken === void 0 ? '0x0000000000000000000000000000000000000000' : _ref5$gasToken,
-          _ref5$refundReceiver = _ref5.refundReceiver,
-          refundReceiver = _ref5$refundReceiver === void 0 ? '0x0000000000000000000000000000000000000000' : _ref5$refundReceiver,
-          nonce = _ref5.nonce;
+    value: function signTx(_ref4) {
+      var safe = _ref4.safe,
+          privateKey = _ref4.privateKey,
+          to = _ref4.to,
+          value = _ref4.value,
+          _ref4$data = _ref4.data,
+          data = _ref4$data === void 0 ? '0x' : _ref4$data,
+          _ref4$operation = _ref4.operation,
+          operation = _ref4$operation === void 0 ? 0 : _ref4$operation,
+          _ref4$safeTxGas = _ref4.safeTxGas,
+          safeTxGas = _ref4$safeTxGas === void 0 ? 0 : _ref4$safeTxGas,
+          _ref4$baseGas = _ref4.baseGas,
+          baseGas = _ref4$baseGas === void 0 ? 0 : _ref4$baseGas,
+          _ref4$gasPrice = _ref4.gasPrice,
+          gasPrice = _ref4$gasPrice === void 0 ? 0 : _ref4$gasPrice,
+          _ref4$gasToken = _ref4.gasToken,
+          gasToken = _ref4$gasToken === void 0 ? '0x0000000000000000000000000000000000000000' : _ref4$gasToken,
+          _ref4$refundReceiver = _ref4.refundReceiver,
+          refundReceiver = _ref4$refundReceiver === void 0 ? '0x0000000000000000000000000000000000000000' : _ref4$refundReceiver,
+          nonce = _ref4.nonce;
       return (0, _signTx2.signTx)({
         safe: safe,
         privateKey: privateKey,
@@ -398,15 +325,15 @@ function () {
     value: function () {
       var _getEnsOwner2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee4(_ref6) {
-        var ensName, _ref6$ensDomain, ensDomain, _ref6$ensAddress, ensAddress, _ref6$jsonRpcUrl, jsonRpcUrl;
+      _regenerator["default"].mark(function _callee3(_ref5) {
+        var ensName, _ref5$ensDomain, ensDomain, _ref5$ensAddress, ensAddress, _ref5$jsonRpcUrl, jsonRpcUrl;
 
-        return _regenerator["default"].wrap(function _callee4$(_context4) {
+        return _regenerator["default"].wrap(function _callee3$(_context3) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context3.prev = _context3.next) {
               case 0:
-                ensName = _ref6.ensName, _ref6$ensDomain = _ref6.ensDomain, ensDomain = _ref6$ensDomain === void 0 ? this.ensDomain : _ref6$ensDomain, _ref6$ensAddress = _ref6.ensAddress, ensAddress = _ref6$ensAddress === void 0 ? this.ensAddress : _ref6$ensAddress, _ref6$jsonRpcUrl = _ref6.jsonRpcUrl, jsonRpcUrl = _ref6$jsonRpcUrl === void 0 ? this.jsonRpcUrl : _ref6$jsonRpcUrl;
-                return _context4.abrupt("return", (0, _ensUtils.getEnsOwner)({
+                ensName = _ref5.ensName, _ref5$ensDomain = _ref5.ensDomain, ensDomain = _ref5$ensDomain === void 0 ? this.ensDomain : _ref5$ensDomain, _ref5$ensAddress = _ref5.ensAddress, ensAddress = _ref5$ensAddress === void 0 ? this.ensAddress : _ref5$ensAddress, _ref5$jsonRpcUrl = _ref5.jsonRpcUrl, jsonRpcUrl = _ref5$jsonRpcUrl === void 0 ? this.jsonRpcUrl : _ref5$jsonRpcUrl;
+                return _context3.abrupt("return", (0, _ensUtils.getEnsOwner)({
                   ensName: ensName,
                   ensDomain: ensDomain,
                   ensAddress: ensAddress,
@@ -415,13 +342,13 @@ function () {
 
               case 2:
               case "end":
-                return _context4.stop();
+                return _context3.stop();
             }
           }
-        }, _callee4, this);
+        }, _callee3, this);
       }));
 
-      function getEnsOwner(_x7) {
+      function getEnsOwner(_x6) {
         return _getEnsOwner2.apply(this, arguments);
       }
 
@@ -437,23 +364,8 @@ function () {
      * @param {String} linkdropMasterAddress Linkdrop master address
      * @param {String} linkdropSignerSignature Linkdrop signer signature
      * @param {String} campaignId Campaign id
-     * @param {String} gnosisSafeMasterCopy Deployed gnosis safe mastercopy address
-     * @param {String} proxyFactory Deployed proxy factory address
      * @param {String} owner Safe owner address
-     * @param {String} linkdropModuleMasterCopy Deployed linkdrop module master copy address
-     * @param {String} createAndAddModules Deployed createAndAddModules library address
-     * @param {String} multiSend Deployed multiSend library address
-     * @param {String} apiHost API host
-     * @param {String} saltNonce Random salt nonce
-     * @param {String} guardian Guardian address
-     * @param {String} recoveryPeriod Recovery period
-     * @param {String} recoveryModuleMasterCopy Deployed recovery moduel mastercopy address
-     * @param {String} gasPrice Gas price in wei
      * @param {String} ensName ENS name (e.g. 'alice')
-     * @param {String} ensDomain ENS domain (e.g. 'my-domain.eth)
-     * @param {String} ensAddress ENS address
-     * @param {String} jsonRpcUrl JSON RPC URL
-     * @param {String} linkdropFactory Deployed linkdrop factory address
      * @param {String} email Email
      * @returns {Object} {success, txHash,safe, linkdropModule, recoveryModule, errors}
      */
@@ -463,15 +375,14 @@ function () {
     value: function () {
       var _claimAndCreate2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee5(_ref7) {
-        var weiAmount, tokenAddress, tokenAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature, campaignId, owner, ensName, saltNonce, gasPrice, _ref7$gnosisSafeMaste, gnosisSafeMasterCopy, _ref7$proxyFactory, proxyFactory, _ref7$linkdropModuleM, linkdropModuleMasterCopy, _ref7$createAndAddMod, createAndAddModules, _ref7$multiSend, multiSend, _ref7$apiHost, apiHost, _ref7$guardian, guardian, _ref7$recoveryPeriod, recoveryPeriod, _ref7$recoveryModuleM, recoveryModuleMasterCopy, _ref7$ensDomain, ensDomain, _ref7$ensAddress, ensAddress, _ref7$jsonRpcUrl, jsonRpcUrl, _ref7$linkdropFactory, linkdropFactory, email;
-
-        return _regenerator["default"].wrap(function _callee5$(_context5) {
+      _regenerator["default"].mark(function _callee4(_ref6) {
+        var weiAmount, tokenAddress, tokenAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature, campaignId, owner, ensName, email;
+        return _regenerator["default"].wrap(function _callee4$(_context4) {
           while (1) {
-            switch (_context5.prev = _context5.next) {
+            switch (_context4.prev = _context4.next) {
               case 0:
-                weiAmount = _ref7.weiAmount, tokenAddress = _ref7.tokenAddress, tokenAmount = _ref7.tokenAmount, expirationTime = _ref7.expirationTime, linkKey = _ref7.linkKey, linkdropMasterAddress = _ref7.linkdropMasterAddress, linkdropSignerSignature = _ref7.linkdropSignerSignature, campaignId = _ref7.campaignId, owner = _ref7.owner, ensName = _ref7.ensName, saltNonce = _ref7.saltNonce, gasPrice = _ref7.gasPrice, _ref7$gnosisSafeMaste = _ref7.gnosisSafeMasterCopy, gnosisSafeMasterCopy = _ref7$gnosisSafeMaste === void 0 ? this.gnosisSafeMasterCopy : _ref7$gnosisSafeMaste, _ref7$proxyFactory = _ref7.proxyFactory, proxyFactory = _ref7$proxyFactory === void 0 ? this.proxyFactory : _ref7$proxyFactory, _ref7$linkdropModuleM = _ref7.linkdropModuleMasterCopy, linkdropModuleMasterCopy = _ref7$linkdropModuleM === void 0 ? this.linkdropModuleMasterCopy : _ref7$linkdropModuleM, _ref7$createAndAddMod = _ref7.createAndAddModules, createAndAddModules = _ref7$createAndAddMod === void 0 ? this.createAndAddModules : _ref7$createAndAddMod, _ref7$multiSend = _ref7.multiSend, multiSend = _ref7$multiSend === void 0 ? this.multiSend : _ref7$multiSend, _ref7$apiHost = _ref7.apiHost, apiHost = _ref7$apiHost === void 0 ? this.apiHost : _ref7$apiHost, _ref7$guardian = _ref7.guardian, guardian = _ref7$guardian === void 0 ? this.guardian : _ref7$guardian, _ref7$recoveryPeriod = _ref7.recoveryPeriod, recoveryPeriod = _ref7$recoveryPeriod === void 0 ? this.recoveryPeriod : _ref7$recoveryPeriod, _ref7$recoveryModuleM = _ref7.recoveryModuleMasterCopy, recoveryModuleMasterCopy = _ref7$recoveryModuleM === void 0 ? this.recoveryModuleMasterCopy : _ref7$recoveryModuleM, _ref7$ensDomain = _ref7.ensDomain, ensDomain = _ref7$ensDomain === void 0 ? this.ensDomain : _ref7$ensDomain, _ref7$ensAddress = _ref7.ensAddress, ensAddress = _ref7$ensAddress === void 0 ? this.ensAddress : _ref7$ensAddress, _ref7$jsonRpcUrl = _ref7.jsonRpcUrl, jsonRpcUrl = _ref7$jsonRpcUrl === void 0 ? this.jsonRpcUrl : _ref7$jsonRpcUrl, _ref7$linkdropFactory = _ref7.linkdropFactory, linkdropFactory = _ref7$linkdropFactory === void 0 ? this.linkdropFactory : _ref7$linkdropFactory, email = _ref7.email;
-                return _context5.abrupt("return", (0, _claimAndCreate3.claimAndCreate)({
+                weiAmount = _ref6.weiAmount, tokenAddress = _ref6.tokenAddress, tokenAmount = _ref6.tokenAmount, expirationTime = _ref6.expirationTime, linkKey = _ref6.linkKey, linkdropMasterAddress = _ref6.linkdropMasterAddress, linkdropSignerSignature = _ref6.linkdropSignerSignature, campaignId = _ref6.campaignId, owner = _ref6.owner, ensName = _ref6.ensName, email = _ref6.email;
+                return _context4.abrupt("return", (0, _claimAndCreate3.claimAndCreate)({
                   weiAmount: weiAmount,
                   tokenAddress: tokenAddress,
                   tokenAmount: tokenAmount,
@@ -480,35 +391,33 @@ function () {
                   linkdropMasterAddress: linkdropMasterAddress,
                   linkdropSignerSignature: linkdropSignerSignature,
                   campaignId: campaignId,
-                  gnosisSafeMasterCopy: gnosisSafeMasterCopy,
-                  proxyFactory: proxyFactory,
                   owner: owner,
-                  linkdropModuleMasterCopy: linkdropModuleMasterCopy,
-                  createAndAddModules: createAndAddModules,
-                  multiSend: multiSend,
-                  apiHost: apiHost,
-                  saltNonce: saltNonce,
-                  guardian: guardian,
-                  recoveryPeriod: recoveryPeriod,
-                  recoveryModuleMasterCopy: recoveryModuleMasterCopy,
-                  gasPrice: gasPrice,
+                  saltNonce: owner,
                   ensName: ensName,
-                  ensDomain: ensDomain,
-                  ensAddress: ensAddress,
-                  jsonRpcUrl: jsonRpcUrl,
-                  linkdropFactory: linkdropFactory,
+                  gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
+                  proxyFactory: this.proxyFactory,
+                  linkdropModuleMasterCopy: this.linkdropModuleMasterCopy,
+                  createAndAddModules: this.createAndAddModules,
+                  multiSend: this.multiSend,
+                  apiHost: this.apiHost,
+                  guardian: this.guardian,
+                  recoveryPeriod: this.recoveryPeriod,
+                  recoveryModuleMasterCopy: this.recoveryModuleMasterCopy,
+                  ensDomain: this.ensDomain,
+                  ensAddress: this.ensAddress,
+                  jsonRpcUrl: this.jsonRpcUrl,
                   email: email
                 }));
 
               case 2:
               case "end":
-                return _context5.stop();
+                return _context4.stop();
             }
           }
-        }, _callee5, this);
+        }, _callee4, this);
       }));
 
-      function claimAndCreate(_x8) {
+      function claimAndCreate(_x7) {
         return _claimAndCreate2.apply(this, arguments);
       }
 
@@ -535,7 +444,6 @@ function () {
      * @param {String} guardian Guardian address
      * @param {String} recoveryPeriod Recovery period
      * @param {String} recoveryModuleMasterCopy Deployed recovery moduel mastercopy address
-     * @param {String} gasPrice Gas price in wei
      * @param {String} ensName ENS name (e.g. 'alice')
      * @param {String} ensDomain ENS domain (e.g. 'my-domain.eth)
      * @param {String} ensAddress ENS address
@@ -550,15 +458,14 @@ function () {
     value: function () {
       var _claimAndCreateERC2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee6(_ref8) {
-        var weiAmount, nftAddress, tokenId, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature, campaignId, owner, ensName, saltNonce, gasPrice, _ref8$gnosisSafeMaste, gnosisSafeMasterCopy, _ref8$proxyFactory, proxyFactory, _ref8$linkdropModuleM, linkdropModuleMasterCopy, _ref8$createAndAddMod, createAndAddModules, _ref8$multiSend, multiSend, _ref8$apiHost, apiHost, _ref8$guardian, guardian, _ref8$recoveryPeriod, recoveryPeriod, _ref8$recoveryModuleM, recoveryModuleMasterCopy, _ref8$ensDomain, ensDomain, _ref8$ensAddress, ensAddress, _ref8$jsonRpcUrl, jsonRpcUrl, _ref8$linkdropFactory, linkdropFactory, email;
-
-        return _regenerator["default"].wrap(function _callee6$(_context6) {
+      _regenerator["default"].mark(function _callee5(_ref7) {
+        var weiAmount, nftAddress, tokenId, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature, campaignId, owner, ensName, email;
+        return _regenerator["default"].wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context6.prev = _context6.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
-                weiAmount = _ref8.weiAmount, nftAddress = _ref8.nftAddress, tokenId = _ref8.tokenId, expirationTime = _ref8.expirationTime, linkKey = _ref8.linkKey, linkdropMasterAddress = _ref8.linkdropMasterAddress, linkdropSignerSignature = _ref8.linkdropSignerSignature, campaignId = _ref8.campaignId, owner = _ref8.owner, ensName = _ref8.ensName, saltNonce = _ref8.saltNonce, gasPrice = _ref8.gasPrice, _ref8$gnosisSafeMaste = _ref8.gnosisSafeMasterCopy, gnosisSafeMasterCopy = _ref8$gnosisSafeMaste === void 0 ? this.gnosisSafeMasterCopy : _ref8$gnosisSafeMaste, _ref8$proxyFactory = _ref8.proxyFactory, proxyFactory = _ref8$proxyFactory === void 0 ? this.proxyFactory : _ref8$proxyFactory, _ref8$linkdropModuleM = _ref8.linkdropModuleMasterCopy, linkdropModuleMasterCopy = _ref8$linkdropModuleM === void 0 ? this.linkdropModuleMasterCopy : _ref8$linkdropModuleM, _ref8$createAndAddMod = _ref8.createAndAddModules, createAndAddModules = _ref8$createAndAddMod === void 0 ? this.createAndAddModules : _ref8$createAndAddMod, _ref8$multiSend = _ref8.multiSend, multiSend = _ref8$multiSend === void 0 ? this.multiSend : _ref8$multiSend, _ref8$apiHost = _ref8.apiHost, apiHost = _ref8$apiHost === void 0 ? this.apiHost : _ref8$apiHost, _ref8$guardian = _ref8.guardian, guardian = _ref8$guardian === void 0 ? this.guardian : _ref8$guardian, _ref8$recoveryPeriod = _ref8.recoveryPeriod, recoveryPeriod = _ref8$recoveryPeriod === void 0 ? this.recoveryPeriod : _ref8$recoveryPeriod, _ref8$recoveryModuleM = _ref8.recoveryModuleMasterCopy, recoveryModuleMasterCopy = _ref8$recoveryModuleM === void 0 ? this.recoveryModuleMasterCopy : _ref8$recoveryModuleM, _ref8$ensDomain = _ref8.ensDomain, ensDomain = _ref8$ensDomain === void 0 ? this.ensDomain : _ref8$ensDomain, _ref8$ensAddress = _ref8.ensAddress, ensAddress = _ref8$ensAddress === void 0 ? this.ensAddress : _ref8$ensAddress, _ref8$jsonRpcUrl = _ref8.jsonRpcUrl, jsonRpcUrl = _ref8$jsonRpcUrl === void 0 ? this.jsonRpcUrl : _ref8$jsonRpcUrl, _ref8$linkdropFactory = _ref8.linkdropFactory, linkdropFactory = _ref8$linkdropFactory === void 0 ? this.linkdropFactory : _ref8$linkdropFactory, email = _ref8.email;
-                return _context6.abrupt("return", (0, _claimAndCreateERC3.claimAndCreateERC721)({
+                weiAmount = _ref7.weiAmount, nftAddress = _ref7.nftAddress, tokenId = _ref7.tokenId, expirationTime = _ref7.expirationTime, linkKey = _ref7.linkKey, linkdropMasterAddress = _ref7.linkdropMasterAddress, linkdropSignerSignature = _ref7.linkdropSignerSignature, campaignId = _ref7.campaignId, owner = _ref7.owner, ensName = _ref7.ensName, email = _ref7.email;
+                return _context5.abrupt("return", (0, _claimAndCreateERC3.claimAndCreateERC721)({
                   weiAmount: weiAmount,
                   nftAddress: nftAddress,
                   tokenId: tokenId,
@@ -567,40 +474,62 @@ function () {
                   linkdropMasterAddress: linkdropMasterAddress,
                   linkdropSignerSignature: linkdropSignerSignature,
                   campaignId: campaignId,
-                  gnosisSafeMasterCopy: gnosisSafeMasterCopy,
-                  proxyFactory: proxyFactory,
                   owner: owner,
-                  linkdropModuleMasterCopy: linkdropModuleMasterCopy,
-                  createAndAddModules: createAndAddModules,
-                  multiSend: multiSend,
-                  apiHost: apiHost,
-                  saltNonce: saltNonce,
-                  guardian: guardian,
-                  recoveryPeriod: recoveryPeriod,
-                  recoveryModuleMasterCopy: recoveryModuleMasterCopy,
-                  gasPrice: gasPrice,
+                  saltNonce: owner,
                   ensName: ensName,
-                  ensDomain: ensDomain,
-                  ensAddress: ensAddress,
-                  jsonRpcUrl: jsonRpcUrl,
-                  linkdropFactory: linkdropFactory,
+                  gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
+                  proxyFactory: this.proxyFactory,
+                  linkdropModuleMasterCopy: this.linkdropModuleMasterCopy,
+                  createAndAddModules: this.createAndAddModules,
+                  multiSend: this.multiSend,
+                  apiHost: this.apiHost,
+                  guardian: this.guardian,
+                  recoveryPeriod: this.recoveryPeriod,
+                  recoveryModuleMasterCopy: this.recoveryModuleMasterCopy,
+                  ensDomain: this.ensDomain,
+                  ensAddress: this.ensAddress,
+                  jsonRpcUrl: this.jsonRpcUrl,
+                  linkdropFactory: this.linkdropFactory,
                   email: email
                 }));
 
               case 2:
               case "end":
-                return _context6.stop();
+                return _context5.stop();
             }
           }
-        }, _callee6, this);
+        }, _callee5, this);
       }));
 
-      function claimAndCreateERC721(_x9) {
+      function claimAndCreateERC721(_x8) {
         return _claimAndCreateERC2.apply(this, arguments);
       }
 
       return claimAndCreateERC721;
     }()
+    /**
+     * Function to precompute Safe address with specific params and gas price 0
+     * @param {String} owner Safe owner address
+     * @returns {String} safeAddress
+     */
+
+  }, {
+    key: "precomputeAddress",
+    value: function precomputeAddress(_ref8) {
+      var owner = _ref8.owner;
+      return (0, _precomputeSafeAddressWithModules.precomputeSafeAddressWithModules)({
+        owner: owner,
+        saltNonce: owner,
+        gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
+        proxyFactory: this.proxyFactory,
+        linkdropModuleMasterCopy: this.linkdropModuleMasterCopy,
+        createAndAddModules: this.createAndAddModules,
+        multiSend: this.multiSend,
+        guardian: this.guardian,
+        recoveryPeriod: this.recoveryPeriod,
+        recoveryModuleMasterCopy: this.recoveryModuleMasterCopy
+      });
+    }
     /**
      * Function to calculate the linkdrop module address based on given params
      * @param {String} owner Safe owner address
@@ -678,14 +607,14 @@ function () {
     value: function () {
       var _generateLink2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee7(_ref11) {
+      _regenerator["default"].mark(function _callee6(_ref11) {
         var signingKeyOrWallet, linkdropModuleAddress, weiAmount, tokenAddress, tokenAmount, expirationTime;
-        return _regenerator["default"].wrap(function _callee7$(_context7) {
+        return _regenerator["default"].wrap(function _callee6$(_context6) {
           while (1) {
-            switch (_context7.prev = _context7.next) {
+            switch (_context6.prev = _context6.next) {
               case 0:
                 signingKeyOrWallet = _ref11.signingKeyOrWallet, linkdropModuleAddress = _ref11.linkdropModuleAddress, weiAmount = _ref11.weiAmount, tokenAddress = _ref11.tokenAddress, tokenAmount = _ref11.tokenAmount, expirationTime = _ref11.expirationTime;
-                return _context7.abrupt("return", (0, _generateLink3.generateLink)({
+                return _context6.abrupt("return", (0, _generateLink3.generateLink)({
                   claimHost: this.claimHost,
                   linkdropModuleAddress: linkdropModuleAddress,
                   signingKeyOrWallet: signingKeyOrWallet,
@@ -697,13 +626,13 @@ function () {
 
               case 2:
               case "end":
-                return _context7.stop();
+                return _context6.stop();
             }
           }
-        }, _callee7, this);
+        }, _callee6, this);
       }));
 
-      function generateLink(_x10) {
+      function generateLink(_x9) {
         return _generateLink2.apply(this, arguments);
       }
 
@@ -724,14 +653,14 @@ function () {
     value: function () {
       var _generateLinkERC2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee8(_ref12) {
+      _regenerator["default"].mark(function _callee7(_ref12) {
         var signingKeyOrWallet, linkdropModuleAddress, weiAmount, nftAddress, tokenId, expirationTime;
-        return _regenerator["default"].wrap(function _callee8$(_context8) {
+        return _regenerator["default"].wrap(function _callee7$(_context7) {
           while (1) {
-            switch (_context8.prev = _context8.next) {
+            switch (_context7.prev = _context7.next) {
               case 0:
                 signingKeyOrWallet = _ref12.signingKeyOrWallet, linkdropModuleAddress = _ref12.linkdropModuleAddress, weiAmount = _ref12.weiAmount, nftAddress = _ref12.nftAddress, tokenId = _ref12.tokenId, expirationTime = _ref12.expirationTime;
-                return _context8.abrupt("return", (0, _generateLink3.generateLinkERC721)({
+                return _context7.abrupt("return", (0, _generateLink3.generateLinkERC721)({
                   claimHost: this.claimHost,
                   signingKeyOrWallet: signingKeyOrWallet,
                   linkdropModuleAddress: linkdropModuleAddress,
@@ -743,13 +672,13 @@ function () {
 
               case 2:
               case "end":
-                return _context8.stop();
+                return _context7.stop();
             }
           }
-        }, _callee8, this);
+        }, _callee7, this);
       }));
 
-      function generateLinkERC721(_x11) {
+      function generateLinkERC721(_x10) {
         return _generateLinkERC2.apply(this, arguments);
       }
 
@@ -772,14 +701,14 @@ function () {
     value: function () {
       var _claim2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee9(_ref13) {
+      _regenerator["default"].mark(function _callee8(_ref13) {
         var weiAmount, tokenAddress, tokenAmount, expirationTime, linkKey, linkdropModuleAddress, linkdropSignerSignature, receiverAddress;
-        return _regenerator["default"].wrap(function _callee9$(_context9) {
+        return _regenerator["default"].wrap(function _callee8$(_context8) {
           while (1) {
-            switch (_context9.prev = _context9.next) {
+            switch (_context8.prev = _context8.next) {
               case 0:
                 weiAmount = _ref13.weiAmount, tokenAddress = _ref13.tokenAddress, tokenAmount = _ref13.tokenAmount, expirationTime = _ref13.expirationTime, linkKey = _ref13.linkKey, linkdropModuleAddress = _ref13.linkdropModuleAddress, linkdropSignerSignature = _ref13.linkdropSignerSignature, receiverAddress = _ref13.receiverAddress;
-                return _context9.abrupt("return", (0, _claim3.claim)({
+                return _context8.abrupt("return", (0, _claim3.claim)({
                   apiHost: this.apiHost,
                   weiAmount: weiAmount,
                   tokenAddress: tokenAddress,
@@ -793,13 +722,13 @@ function () {
 
               case 2:
               case "end":
-                return _context9.stop();
+                return _context8.stop();
             }
           }
-        }, _callee9, this);
+        }, _callee8, this);
       }));
 
-      function claim(_x12) {
+      function claim(_x11) {
         return _claim2.apply(this, arguments);
       }
 
@@ -822,14 +751,14 @@ function () {
     value: function () {
       var _claimERC2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee10(_ref14) {
+      _regenerator["default"].mark(function _callee9(_ref14) {
         var weiAmount, nftAddress, tokenId, expirationTime, linkKey, linkdropModuleAddress, linkdropSignerSignature, receiverAddress;
-        return _regenerator["default"].wrap(function _callee10$(_context10) {
+        return _regenerator["default"].wrap(function _callee9$(_context9) {
           while (1) {
-            switch (_context10.prev = _context10.next) {
+            switch (_context9.prev = _context9.next) {
               case 0:
                 weiAmount = _ref14.weiAmount, nftAddress = _ref14.nftAddress, tokenId = _ref14.tokenId, expirationTime = _ref14.expirationTime, linkKey = _ref14.linkKey, linkdropModuleAddress = _ref14.linkdropModuleAddress, linkdropSignerSignature = _ref14.linkdropSignerSignature, receiverAddress = _ref14.receiverAddress;
-                return _context10.abrupt("return", (0, _claim3.claimERC721)({
+                return _context9.abrupt("return", (0, _claim3.claimERC721)({
                   apiHost: this.apiHost,
                   weiAmount: weiAmount,
                   nftAddress: nftAddress,
@@ -843,13 +772,13 @@ function () {
 
               case 2:
               case "end":
-                return _context10.stop();
+                return _context9.stop();
             }
           }
-        }, _callee10, this);
+        }, _callee9, this);
       }));
 
-      function claimERC721(_x13) {
+      function claimERC721(_x12) {
         return _claimERC2.apply(this, arguments);
       }
 
@@ -866,12 +795,12 @@ function () {
     value: function () {
       var _register2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee11(email, password) {
-        return _regenerator["default"].wrap(function _callee11$(_context11) {
+      _regenerator["default"].mark(function _callee10(email, password) {
+        return _regenerator["default"].wrap(function _callee10$(_context10) {
           while (1) {
-            switch (_context11.prev = _context11.next) {
+            switch (_context10.prev = _context10.next) {
               case 0:
-                return _context11.abrupt("return", (0, _accounts.register)({
+                return _context10.abrupt("return", (0, _accounts.register)({
                   email: email,
                   password: password,
                   apiHost: this.apiHost
@@ -879,13 +808,13 @@ function () {
 
               case 1:
               case "end":
-                return _context11.stop();
+                return _context10.stop();
             }
           }
-        }, _callee11, this);
+        }, _callee10, this);
       }));
 
-      function register(_x14, _x15) {
+      function register(_x13, _x14) {
         return _register2.apply(this, arguments);
       }
 
@@ -902,12 +831,12 @@ function () {
     value: function () {
       var _login2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee12(email, password) {
-        return _regenerator["default"].wrap(function _callee12$(_context12) {
+      _regenerator["default"].mark(function _callee11(email, password) {
+        return _regenerator["default"].wrap(function _callee11$(_context11) {
           while (1) {
-            switch (_context12.prev = _context12.next) {
+            switch (_context11.prev = _context11.next) {
               case 0:
-                return _context12.abrupt("return", (0, _accounts.login)({
+                return _context11.abrupt("return", (0, _accounts.login)({
                   email: email,
                   password: password,
                   apiHost: this.apiHost
@@ -915,13 +844,13 @@ function () {
 
               case 1:
               case "end":
-                return _context12.stop();
+                return _context11.stop();
             }
           }
-        }, _callee12, this);
+        }, _callee11, this);
       }));
 
-      function login(_x16, _x17) {
+      function login(_x15, _x16) {
         return _login2.apply(this, arguments);
       }
 
@@ -938,25 +867,25 @@ function () {
     value: function () {
       var _extractPrivateKeyFromSession2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee13(sessionKeyStore) {
-        return _regenerator["default"].wrap(function _callee13$(_context13) {
+      _regenerator["default"].mark(function _callee12(sessionKeyStore) {
+        return _regenerator["default"].wrap(function _callee12$(_context12) {
           while (1) {
-            switch (_context13.prev = _context13.next) {
+            switch (_context12.prev = _context12.next) {
               case 0:
-                return _context13.abrupt("return", (0, _accounts.extractPrivateKeyFromSession)({
+                return _context12.abrupt("return", (0, _accounts.extractPrivateKeyFromSession)({
                   sessionKeyStore: sessionKeyStore,
                   apiHost: this.apiHost
                 }));
 
               case 1:
               case "end":
-                return _context13.stop();
+                return _context12.stop();
             }
           }
-        }, _callee13, this);
+        }, _callee12, this);
       }));
 
-      function extractPrivateKeyFromSession(_x18) {
+      function extractPrivateKeyFromSession(_x17) {
         return _extractPrivateKeyFromSession2.apply(this, arguments);
       }
 
@@ -973,25 +902,25 @@ function () {
     value: function () {
       var _isDeployed2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee14(email) {
-        return _regenerator["default"].wrap(function _callee14$(_context14) {
+      _regenerator["default"].mark(function _callee13(email) {
+        return _regenerator["default"].wrap(function _callee13$(_context13) {
           while (1) {
-            switch (_context14.prev = _context14.next) {
+            switch (_context13.prev = _context13.next) {
               case 0:
-                return _context14.abrupt("return", (0, _accounts.isDeployed)({
+                return _context13.abrupt("return", (0, _accounts.isDeployed)({
                   email: email,
                   apiHost: this.apiHost
                 }));
 
               case 1:
               case "end":
-                return _context14.stop();
+                return _context13.stop();
             }
           }
-        }, _callee14, this);
+        }, _callee13, this);
       }));
 
-      function isDeployed(_x19) {
+      function isDeployed(_x18) {
         return _isDeployed2.apply(this, arguments);
       }
 
