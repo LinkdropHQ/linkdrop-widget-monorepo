@@ -42,10 +42,25 @@
   }
 }
 
+.email {
+  border-radius: 20px;
+  height: 40px;
+  width: 170px;
+  font-size: 16px;
+  border: 1px solid #000;
+  padding: 0px 15px;
+  line-height: 40px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .bodyHeader {
   height: 90px;
   position: absolute;
   top: 0;
+  display: flex;
+  align-items: center;
   z-index: 2;
   left: 0;
   width: 100%;

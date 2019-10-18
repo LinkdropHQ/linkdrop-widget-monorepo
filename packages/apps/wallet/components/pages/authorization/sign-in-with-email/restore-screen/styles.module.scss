@@ -18,9 +18,11 @@
 
 .link {
   color: $textGreyColor;
+  font-size: 14px;
   text-align: center;
 
   a {
     text-decoration: none;
+    color: $textGreyColor;
   }
 }

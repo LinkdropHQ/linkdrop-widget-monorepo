@@ -33,7 +33,7 @@ class AccountBalance extends React.Component {
   }
 
   renderCurrency ({ loading, coreAsset, finalPrice }) {
-    if ((finalPrice && finalPrice > 0) || loading || !coreAsset) return '$'
+    if ((finalPrice && finalPrice > 0) || loading || !coreAsset || coreAsset.type === 'erc721') return '$'
     return <img src={coreAsset.icon} />
   }
 

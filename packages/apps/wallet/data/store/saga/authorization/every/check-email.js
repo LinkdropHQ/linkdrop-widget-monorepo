@@ -3,6 +3,7 @@ import { checkEmail } from 'data/api/authorization'
 
 const generator = function * ({ payload }) {
   try {
+    yield put({ type: 'AUTHORIZATION.SET_ERRORS', payload: { errors: [] } })
     const { email } = payload
     const chainId = yield select(generator.selectors.chainId)
     yield put({ type: 'AUTHORIZATION.SET_LOADING', payload: { loading: true } })

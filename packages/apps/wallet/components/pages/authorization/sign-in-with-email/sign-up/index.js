@@ -26,12 +26,16 @@ class SetPasswordScreen extends React.Component {
       />
       <Input
         type='password'
+        className={styles.confirmInput}
         onChange={({ value }) => this.setState({ passwordConfirm: value })}
         placeholder={this.t('titles.passwordConfirm')}
       />
+      <div className={styles.note}>
+        {this.t('titles.passwordLength')}
+      </div>
       <Button
         loading={loading}
-        disabled={this.defineIfDisabled({ password, passwordConfirm })}
+        disabled={this.defineIfDisabled({ password, passwordConfirm, loading })}
         className={styles.button}
         onClick={_ => signUp && signUp({ email, password })}
       >
@@ -40,11 +44,12 @@ class SetPasswordScreen extends React.Component {
     </div>
   }
 
-  defineIfDisabled ({ password, passwordConfirm }) {
+  defineIfDisabled ({ password, passwordConfirm, loading }) {
     return !password ||
       !passwordConfirm ||
       password !== passwordConfirm ||
-      password.length < 8
+      password.length < 8 ||
+      loading
   }
 }
 
