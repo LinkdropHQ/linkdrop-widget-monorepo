@@ -13,6 +13,6 @@ export default {
   },
   texts: {
     intro: 'Congrats, most likely this is your first crypto wallet. It will be an honor to guide you in this magical world.',
-    footer: 'Linkdrop Labs, Inc<br/>Wallet v1'
+    footer: '<div>Linkdrop Labs, Inc<br/><a target="_blank" href={{about}}>About</a>・<a target="_blank" href={{twitter}}>Twitter</a></div>'
   }
 }
