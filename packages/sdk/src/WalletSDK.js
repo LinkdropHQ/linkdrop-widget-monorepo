@@ -31,7 +31,7 @@ const BYTES_ZERO = '0x'
 class WalletSDK {
   constructor ({
     chain = 'rinkeby',
-    apiHost = 'http://localhost:5050', // `https://${chain}-wallet-api.linkdrop.io`
+    apiHost = `https://${chain}-wallet-api.linkdrop.io`,
     claimHost = 'https://claim.linkdrop.io',
     jsonRpcUrl,
     gnosisSafeMasterCopy = '0xB945Bd4b447aF21C5B55eF859242829FBDc0bF0A', // custom version with ERC721 receiving support
