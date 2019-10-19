@@ -38,7 +38,7 @@ class App extends React.Component {
   async _initProvider () {
     const urlParams = this._getParamsFromUrl()
     const network = urlParams.network
-    const widgetUrl = urlParams.widgetUrl || 'http://localhost:9002'
+    const widgetUrl = urlParams.widgetUrl // || 'http://localhost:9002'
 
     this.widget = new WalletProvider({
       network,
@@ -67,8 +67,8 @@ class App extends React.Component {
 
   async _connect () {
     try {
-      await this.widget.provider.enable()
-
+      console.log("enabling...")
+      await this.widget.provider.enable({ open: true })
 
       this.web3 = new Web3(this.widget.provider)
 
