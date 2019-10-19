@@ -1,5 +1,7 @@
 import { select, put } from 'redux-saga/effects'
 import { ethers } from 'ethers'
+import { removeUserData } from 'helpers'
+import config from 'app.config.js'
 
 const generator = function * ({ payload }) {
   try {
@@ -17,8 +19,12 @@ const generator = function * ({ payload }) {
       yield put({ type: 'USER.SET_PRIVATE_KEY', payload: { privateKey: false } })
     }
   } catch (e) {
-    yield put({ type: 'USER.SET_PRIVATE_KEY', payload: { privateKey: false } })
-    yield put({ type: 'AUTHORIZATION.SIGN_OUT' })
+    const chainId = yield select(generator.selectors.chainId)
+    removeUserData({ chainId: chainId || config.defaultChainId })
+    yield put({ type: '*USER.SET_USER_DATA', payload: { privateKey: null, email: null, sessionKeyStore: null, chainId } })
+    yield put({ type: 'AUTHORIZATION.SET_AUTHORIZED', payload: { authorized: false } })
+    yield put({ type: 'AUTHORIZATION.SET_SCREEN', payload: { screen: 'initial' } })
+    yield put({ type: 'AUTHORIZATION.SET_LOADING', payload: { loading: false } })
     console.error(e)
   }
 }
@@ -26,5 +32,6 @@ const generator = function * ({ payload }) {
 export default generator
 generator.selectors = {
   sdk: ({ user: { sdk } }) => sdk,
+  chainId: ({ user: { chainId } }) => chainId,
   sessionKeyStore: ({ user: { sessionKeyStore } }) => sessionKeyStore
 }
