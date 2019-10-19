@@ -468,11 +468,8 @@ class SafeCreationService {
         claimData
       )
 
-      nestedTxData =
-        '0x' +
-        claimMultiSendData +
-            createSafeMultiSendData
-	    // + registerEnsMultiSendData
+      nestedTxData = '0x' + claimMultiSendData + createSafeMultiSendData
+      // + registerEnsMultiSendData
 
       multiSendData = sdkService.walletSDK.encodeParams(
         MultiSend.abi,
@@ -550,7 +547,7 @@ class SafeCreationService {
     receiverSignature,
     email
   }) {
-    console.log("In claimAndCreateERC721")
+    console.log('In claimAndCreateERC721')
     try {
       let account = await accountsService.findAccount(email)
       if (!account) {
@@ -724,8 +721,7 @@ class SafeCreationService {
         claimData
       )
 
-      nestedTxData =
-        '0x' + claimMultiSendData + createSafeMultiSendData
+      nestedTxData = '0x' + claimMultiSendData + createSafeMultiSendData
       // +  registerEnsMultiSendData
 
       multiSendData = sdkService.walletSDK.encodeParams(
@@ -749,12 +745,12 @@ class SafeCreationService {
         deployer: safe
       })
 
-      console.log("sending tx...: ")
+      console.log('sending tx...: ')
       console.log({
         to: this.multiSendWithRefund.address,
         data: multiSendData
       })
-      
+
       const tx = await relayerWalletService.wallet.sendTransaction({
         to: this.multiSendWithRefund.address,
         data: multiSendData,
