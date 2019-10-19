@@ -24,7 +24,8 @@ const generator = function * ({ payload }) {
 
     const privateKey = yield select(generator.selectors.privateKey)
     const tokenContract = new ethers.Contract(tokenAddress, TokenMock.abi, provider)
-    const wallet = yield select(generator.selectors.wallet)
+    const owner = new ethers.Wallet(privateKey).address
+    const wallet = sdk.precomputeAddress({ owner })
     const amountFormatted = utils.parseUnits(String(amount.trim()), decimals)
     const data = yield tokenContract.interface.functions.transfer.encode([address, amountFormatted])
 

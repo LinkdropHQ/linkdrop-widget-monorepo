@@ -1,7 +1,7 @@
 import { defineNetworkName } from '@linkdrop/commons'
 import { put, select } from 'redux-saga/effects'
 import NFTMock from 'contracts/NFTMock.json'
-import { utils, ethers } from 'ethers'
+import { ethers } from 'ethers'
 import { convertEns } from './helpers'
 
 const generator = function * ({ payload }) {
@@ -31,7 +31,8 @@ const generator = function * ({ payload }) {
       NFTMock.abi,
       provider
     )
-    const wallet = yield select(generator.selectors.wallet)
+    const owner = new ethers.Wallet(privateKey).address
+    const wallet = sdk.precomputeAddress({ owner })
     const data = yield tokenContract.interface.functions.safeTransferFrom.encode(
       [wallet, address, tokenId]
     )
