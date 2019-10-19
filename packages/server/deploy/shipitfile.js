@@ -7,8 +7,6 @@ module.exports = shipit => {
 
   if (network === 'mainnet') CUSTOM_PORT = 13001
   else if (network === 'rinkeby') CUSTOM_PORT = 13004
-  else if (network === 'ropsten') CUSTOM_PORT = 13003
-  else if (network === 'xdai') CUSTOM_PORT = 13100
 
   shipit.initConfig({
     default: {
@@ -20,18 +18,8 @@ module.exports = shipit => {
       servers: 'root@rinkeby.linkdrop.io',
       branch: 'dev'
     },
-    ropsten: {
-      deployTo: 'wallet-widget/ropsten',
-      servers: 'root@rinkeby.linkdrop.io',
-      branch: 'dev'
-    },
     mainnet: {
       deployTo: 'wallet-widget/mainnet',
-      servers: 'root@rinkeby.linkdrop.io',
-      branch: 'dev'
-    },
-    xdai: {
-      deployTo: 'wallet-widget/xdai',
       servers: 'root@rinkeby.linkdrop.io',
       branch: 'dev'
     }
