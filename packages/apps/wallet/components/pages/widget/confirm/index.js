@@ -8,6 +8,13 @@ import { utils } from 'ethers'
 @actions(({ widget: { txParams }, user: { chainId }, assets: { itemsToClaim } }) => ({ txParams, itemsToClaim, chainId }))
 @translate('pages.dappConfirm')
 class DappConfirm extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      loading: false
+    }
+  }
+  
   componentDidUpdate (prevProps) {
     const { txParams } = prevProps
     if (txParams && txParams.value === this.props.txParams.value) return null
@@ -25,8 +32,14 @@ class DappConfirm extends React.Component {
     this.actions().assets.getEthData({ chainId, weiAmount: amount })
   }
 
-  async _onConfirmTx () {
+  _onConfirmTx () {
+    this.setState({
+      loading: true
+    })
+    
+    //setTimeout(() => { // let UI update
     this.actions().widget.confirmTx()
+    //}, 0)
   }
 
   render () {
@@ -52,7 +65,9 @@ class DappConfirm extends React.Component {
           >
             {this.t('buttons.cancel')}
           </Button>
-          <Button
+      <Button
+            loading={this.state.loading}
+            disabled={this.state.loading}
             className={styles.buttonConfirm}
             onClick={this._onConfirmTx.bind(this)}
           >
