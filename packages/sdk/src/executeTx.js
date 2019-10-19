@@ -17,9 +17,18 @@ const getGasSpectrum = async ({
   gasToken,
   refundReceiver
 }) => {
-  const web3 = new Web3(jsonRpcUrl)
-  const gnosisSafe = new web3.eth.Contract(GnosisSafe.abi, safe)
-  const nonce = await gnosisSafe.methods.nonce().call()
+  const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
+  const safeAbi = ["function nonce() public view returns (uint)"]
+  const safeContract = new ethers.Contract(safe, safeAbi, provider)
+  const nonce = (await safeContract.nonce()).toString()
+  console.log({ nonce })
+  
+  // const web3 = new Web3(jsonRpcUrl)
+  // console.log({ web3 })  
+  // const gnosisSafe = new web3.eth.Contract(GnosisSafe.abi, safe)
+  // const nonce = await gnosisSafe.methods.nonce().call()
+
+  // console.log({ nonce })
   
   const gasSpectrum = await estimateGasCosts({
     jsonRpcUrl,
@@ -51,23 +60,24 @@ const getGasSpectrum = async ({
     })
 
     // Estimate gas of paying transaction
-    const estimate = await gnosisSafe.methods
-      .execTransaction(
-        to,
-        value,
-        data,
-        operation,
-        gasSpectrum[i].safeTxGas,
-        gasSpectrum[i].baseGas,
-        gasSpectrum[i].gasPrice,
-        gasToken,
-        refundReceiver,
-        gasSpectrum[i].signature
-      )
-      .estimateGas({
-        from: new ethers.Wallet(privateKey).address,
-        gasPrice: gasSpectrum[i].gasPrice
-      })
+    // const estimate = await gnosisSafe.methods
+    //   .execTransaction(
+    //     to,
+    //     value,
+    //     data,
+    //     operation,
+    //     gasSpectrum[i].safeTxGas,
+    //     gasSpectrum[i].baseGas,
+    //     gasSpectrum[i].gasPrice,
+    //     gasToken,
+    //     refundReceiver,
+    //     gasSpectrum[i].signature
+    //   )
+    //   .estimateGas({
+    //     from: new ethers.Wallet(privateKey).address,
+    //     gasPrice: gasSpectrum[i].gasPrice
+    //   })
+    const estimate = 400000
 
     // Add the txGasEstimate and an additional 10k to the estimate to ensure that there is enough gas for the safe transaction
     gasSpectrum[i].gasLimit = estimate + gasSpectrum[i].safeTxGas + 100000
