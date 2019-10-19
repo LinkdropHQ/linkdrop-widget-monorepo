@@ -15,7 +15,8 @@ const generator = function * ({ payload }) {
     const provider = yield ethers.getDefaultProvider(networkName)
     const sdk = yield select(generator.selectors.sdk)
     const privateKey = yield select(generator.selectors.privateKey)
-    const wallet = yield select(generator.selectors.wallet)
+    const owner = new ethers.Wallet(privateKey).address
+    const wallet = sdk.precomputeAddress({ owner })
     const amountFormatted = utils.parseEther(String(amount).trim())
     if (to.indexOf('.') > -1) {
       address = yield convertEns({ ens: to, provider })
