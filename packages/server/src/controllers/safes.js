@@ -213,7 +213,6 @@ export const claimAndCreateERC721 = wrapAsync(async (req, res, next) => {
       errors
     })
   } catch (err) {
-    console.log({ err })
     next(err)
   }
 })

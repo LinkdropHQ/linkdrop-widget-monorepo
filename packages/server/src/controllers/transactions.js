@@ -7,7 +7,6 @@ import transactionRelayService from '../services/transactionRelayService'
 
 export const executeTx = wrapAsync(async (req, res, next) => {
   try {
-
     const {
       safe,
       to,

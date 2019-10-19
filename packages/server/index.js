@@ -16,8 +16,8 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.json({ extended: false }))
 app.use(
   cors({
-      origin: ['http://localhost:9002', 'https://rinkeby-widget.linkdrop.io'],
-      credentials: true
+    origin: ['http://localhost:9002', 'https://rinkeby-widget.linkdrop.io'],
+    credentials: true
   })
 )
 app.use(cookieParser(config.COOKIE_SECRET))

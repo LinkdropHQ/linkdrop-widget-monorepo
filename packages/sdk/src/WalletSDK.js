@@ -31,15 +31,15 @@ const BYTES_ZERO = '0x'
 class WalletSDK {
   constructor ({
     chain = 'rinkeby',
-    apiHost = 'http://localhost:5050',
+    apiHost = `https://${chain}-wallet-api.linkdrop.io`,
     claimHost = 'https://claim.linkdrop.io',
     jsonRpcUrl,
-    gnosisSafeMasterCopy = '0x55249197d684821630f35c4f12842a85ef50a6f1', // custom version with ERC721 receiving support
-    proxyFactory = '0x12302fE9c02ff50939BaAaaf415fc226C078613C', // from https://safe-relay.gnosis.pm/api/v1/about/
-    linkdropModuleMasterCopy = '0x19Ff4Cb4eFD0b9E04433Dde6507ADC68225757f2',
-    createAndAddModules = '0x40Ba7DF971BBdE476517B7d6B908113f71583183', // from https://safe-relay.gnosis.pm/api/v1/about/
-    multiSend = '0x0CE1BBc1BbbF65C3953A3f1f80344b42C084FA0c',
-    recoveryModuleMasterCopy = '0xDC1692EE6B3215907a97dF73da034616150BdD8A',
+    gnosisSafeMasterCopy = '0xB945Bd4b447aF21C5B55eF859242829FBDc0bF0A', // custom version with ERC721 receiving support
+    proxyFactory = '0x12302fE9c02ff50939BaAaaf415fc226C078613C',
+    linkdropModuleMasterCopy = '0xB74bBDb7830b7845b73184958Cd00B341C6644C9',
+    createAndAddModules = '0x1a56aE690ab0818aF5cA349b7D21f1d7e76a3d36',
+    multiSend = '0xD4B7B161E4779629C2717385114Bf78D612aEa72',
+    recoveryModuleMasterCopy = '0xD3FaECC16097E96986F868220185F6470A3F1eA9',
     recoveryPeriod = '259200', // 3 days
     ensAddress = getEnsAddress(chain),
     ensDomain = 'linkdrop.test',
@@ -568,7 +568,13 @@ class WalletSDK {
   async register (email, password) {
     const ownerWallet = ethers.Wallet.createRandom()
     const walletAddress = this.precomputeAddress({ owner: ownerWallet.address })
-    return register({ email, password, apiHost: this.apiHost, ownerWallet, walletAddress })
+    return register({
+      email,
+      password,
+      apiHost: this.apiHost,
+      ownerWallet,
+      walletAddress
+    })
   }
 
   /**

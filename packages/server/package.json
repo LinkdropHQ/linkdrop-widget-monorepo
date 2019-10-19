@@ -8,7 +8,8 @@
   "scripts": {
     "start": "npx babel-node index",
     "dev": "nodemon --exec npx babel-node index",
-    "deploy-rinkeby": "cd deploy && npx shipit rinkeby deploy"
+    "deploy-rinkeby": "cd deploy && npx shipit rinkeby deploy",
+    "deploy-mainnet": "cd deploy && npx shipit mainnet deploy"
   },
   "dependencies": {
     "@ensdomains/ens": "^0.3.11",
