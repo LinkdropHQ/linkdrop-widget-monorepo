@@ -42,7 +42,7 @@ module.exports = shipit => {
   })
 
   shipit.task('build', async () => {
-    await shipit.remote(`cd ${shipit.releasePath} && yarn build`)
+    await shipit.remote(`cd ${shipit.releasePath} && yarn build:contracts`)
   })
 
   shipit.blTask('stopApp', async () => {
