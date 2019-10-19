@@ -3,7 +3,7 @@ import "openzeppelin-solidity/contracts/math/Safemath.sol";
 
 contract MultiSendWithRefund {
     using SafeMath for uint;
-    
+
     function () external payable {}
 
     /// @dev Sends multiple transactions and reverts all if one fails.

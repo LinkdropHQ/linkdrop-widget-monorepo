@@ -1,11 +1,11 @@
 import { ethers } from 'ethers'
-import GnosisSafe from '../../contracts/build/GnosisSafe.json'
+import GnosisSafe from '../../../contracts/build/GnosisSafe.json'
 import {
   CHAIN,
   INFURA_API_TOKEN,
   PRIVATE_KEY,
   GAS_PRICE_GWEI
-} from '../config/config.json'
+} from '../../config/config.json'
 
 const jsonRpcUrl = `https://${CHAIN}.infura.io/v3/${INFURA_API_TOKEN}`
 const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
