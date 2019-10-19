@@ -7,7 +7,6 @@ const generator = function * ({ payload }) {
     const sessionKeyStore = yield select(generator.selectors.sessionKeyStore)
     if (!sessionKeyStore) { return false }
     const { privateKey, success } = yield sdk.extractPrivateKeyFromSession(sessionKeyStore)
-
     if (success && privateKey) {
       const sdk = yield select(generator.selectors.sdk)
       const owner = new ethers.Wallet(privateKey).address
@@ -19,6 +18,7 @@ const generator = function * ({ payload }) {
     }
   } catch (e) {
     yield put({ type: 'USER.SET_PRIVATE_KEY', payload: { privateKey: false } })
+    yield put({ type: 'AUTHORIZATION.SIGN_OUT' })
     console.error(e)
   }
 }
