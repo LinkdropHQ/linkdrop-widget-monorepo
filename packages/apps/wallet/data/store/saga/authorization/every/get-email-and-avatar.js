@@ -3,7 +3,6 @@ import { put } from 'redux-saga/effects'
 
 const generator = function * () {
   try {
-    yield put({ type: 'AUTHORIZATION.SET_LOADING', payload: { loading: true } })
     const authInstance = gapi.auth2.getAuthInstance()
     const isSignedIn = authInstance.isSignedIn.get()
     if (!isSignedIn) {
@@ -12,7 +11,6 @@ const generator = function * () {
     const user = authInstance.currentUser.get()
     const email = user.getBasicProfile().getEmail()
     const avatar = user.getBasicProfile().getImageUrl()
-    yield put({ type: 'AUTHORIZATION.SET_LOADING', payload: { loading: false } })
     return { email, avatar }
   } catch (e) {
     console.error(e)

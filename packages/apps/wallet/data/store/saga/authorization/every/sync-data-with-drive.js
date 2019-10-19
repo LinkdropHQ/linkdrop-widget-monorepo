@@ -1,6 +1,6 @@
 import { put, select } from 'redux-saga/effects'
 import gapiService from 'data/api/google-api'
-import getImageAndAvatar from './get-email-and-avatar'
+import getEmailAndAvatar from './get-email-and-avatar'
 import { generateRandomPassword } from 'helpers'
 
 const generator = function * () {
@@ -8,7 +8,7 @@ const generator = function * () {
     yield put({ type: 'AUTHORIZATION.SET_LOADING', payload: { loading: true } })
     const { chainId } = yield select(generator.selectors.userData)
     const sdk = yield select(generator.selectors.sdk)
-    const { email, avatar } = yield getImageAndAvatar()
+    const { email, avatar } = yield getEmailAndAvatar()
     // fetching files from Drive
     const fetchResult = yield gapiService.fetchFiles({ chainId })
     let data
@@ -27,7 +27,6 @@ const generator = function * () {
     }
     const { privateKey, sessionKeyStore } = data
     yield put({ type: '*USER.SET_USER_DATA', payload: { privateKey, sessionKeyStore, email, avatar, chainId } })
-    yield put({ type: 'AUTHORIZATION.SET_LOADING', payload: { loading: false } })
     return { email, avatar }
   } catch (e) {
     yield put({ type: 'AUTHORIZATION.SET_LOADING', payload: { loading: false } })
