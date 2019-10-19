@@ -1,6 +1,11 @@
 import { ethers } from 'ethers'
 import GnosisSafe from '../../contracts/build/GnosisSafe.json'
-import { CHAIN, INFURA_API_TOKEN, PRIVATE_KEY } from '../config/config.json'
+import {
+  CHAIN,
+  INFURA_API_TOKEN,
+  PRIVATE_KEY,
+  GAS_PRICE_GWEI
+} from '../config/config.json'
 
 const jsonRpcUrl = `https://${CHAIN}.infura.io/v3/${INFURA_API_TOKEN}`
 const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
@@ -16,7 +21,7 @@ const deploy = async () => {
   )
 
   const gnosisSafe = await gnosisSafeFactory.deploy({
-    gasPrice: ethers.utils.parseUnits('20', 'gwei'),
+    gasPrice: ethers.utils.parseUnits(GAS_PRICE_GWEI, 'gwei'),
     gasLimit: 6900000
   })
 
