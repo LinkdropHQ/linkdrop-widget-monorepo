@@ -133,22 +133,22 @@ export const estimateGasCosts = async ({
 
   let gasPriceGwei = 0
   const gasPrice = ethers.utils
-        .parseUnits(gasPriceGwei.toString(), 'gwei')
-        .toNumber()
+    .parseUnits(gasPriceGwei.toString(), 'gwei')
+    .toNumber()
 
-    const baseGasEstimate = estimateBaseGas({
-      safe,
-      to,
-      value,
-      data,
-      operation,
-      txGasEstimate,
-      gasToken,
-      gasPrice,
-      refundReceiver,
-      signatureCount,
-      nonce
-    })
+  const baseGasEstimate = estimateBaseGas({
+    safe,
+    to,
+    value,
+    data,
+    operation,
+    txGasEstimate,
+    gasToken,
+    gasPrice,
+    refundReceiver,
+    signatureCount,
+    nonce
+  })
 
   gasCosts.push({
     gasPrice,

@@ -1,5 +1,5 @@
 pragma solidity ^0.5.0;
-import "openzeppelin-solidity/contracts/math/Safemath.sol";
+import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 contract MultiSendWithRefund {
     using SafeMath for uint;
