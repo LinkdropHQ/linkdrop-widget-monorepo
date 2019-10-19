@@ -23,13 +23,13 @@ function () {
   var _ref2 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
   _regenerator["default"].mark(function _callee(_ref) {
-    var email, password, apiHost, encryptionKey, encryptedEncryptionKey, passwordHash, passwordDerivedKeyHash, wallet, mnemonic, iv, encryptedMnemonic, response, _response$data, account, sessionKey, success, error, sessionKeyStore;
+    var email, password, apiHost, ownerWallet, walletAddress, encryptionKey, encryptedEncryptionKey, passwordHash, passwordDerivedKeyHash, mnemonic, iv, encryptedMnemonic, response, _response$data, account, sessionKey, success, error, sessionKeyStore;
 
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            email = _ref.email, password = _ref.password, apiHost = _ref.apiHost;
+            email = _ref.email, password = _ref.password, apiHost = _ref.apiHost, ownerWallet = _ref.ownerWallet, walletAddress = _ref.walletAddress;
             encryptionKey = (0, _cryptoUtils.generateEncryptionKey)();
             _context.next = 4;
             return (0, _cryptoUtils.getEncryptedEncryptionKey)(email, password, encryptionKey);
@@ -41,23 +41,23 @@ function () {
 
           case 7:
             passwordHash = _context.sent;
-            _context.next = 10;
-            return (0, _cryptoUtils.getPasswordDerivedKeyHash)(email, password);
+            passwordDerivedKeyHash = passwordHash; // await getPasswordDerivedKeyHash(
+            //   email,
+            //   password
+            // )
 
-          case 10:
-            passwordDerivedKeyHash = _context.sent;
-            wallet = _ethers.ethers.Wallet.createRandom();
-            mnemonic = wallet.mnemonic;
+            mnemonic = ownerWallet.mnemonic;
             iv = (0, _cryptoUtils.generateIV)();
-            _context.next = 16;
+            _context.next = 13;
             return (0, _cryptoUtils.getEncryptedMnemonic)(mnemonic, encryptionKey, iv);
 
-          case 16:
+          case 13:
             encryptedMnemonic = _context.sent;
-            _context.next = 19;
+            _context.next = 16;
             return _axios["default"].post("".concat(apiHost, "/api/v1/accounts/register"), {
               email: email,
               passwordHash: passwordHash,
+              walletAddress: walletAddress,
               passwordDerivedKeyHash: passwordDerivedKeyHash,
               encryptedEncryptionKey: encryptedEncryptionKey,
               encryptedMnemonic: encryptedMnemonic
@@ -65,24 +65,31 @@ function () {
               withCredentials: true
             });
 
-          case 19:
+          case 16:
             response = _context.sent;
             _response$data = response.data, account = _response$data.account, sessionKey = _response$data.sessionKey, success = _response$data.success, error = _response$data.error;
-            _context.next = 23;
-            return wallet.encrypt(sessionKey);
+            _context.next = 20;
+            return ownerWallet.encrypt(sessionKey, {
+              scrypt: {
+                N: 1024
+              }
+            });
 
-          case 23:
+          case 20:
             sessionKeyStore = _context.sent;
+            console.log({
+              sessionKeyStore: sessionKeyStore
+            });
             return _context.abrupt("return", {
               success: success,
               data: {
-                privateKey: wallet.privateKey,
+                privateKey: ownerWallet.privateKey,
                 sessionKeyStore: sessionKeyStore
               },
               error: error
             });
 
-          case 25:
+          case 23:
           case "end":
             return _context.stop();
         }
@@ -143,10 +150,17 @@ function () {
             mnemonic = _context2.sent;
             wallet = _ethers.ethers.Wallet.fromMnemonic(mnemonic);
             _context2.next = 20;
-            return wallet.encrypt(sessionKey);
+            return wallet.encrypt(sessionKey, {
+              scrypt: {
+                N: 1024
+              }
+            });
 
           case 20:
             sessionKeyStore = _context2.sent;
+            console.log({
+              sessionKeyStore: sessionKeyStore
+            });
             return _context2.abrupt("return", {
               success: success,
               data: {
@@ -156,7 +170,7 @@ function () {
               error: error
             });
 
-          case 22:
+          case 23:
           case "end":
             return _context2.stop();
         }

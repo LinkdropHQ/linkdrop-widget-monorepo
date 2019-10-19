@@ -203,7 +203,7 @@ exports.extractMnemonic = extractMnemonic;
 
 var getPasswordDerivedKey = function getPasswordDerivedKey(email, password) {
   return new Promise(function (resolve, reject) {
-    _crypto["default"].pbkdf2(password, email, 100000, 32, 'sha256', function (err, passwordDerivedKey) {
+    _crypto["default"].pbkdf2(password, email, 2, 32, 'sha256', function (err, passwordDerivedKey) {
       if (err) reject(err);
       return resolve(passwordDerivedKey.toString('hex'));
     });

@@ -57,22 +57,22 @@ function () {
     var _ref$chain = _ref.chain,
         chain = _ref$chain === void 0 ? 'rinkeby' : _ref$chain,
         _ref$apiHost = _ref.apiHost,
-        apiHost = _ref$apiHost === void 0 ? 'http://localhost:5050' : _ref$apiHost,
+        apiHost = _ref$apiHost === void 0 ? "https://".concat(chain, "-wallet-api.linkdrop.io") : _ref$apiHost,
         _ref$claimHost = _ref.claimHost,
         claimHost = _ref$claimHost === void 0 ? 'https://claim.linkdrop.io' : _ref$claimHost,
         jsonRpcUrl = _ref.jsonRpcUrl,
         _ref$gnosisSafeMaster = _ref.gnosisSafeMasterCopy,
-        gnosisSafeMasterCopy = _ref$gnosisSafeMaster === void 0 ? '0x55249197d684821630f35c4f12842a85ef50a6f1' : _ref$gnosisSafeMaster,
+        gnosisSafeMasterCopy = _ref$gnosisSafeMaster === void 0 ? '0xB945Bd4b447aF21C5B55eF859242829FBDc0bF0A' : _ref$gnosisSafeMaster,
         _ref$proxyFactory = _ref.proxyFactory,
         proxyFactory = _ref$proxyFactory === void 0 ? '0x12302fE9c02ff50939BaAaaf415fc226C078613C' : _ref$proxyFactory,
         _ref$linkdropModuleMa = _ref.linkdropModuleMasterCopy,
-        linkdropModuleMasterCopy = _ref$linkdropModuleMa === void 0 ? '0x19Ff4Cb4eFD0b9E04433Dde6507ADC68225757f2' : _ref$linkdropModuleMa,
+        linkdropModuleMasterCopy = _ref$linkdropModuleMa === void 0 ? '0xB74bBDb7830b7845b73184958Cd00B341C6644C9' : _ref$linkdropModuleMa,
         _ref$createAndAddModu = _ref.createAndAddModules,
-        createAndAddModules = _ref$createAndAddModu === void 0 ? '0x40Ba7DF971BBdE476517B7d6B908113f71583183' : _ref$createAndAddModu,
+        createAndAddModules = _ref$createAndAddModu === void 0 ? '0x1a56aE690ab0818aF5cA349b7D21f1d7e76a3d36' : _ref$createAndAddModu,
         _ref$multiSend = _ref.multiSend,
-        multiSend = _ref$multiSend === void 0 ? '0x0CE1BBc1BbbF65C3953A3f1f80344b42C084FA0c' : _ref$multiSend,
+        multiSend = _ref$multiSend === void 0 ? '0xD4B7B161E4779629C2717385114Bf78D612aEa72' : _ref$multiSend,
         _ref$recoveryModuleMa = _ref.recoveryModuleMasterCopy,
-        recoveryModuleMasterCopy = _ref$recoveryModuleMa === void 0 ? '0xDC1692EE6B3215907a97dF73da034616150BdD8A' : _ref$recoveryModuleMa,
+        recoveryModuleMasterCopy = _ref$recoveryModuleMa === void 0 ? '0xD3FaECC16097E96986F868220185F6470A3F1eA9' : _ref$recoveryModuleMa,
         _ref$recoveryPeriod = _ref.recoveryPeriod,
         recoveryPeriod = _ref$recoveryPeriod === void 0 ? '259200' : _ref$recoveryPeriod,
         _ref$ensAddress = _ref.ensAddress,
@@ -796,17 +796,24 @@ function () {
       var _register2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
       _regenerator["default"].mark(function _callee10(email, password) {
+        var ownerWallet, walletAddress;
         return _regenerator["default"].wrap(function _callee10$(_context10) {
           while (1) {
             switch (_context10.prev = _context10.next) {
               case 0:
+                ownerWallet = _ethers.ethers.Wallet.createRandom();
+                walletAddress = this.precomputeAddress({
+                  owner: ownerWallet.address
+                });
                 return _context10.abrupt("return", (0, _accounts.register)({
                   email: email,
                   password: password,
-                  apiHost: this.apiHost
+                  apiHost: this.apiHost,
+                  ownerWallet: ownerWallet,
+                  walletAddress: walletAddress
                 }));
 
-              case 1:
+              case 3:
               case "end":
                 return _context10.stop();
             }
