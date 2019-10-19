@@ -19,29 +19,42 @@ const generator = function * ({ payload }) {
     }
     if (!address) {
       yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
-      return yield put({ type: 'USER.SET_ERRORS', payload: { errors: ['ENS_INVALID'] } })
+      return yield put({
+        type: 'USER.SET_ERRORS',
+        payload: { errors: ['ENS_INVALID'] }
+      })
     }
 
     const privateKey = yield select(generator.selectors.privateKey)
-    const tokenContract = new ethers.Contract(tokenAddress, NFTMock.abi, provider)
-    const contractAddress = yield select(generator.selectors.contractAddress)
-    const data = yield tokenContract.interface.functions.transfer.encode([address])
+    const tokenContract = new ethers.Contract(
+      tokenAddress,
+      NFTMock.abi,
+      provider
+    )
+    const wallet = yield select(generator.selectors.wallet)
+    const data = yield tokenContract.interface.functions.safeTransferFrom.encode(
+      [wallet, address, tokenId]
+    )
 
-    const message = {
-      from: contractAddress,
+    const params = {
+      safe: wallet,
       to: tokenAddress,
       data,
-      value: '0'
+      value: '0',
+      privateKey
     }
-    const result = yield sdk.execute(message, privateKey)
+    const result = yield sdk.executeTx(params)
     const { success, errors, txHash } = result
     if (success) {
-      yield put({ type: 'TOKENS.SET_TRANSACTION_ID', payload: { transactionId: txHash } })
+      yield put({
+        type: 'TOKENS.SET_TRANSACTION_ID',
+        payload: { transactionId: txHash }
+      })
       yield put({
         type: 'TOKENS.SET_TRANSACTION_DATA',
         payload: {
           transactionData: {
-            value: String(amount.trim()),
+            tokenId,
             tokenAddress,
             status: 'loading'
           }
