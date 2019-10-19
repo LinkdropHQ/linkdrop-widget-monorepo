@@ -35,7 +35,8 @@ class AccountsService {
     passwordHash,
     passwordDerivedKeyHash,
     encryptedEncryptionKey,
-    encryptedMnemonic
+    encryptedMnemonic,
+    safe
   }) {
     try {
       const account = new Account({
@@ -43,7 +44,8 @@ class AccountsService {
         passwordHash,
         passwordDerivedKeyHash,
         encryptedEncryptionKey,
-        encryptedMnemonic
+        encryptedMnemonic,
+        safe
       })
 
       logger.debug('Creating new account..')
