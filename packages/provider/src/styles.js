@@ -20,7 +20,7 @@ export const styles = `
 .ld-widget-container {
   width: 100%;    
   top: 0px;
-  height: 100%;
+  height: 0px;
   z-index: 2147483647;
 }
 
