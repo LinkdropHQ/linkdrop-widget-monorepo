@@ -16,7 +16,6 @@ const generator = function * () {
     if (result) {
       yield put({ type: '*AUTHORIZATION.SYNC_DATA_WITH_DRIVE' })
     }
-    yield put({ type: 'AUTHORIZATION.SET_LOADING', payload: { loading: false } })
   } catch (e) {
     yield put({ type: 'AUTHORIZATION.SET_LOADING', payload: { loading: false } })
     console.error(e)
