@@ -49,7 +49,7 @@ class WalletSDK {
     this.chain = chain
     this.jsonRpcUrl =
       jsonRpcUrl ||
-      `https://${chain}.infura.io/v3/ecd43c9cd96e45ceb9131fba9b100b07`
+      `https://${chain}.infura.io/v3/4e820e3654994281ba2a14e3f7a224b2`
     this.apiHost = apiHost
     this.claimHost = claimHost
     this.gnosisSafeMasterCopy = gnosisSafeMasterCopy

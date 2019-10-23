@@ -82,28 +82,32 @@ export const estimateGasCosts = async ({
   // )
   // currentGasPriceGwei = parseInt(Math.ceil(currentGasPriceGwei))
 
-  const web3 = new Web3(jsonRpcUrl)
-  const gnosisSafe = new web3.eth.Contract(GnosisSafe.abi, safe)
-  const nonce = await gnosisSafe.methods.nonce().call()
+  // const web3 = new Web3(jsonRpcUrl)
+  // const gnosisSafe = new web3.eth.Contract(GnosisSafe.abi, safe)
+  // const nonce = await gnosisSafe.methods.nonce().call()
+  //const provider = ethers.getDefaultProvider('rinkeby')
+  const safeAbi = ["function nonce() public view returns (uint)"]
+  const safeContract = new ethers.Contract(safe, safeAbi, provider)
+  const nonce = (await safeContract.nonce()).toString()
+  
+  // const estimateData = encodeParams(GnosisSafe.abi, 'requiredTxGas', [
+  //   to,
+  //   value,
+  //   data,
+  //   operation
+  // ])
 
-  const estimateData = encodeParams(GnosisSafe.abi, 'requiredTxGas', [
-    to,
-    value,
-    data,
-    operation
-  ])
+  // const estimateResponse = await provider.call({
+  //   from: safe,
+  //   to: safe,
+  //   value,
+  //   data: estimateData,
+  //   gasPrice: 0
+  // })
 
-  const estimateResponse = await provider.call({
-    from: safe,
-    to: safe,
-    value,
-    data: estimateData,
-    gasPrice: 0
-  })
-
-  let txGasEstimate = new BigNumber(estimateResponse.substring(138), 16)
+  // let txGasEstimate = new BigNumber(estimateResponse.substring(138), 16)
   // Add 10k else we will fail in case of nested calls
-  txGasEstimate = txGasEstimate.toNumber() + 100000
+  const txGasEstimate = 500000 // txGasEstimate.toNumber() + 100000
 
   const gasCosts = []
 
