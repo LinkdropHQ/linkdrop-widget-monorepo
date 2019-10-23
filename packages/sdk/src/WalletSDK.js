@@ -36,7 +36,7 @@ class WalletSDK {
     jsonRpcUrl,
     gnosisSafeMasterCopy = '0xB945Bd4b447aF21C5B55eF859242829FBDc0bF0A', // custom version with ERC721 receiving support
     proxyFactory = '0x12302fE9c02ff50939BaAaaf415fc226C078613C',
-    linkdropModuleMasterCopy = '0xB74bBDb7830b7845b73184958Cd00B341C6644C9',
+    linkdropModuleMasterCopy = '0xFBaD822d2E2710EEe31DC3298a8866ebaaBd9328',
     createAndAddModules = '0x1a56aE690ab0818aF5cA349b7D21f1d7e76a3d36',
     multiSend = '0xD4B7B161E4779629C2717385114Bf78D612aEa72',
     recoveryModuleMasterCopy = '0xD3FaECC16097E96986F868220185F6470A3F1eA9',
