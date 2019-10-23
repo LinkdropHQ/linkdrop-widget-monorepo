@@ -1,5 +1,5 @@
 {
-    "name": "@huskiapp/contracts",
+    "name": "@linkdrop-widget/contracts",
     "version": "0.0.1",
     "description": "Smart contracts for Huski app",
     "main": "index.js",
@@ -12,10 +12,10 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/LinkdropHQ/huskiapp.git"
+        "url": "git+https://github.com/LinkdropHQ/linkdrop-widget.git"
     },
     "bugs": {
-        "url": "https://github.com/LinkdropHQ/huskiapp/issues"
+        "url": "https://github.com/LinkdropHQ/linkdrop-widget/issues"
     },
     "dependencies": {
         "@gnosis.pm/safe-contracts": "^1.0.0",

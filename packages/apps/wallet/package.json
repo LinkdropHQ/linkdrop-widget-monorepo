@@ -1,5 +1,5 @@
 {
-  "name": "@huskiapp/wallet",
+  "name": "@linkdrop-widget/wallet",
   "version": "0.0.1",
   "description": "Wallet widget",
   "main": "index.js",
