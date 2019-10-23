@@ -1,11 +1,7 @@
-// import assert from 'assert-js'
 import { ethers } from 'ethers'
 import GnosisSafe from '@gnosis.pm/safe-contracts/build/contracts/GnosisSafe'
 import { encodeParams } from './utils'
 import BigNumber from 'bignumber.js'
-import Web3 from 'web3'
-// import { signTx } from './signTx'
-// import { AddressZero } from 'ethers/constants'
 
 const baseGasValue = hexValue => {
   switch (hexValue) {
@@ -74,17 +70,15 @@ export const estimateGasCosts = async ({
   signatureCount = 1
 }) => {
   const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
+  const gnosisSafe = new ethers.Contract(safe, GnosisSafe.abi, provider)
+  const nonce = await gnosisSafe.nonce()
 
-  // let currentGasPriceGwei = await provider.getGasPrice()
-  // currentGasPriceGwei = ethers.utils.formatUnits(
-  //   currentGasPriceGwei.toString(),
-  //   'gwei'
-  // )
-  // currentGasPriceGwei = parseInt(Math.ceil(currentGasPriceGwei))
-
-  const web3 = new Web3(jsonRpcUrl)
-  const gnosisSafe = new web3.eth.Contract(GnosisSafe.abi, safe)
-  const nonce = await gnosisSafe.methods.nonce().call()
+  let currentGasPriceGwei = await provider.getGasPrice()
+  currentGasPriceGwei = ethers.utils.formatUnits(
+    currentGasPriceGwei.toString(),
+    'gwei'
+  )
+  currentGasPriceGwei = parseInt(Math.ceil(currentGasPriceGwei))
 
   const estimateData = encodeParams(GnosisSafe.abi, 'requiredTxGas', [
     to,
@@ -117,7 +111,7 @@ export const estimateGasCosts = async ({
       operation,
       txGasEstimate,
       gasToken,
-      gasPrice: 0,
+      gasPrice: '0',
       refundReceiver,
       signatureCount,
       nonce
@@ -125,37 +119,35 @@ export const estimateGasCosts = async ({
     safeTxGas: txGasEstimate
   })
 
-  // for (
-  //   let gasPriceGwei = currentGasPriceGwei;
-  //   gasPriceGwei <= currentGasPriceGwei + 5;
-  //   gasPriceGwei++
-  // ) {
+  for (
+    let gasPriceGwei = currentGasPriceGwei;
+    gasPriceGwei <= currentGasPriceGwei + 5;
+    gasPriceGwei++
+  ) {
+    const gasPrice = ethers.utils
+      .parseUnits(gasPriceGwei.toString(), 'gwei')
+      .toNumber()
 
-  let gasPriceGwei = 0
-  const gasPrice = ethers.utils
-    .parseUnits(gasPriceGwei.toString(), 'gwei')
-    .toNumber()
+    const baseGasEstimate = estimateBaseGas({
+      safe,
+      to,
+      value,
+      data,
+      operation,
+      txGasEstimate,
+      gasToken,
+      gasPrice,
+      refundReceiver,
+      signatureCount,
+      nonce
+    })
 
-  const baseGasEstimate = estimateBaseGas({
-    safe,
-    to,
-    value,
-    data,
-    operation,
-    txGasEstimate,
-    gasToken,
-    gasPrice,
-    refundReceiver,
-    signatureCount,
-    nonce
-  })
-
-  gasCosts.push({
-    gasPrice,
-    baseGas: baseGasEstimate,
-    safeTxGas: txGasEstimate
-  })
-  // }
+    gasCosts.push({
+      gasPrice,
+      baseGas: baseGasEstimate,
+      safeTxGas: txGasEstimate
+    })
+  }
 
   return gasCosts
 }
