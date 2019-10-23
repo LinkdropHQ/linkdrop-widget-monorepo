@@ -1,5 +1,5 @@
 {
-  "name": "@huskiapp/monorepo",
+  "name": "@linkdrop-widget/monorepo",
   "version": "0.0.1",
   "private": true,
   "main": "index.js",

@@ -1,5 +1,5 @@
 {
-  "name": "@huskiapp/provider",
+  "name": "@linkdrop-widget/provider",
   "version": "0.0.1",
   "main": "src/index.js",
   "license": "MIT",

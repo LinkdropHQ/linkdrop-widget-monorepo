@@ -1,6 +1,6 @@
 /* global zeroExInstant */
 import React from 'react'
-import WalletProvider from '@huskiapp/provider'
+import WalletProvider from '@linkdrop-widget/provider'
 import Web3 from 'web3'
 import qs from 'querystring'
 import './App.css'
