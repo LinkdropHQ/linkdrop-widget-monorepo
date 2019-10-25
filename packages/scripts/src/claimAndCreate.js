@@ -12,7 +12,7 @@ export const getUrlParams = async (type, i) => {
   return parsed
 }
 
-const walletSDK = new WalletSDK({})
+const walletSDK = new WalletSDK({ apiHost: 'http://localhost:5050' })
 
 const main = async () => {
   const {
@@ -24,13 +24,13 @@ const main = async () => {
     linkdropMasterAddress,
     linkdropSignerSignature,
     campaignId
-  } = await getUrlParams('eth', 2)
+  } = await getUrlParams('eth', 4)
 
   const ensName = Math.random()
     .toString(36)
     .substring(2, 15)
 
-  const email = 'email3'
+  const email = 'amiromayer@gmail.com'
 
   const saltNonce = new Date().getTime().toString()
   console.log('ensName: ', ensName)
@@ -54,11 +54,12 @@ const main = async () => {
     linkdropMasterAddress,
     linkdropSignerSignature,
     campaignId,
-    owner: '0x9b5FEeE3B220eEdd3f678efa115d9a4D91D5cf0A',
+    owner: '0x6748e86bC4943ce1E6134F78cb4c9557a71AB4f2',
     ensName,
     saltNonce,
     gasPrice: '4000000000', // 4 gwei
-    email
+    email,
+    privateKey: ''
   })
 
   console.log({

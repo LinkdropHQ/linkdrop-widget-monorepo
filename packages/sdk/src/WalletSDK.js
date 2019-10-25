@@ -262,7 +262,8 @@ class WalletSDK {
     campaignId,
     owner,
     ensName,
-    email
+    email,
+    privateKey
   }) {
     return claimAndCreate({
       weiAmount,
@@ -288,7 +289,8 @@ class WalletSDK {
       ensDomain: this.ensDomain,
       ensAddress: this.ensAddress,
       jsonRpcUrl: this.jsonRpcUrl,
-      email
+      email,
+      privateKey
     })
   }
 
