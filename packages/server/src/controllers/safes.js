@@ -156,7 +156,8 @@ export const claimAndCreateERC721 = wrapAsync(async (req, res, next) => {
       campaignId,
       linkdropSignerSignature,
       receiverSignature,
-      email
+      email,
+      createAndAddModulesSafeTxData
     } = req.body
 
     assert.string(owner, 'Owner address is required')
@@ -181,6 +182,10 @@ export const claimAndCreateERC721 = wrapAsync(async (req, res, next) => {
     assert.string(receiverSignature, 'Receiver signature is required')
 
     assert.string(email, 'Email is required')
+    assert.string(
+      createAndAddModulesSafeTxData,
+      'Create and add modules safe tx data is required'
+    )
 
     const {
       success,
@@ -205,7 +210,8 @@ export const claimAndCreateERC721 = wrapAsync(async (req, res, next) => {
       campaignId,
       linkdropSignerSignature,
       receiverSignature,
-      email
+      email,
+      createAndAddModulesSafeTxData
     })
 
     res.json({
