@@ -3,6 +3,8 @@ import csvToJson from 'csvtojson'
 import queryString from 'query-string'
 import WalletSDK from '../../sdk/src'
 
+import { PRIVATE_KEY, EMAIL } from '../config/config.json'
+
 export const getUrlParams = async (type, i) => {
   const csvFilePath = path.resolve(__dirname, `../output/linkdrop_${type}.csv`)
   const jsonArray = await csvToJson().fromFile(csvFilePath)
@@ -24,18 +26,11 @@ const main = async () => {
     linkdropMasterAddress,
     linkdropSignerSignature,
     campaignId
-  } = await getUrlParams('eth', 4)
+  } = await getUrlParams('eth', 5)
 
   const ensName = Math.random()
     .toString(36)
     .substring(2, 15)
-
-  const email = 'amiromayer@gmail.com'
-
-  const saltNonce = new Date().getTime().toString()
-  console.log('ensName: ', ensName)
-  console.log('email: ', email)
-  console.log('saltNonce: ', saltNonce)
 
   const {
     safe,
@@ -54,12 +49,10 @@ const main = async () => {
     linkdropMasterAddress,
     linkdropSignerSignature,
     campaignId,
-    owner: '0x6748e86bC4943ce1E6134F78cb4c9557a71AB4f2',
     ensName,
-    saltNonce,
     gasPrice: '4000000000', // 4 gwei
-    email,
-    privateKey: ''
+    email: EMAIL,
+    privateKey: PRIVATE_KEY
   })
 
   console.log({

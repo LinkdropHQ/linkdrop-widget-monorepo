@@ -9,6 +9,7 @@ import { computeSafeAddress } from './computeSafeAddress'
 import { computeLinkdropModuleAddress } from './computeLinkdropModuleAddress'
 import { computeRecoveryModuleAddress } from './computeRecoveryModuleAddress'
 import { precomputeSafeAddressWithModules } from './precomputeSafeAddressWithModules'
+import { create } from './create'
 import { claimAndCreate } from './claimAndCreate'
 import { claimAndCreateERC721 } from './claimAndCreateERC721'
 import { signTx } from './signTx'
@@ -237,6 +238,36 @@ class WalletSDK {
   }
 
   /**
+   * @param {String} privateKey Owner's private key
+   * @param {String} ensName Ens name
+
+   * @param {String} gasPrice Gas price in wei
+   * @param {String} email Email
+
+   */
+  async create ({ privateKey, gasPrice, email, ensName }) {
+    return create({
+      privateKey,
+      ensName,
+      gasPrice,
+      email,
+      saltNonce: new ethers.Wallet(privateKey).address,
+      recoveryPeriod: this.recoveryPeriod,
+      guardian: this.guardian,
+      ensAddress: this.ensAddress,
+      ensDomain: this.ensDomain,
+      gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
+      proxyFactory: this.proxyFactory,
+      linkdropModuleMasterCopy: this.linkdropModuleMasterCopy,
+      recoveryModuleMasterCopy: this.recoveryModuleMasterCopy,
+      multiSend: this.multiSend,
+      createAndAddModules: this.createAndAddModules,
+      jsonRpcUrl: this.jsonRpcUrl,
+      apiHost: this.apiHost
+    })
+  }
+
+  /**
    * Function to create new safe and claim linkdrop
    * @param {String} weiAmount Wei amount
    * @param {String} tokenAddress Token address
@@ -246,7 +277,8 @@ class WalletSDK {
    * @param {String} linkdropMasterAddress Linkdrop master address
    * @param {String} linkdropSignerSignature Linkdrop signer signature
    * @param {String} campaignId Campaign id
-   * @param {String} owner Safe owner address
+   * @param {String} privateKey Safe owner's private key
+   * @param {String} gasPrice Gas price in wei
    * @param {String} ensName ENS name (e.g. 'alice')
    * @param {String} email Email
    * @returns {Object} {success, txHash,safe, linkdropModule, recoveryModule, errors}
@@ -260,10 +292,10 @@ class WalletSDK {
     linkdropMasterAddress,
     linkdropSignerSignature,
     campaignId,
-    owner,
     ensName,
     email,
-    privateKey
+    privateKey,
+    gasPrice
   }) {
     return claimAndCreate({
       weiAmount,
@@ -274,8 +306,7 @@ class WalletSDK {
       linkdropMasterAddress,
       linkdropSignerSignature,
       campaignId,
-      owner,
-      saltNonce: owner,
+      saltNonce: new ethers.Wallet(privateKey).address,
       ensName,
       gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
       proxyFactory: this.proxyFactory,
@@ -290,7 +321,8 @@ class WalletSDK {
       ensAddress: this.ensAddress,
       jsonRpcUrl: this.jsonRpcUrl,
       email,
-      privateKey
+      privateKey,
+      gasPrice
     })
   }
 
@@ -306,7 +338,7 @@ class WalletSDK {
    * @param {String} campaignId Campaign id
    * @param {String} gnosisSafeMasterCopy Deployed gnosis safe mastercopy address
    * @param {String} proxyFactory Deployed proxy factory address
-   * @param {String} owner Safe owner address
+   * @param {String} privateKey Safe owner's private key
    * @param {String} linkdropModuleMasterCopy Deployed linkdrop module master copy address
    * @param {String} createAndAddModules Deployed createAndAddModules library address
    * @param {String} multiSend Deployed multiSend library address
@@ -321,6 +353,7 @@ class WalletSDK {
    * @param {String} jsonRpcUrl JSON RPC URL
    * @param {String} linkdropFactory Deployed linkdrop factory address
    * @param {String} email Email
+   * @param {String} gasPrice Gas price in wei
    * @returns {Object} {success, txHash,safe, linkdropModule, recoveryModule, errors}
    */
   async claimAndCreateERC721 ({
@@ -332,9 +365,10 @@ class WalletSDK {
     linkdropMasterAddress,
     linkdropSignerSignature,
     campaignId,
-    owner,
+    privateKey,
     ensName,
-    email
+    email,
+    gasPrice
   }) {
     return claimAndCreateERC721({
       weiAmount,
@@ -345,8 +379,7 @@ class WalletSDK {
       linkdropMasterAddress,
       linkdropSignerSignature,
       campaignId,
-      owner,
-      saltNonce: owner,
+      saltNonce: new ethers.Wallet(privateKey).address,
       ensName,
       gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
       proxyFactory: this.proxyFactory,
@@ -361,7 +394,9 @@ class WalletSDK {
       ensAddress: this.ensAddress,
       jsonRpcUrl: this.jsonRpcUrl,
       linkdropFactory: this.linkdropFactory,
-      email
+      email,
+      privateKey,
+      gasPrice
     })
   }
 

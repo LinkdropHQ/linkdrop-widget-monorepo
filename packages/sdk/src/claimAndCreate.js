@@ -1,17 +1,19 @@
 import axios from 'axios'
 import assert from 'assert-js'
 import { ethers } from 'ethers'
-import { signReceiverAddress } from './utils'
+import {
+  signReceiverAddress,
+  encodeParams,
+  encodeDataForCreateAndAddModules
+} from './utils'
 import { computeSafeAddress } from './computeSafeAddress'
 import { computeLinkdropModuleAddress } from './computeLinkdropModuleAddress'
 import { computeRecoveryModuleAddress } from './computeRecoveryModuleAddress'
-import { precomputeSafeAddressWithModules } from './precomputeSafeAddressWithModules'
 import { getEnsOwner } from './ensUtils'
 import { signTx } from './signTx'
-import { encodeParams, encodeDataForCreateAndAddModules } from './utils'
+
 import GnosisSafe from '@gnosis.pm/safe-contracts/build/contracts/GnosisSafe'
 import ProxyFactory from '@gnosis.pm/safe-contracts/build/contracts/ProxyFactory'
-import MultiSend from '@gnosis.pm/safe-contracts/build/contracts/MultiSend'
 import CreateAndAddModules from '@gnosis.pm/safe-contracts/build/contracts/CreateAndAddModules'
 import LinkdropModule from '../../contracts/build/LinkdropModule'
 import RecoveryModule from '../../contracts/build/RecoveryModule'
@@ -166,7 +168,7 @@ export const claimAndCreate = async ({
   ])
 
   createSafeData = encodeParams(ProxyFactory.abi, 'createProxyWithNonce', [
-    this.gnosisSafeMasterCopy.address,
+    gnosisSafeMasterCopy,
     gnosisSafeData,
     saltNonce
   ])

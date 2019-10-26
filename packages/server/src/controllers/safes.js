@@ -13,7 +13,9 @@ export const create = wrapAsync(async (req, res, next) => {
       ensName,
       guardian,
       recoveryPeriod,
-      gasPrice
+      gasPrice,
+      createAndAddModulesSafeTxData,
+      email
     } = req.body
     assert.string(owner, 'Owner address is required')
     assert.string(saltNonce, 'Salt nonce is required')
@@ -21,6 +23,11 @@ export const create = wrapAsync(async (req, res, next) => {
     assert.string(guardian, 'Guardian address is required')
     assert.string(recoveryPeriod, 'Recovery period is required')
     assert.string(gasPrice, 'Gas price is required')
+    assert.string(
+      createAndAddModulesSafeTxData,
+      'Create and add modules safe tx data is required'
+    )
+    assert.string(email, 'Email is required')
 
     const {
       success,
@@ -35,7 +42,9 @@ export const create = wrapAsync(async (req, res, next) => {
       ensName,
       guardian,
       recoveryPeriod,
-      gasPrice
+      gasPrice,
+      createAndAddModulesSafeTxData,
+      email
     })
 
     res.json({
