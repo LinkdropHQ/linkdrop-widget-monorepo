@@ -61,16 +61,14 @@ const getTokenDataERC721 = function * ({ tokenId, name, address, chainId, provid
 
 const generator = function * () {
   try {
-    // const chainId = yield select(generator.selectors.chainId)
-    // const wallet = yield select(generator.selectors.wallet)
-    const wallet = '0xAa46966f3448291068249E6f3fa8FDA59C929f3E'
-    const chainId = '1'
+    const chainId = yield select(generator.selectors.chainId)
+    const wallet = yield select(generator.selectors.wallet)
+
     if (!wallet) {
       return
     }
     const networkName = defineNetworkName({ chainId })
 
-    const { total, docs } = yield call(getItemsTrustwallet, { wallet })
     // const { status = 0, result = [], message } = yield call(getItems, { address: wallet, networkName })
     const { assets: resultERC721 } = yield call(getItemsERC721, { address: wallet, networkName })
     const provider = yield ethers.getDefaultProvider(networkName)
@@ -84,9 +82,12 @@ const generator = function * () {
     //   assetsStorage = assetsStorage.concat(erc20AssetsFormatted)
     // }
 
-    if (total && total > 0) {
-      const erc20AssetsFormatted = yield all(docs.map(({ contract: { address, symbol, decimals } }) => getTokenDataERC20({ address, symbol, decimals, chainId, provider, wallet })))
-      assetsStorage = assetsStorage.concat(erc20AssetsFormatted)
+    if (Number(chainId) === '1') {
+      const { total, docs } = yield call(getItemsTrustwallet, { wallet })
+      if (total && total > 0) {
+        const erc20AssetsFormatted = yield all(docs.map(({ contract: { address, symbol, decimals } }) => getTokenDataERC20({ address, symbol, decimals, chainId, provider, wallet })))
+        assetsStorage = assetsStorage.concat(erc20AssetsFormatted)
+      }
     }
 
     if (resultERC721 && resultERC721.length > 0) {

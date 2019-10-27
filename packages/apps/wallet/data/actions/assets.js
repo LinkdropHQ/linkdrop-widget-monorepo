@@ -43,8 +43,8 @@ class Assets {
     this.actions.dispatch({ type: 'ASSETS.SET_LINK', payload: { link: null } })
   }
 
-  generateLink () {
-    this.actions.dispatch({ type: '*ASSETS.GENERATE_LINK' })
+  generateLink ({ nftAddress, tokenId }) {
+    this.actions.dispatch({ type: '*ASSETS.GENERATE_LINK', payload: { nftAddress, tokenId } })
   }
 }
 

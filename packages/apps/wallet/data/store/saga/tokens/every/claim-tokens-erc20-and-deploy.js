@@ -12,7 +12,7 @@ const generator = function * ({ payload }) {
     const chainId = yield select(generator.selectors.chainId)
     const email = yield select(generator.selectors.email)
     const privateKey = yield select(generator.selectors.privateKey)
-    const result = yield sdk.claimAndCreate({
+    const result = yield sdk.claimAndCreateP2P({
       weiAmount: weiAmount || '0',
       tokenAddress,
       email,

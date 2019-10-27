@@ -59,7 +59,7 @@ class AssetsList extends React.Component {
       symbol={symbol}
       icon={image}
       name={name}
-      onClick={_ => this.actions().assets.generateLink()}
+      onClick={_ => this.actions().assets.generateLink({ nftAddress: address, tokenId })}
       tokenId={tokenId}
     />)
 

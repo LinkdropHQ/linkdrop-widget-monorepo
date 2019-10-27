@@ -1,5 +1,5 @@
 import React from 'react'
-import { actions } from 'decorators'
+import { actions, translate } from 'decorators'
 import { Icons, Button } from '@linkdrop/ui-kit'
 import styles from './styles.module'
 import { Page } from 'components/pages'
@@ -9,6 +9,7 @@ import { copyToClipboard } from '@linkdrop/commons'
 import variables from 'variables'
 
 @actions(({ assets: { link } }) => ({ link }))
+@translate('pages.common.assetsList')
 class ShareLink extends React.Component {
   render () {
     const { link } = this.props
@@ -25,6 +26,7 @@ class ShareLink extends React.Component {
           </div>
 
           <div className={styles.address}>
+            <div className={styles.addressTitle}>{this.t('titles.copyLink')}</div>
             <div className={styles.addressText}>
               {link}
             </div>

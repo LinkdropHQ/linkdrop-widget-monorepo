@@ -52,6 +52,17 @@
     text-overflow: ellipsis;
     color: $dbBlue;
   }
+
+  .addressTitle {
+    background: #FFF;
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-block;
+    color: $textGreyColor;
+    padding: 0px 6px;
+  }
 }
 
 .controls {

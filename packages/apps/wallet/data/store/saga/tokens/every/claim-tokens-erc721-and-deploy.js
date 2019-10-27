@@ -13,7 +13,7 @@ const generator = function * ({ payload }) {
     const privateKey = yield select(generator.selectors.privateKey)
     const ens = getEns({ email, chainId })
 
-    const { success, txHash, errors } = yield sdk.claimAndCreateERC721({
+    const { success, txHash, errors } = yield sdk.claimAndCreateERC721P2P({
       weiAmount: weiAmount || '0',
       nftAddress,
       tokenId,
