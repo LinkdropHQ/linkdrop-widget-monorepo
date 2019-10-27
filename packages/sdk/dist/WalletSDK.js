@@ -66,7 +66,7 @@ function () {
         _ref$proxyFactory = _ref.proxyFactory,
         proxyFactory = _ref$proxyFactory === void 0 ? '0x12302fE9c02ff50939BaAaaf415fc226C078613C' : _ref$proxyFactory,
         _ref$linkdropModuleMa = _ref.linkdropModuleMasterCopy,
-        linkdropModuleMasterCopy = _ref$linkdropModuleMa === void 0 ? '0xB74bBDb7830b7845b73184958Cd00B341C6644C9' : _ref$linkdropModuleMa,
+        linkdropModuleMasterCopy = _ref$linkdropModuleMa === void 0 ? '0xFBaD822d2E2710EEe31DC3298a8866ebaaBd9328' : _ref$linkdropModuleMa,
         _ref$createAndAddModu = _ref.createAndAddModules,
         createAndAddModules = _ref$createAndAddModu === void 0 ? '0x1a56aE690ab0818aF5cA349b7D21f1d7e76a3d36' : _ref$createAndAddModu,
         _ref$multiSend = _ref.multiSend,

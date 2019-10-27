@@ -1,15 +1,14 @@
 import WalletSDK from '../../sdk/src'
 import { ethers } from 'ethers'
-const walletSDK = new WalletSDK({})
 
-;(async () => {
+import { PRIVATE_KEY, EMAIL } from '../config/config.json'
+
+const walletSDK = new WalletSDK({ apiHost: 'http://localhost:5050' })
+
+const main = async () => {
   const ensName = Math.random()
     .toString(36)
     .substring(2, 15)
-
-  const saltNonce = new Date().getTime().toString()
-  console.log('ensName: ', ensName)
-  console.log('saltNonce: ', saltNonce)
 
   const {
     safe,
@@ -19,10 +18,10 @@ const walletSDK = new WalletSDK({})
     waitForBalance,
     deploy
   } = await walletSDK.create({
-    owner: '0x9b5FEeE3B220eEdd3f678efa115d9a4D91D5cf0A',
+    privateKey: PRIVATE_KEY,
     ensName,
-    saltNonce,
-    gasPrice: ethers.utils.parseUnits('5', 'gwei').toString()
+    email: EMAIL,
+    gasPrice: '4000000000' // 4 gwei
   })
 
   console.log({
@@ -40,4 +39,6 @@ const walletSDK = new WalletSDK({})
   console.log('Deploying wallet...')
   const { txHash, success, errors } = await deploy()
   console.log({ txHash, success, errors })
-})()
+}
+
+main()

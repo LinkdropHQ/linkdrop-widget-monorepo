@@ -26,11 +26,11 @@ class Provider {
   }
 
   _addWidgetIcon () {
-    const iconEl = document.createElement('div')
-    iconEl.className = 'ld-widget-icon'
-    document.body.appendChild(iconEl)
+    this.iconEl = document.createElement('div')
+    this.iconEl.className = 'ld-widget-icon'
+    document.body.appendChild(this.iconEl)
 
-    iconEl.addEventListener('click', (event) => {
+    this.iconEl.addEventListener('click', (event) => {
       // Log the clicked element in the console
 
       // hide or show widget window
@@ -45,14 +45,14 @@ class Provider {
   }
 
   toggleOpenIconClass (widgetOpened) {
-    const container = this.widget.iframe.closest('body').querySelector('.ld-widget-icon')
+    //const container = this.widget.iframe.closest('body').querySelector('.ld-widget-icon')
     if (widgetOpened) {
-      return container.classList.add('ld-widget-icon-opened')
+      return this.iconEl.classList.add('ld-widget-icon-opened')
     }
-    return container.classList.remove('ld-widget-icon-opened')
+    return this.iconEl.classList.remove('ld-widget-icon-opened')
   }
 
-  _initWidget () {
+  _initWidget (opts) {
     return new Promise((resolve, reject) => {
       const onload = async () => {
         const container = document.createElement('div')
@@ -72,11 +72,11 @@ class Provider {
 
         iframe.src = iframeSrc
         iframe.className = 'ld-widget-iframe'
-
+        
         container.appendChild(iframe)
         document.body.appendChild(container)
         document.head.appendChild(style)
-
+        
         const connection = connectToChild({
           // The iframe to which a connection should be made
           iframe,
@@ -113,17 +113,21 @@ class Provider {
     }
   }
 
-  async _initWidgetFrame () {
-    this.widget = await this._initWidget()
+  async _initWidgetFrame (opts) {
+    this.widget = await this._initWidget(opts)
     this._addWidgetIcon()
+    if (opts.openWidget) {
+      this.showWidget()
+    }
   }
 
   _initProvider () {
     const engine = new ProviderEngine()
     let address
 
-    engine.enable = async () => {
-      await this._initWidgetFrame()
+    engine.enable = async (opts = null) => {
+      const openWidget = (opts && opts.open)
+      await this._initWidgetFrame({ openWidget })
       try {
         await this.widget.communication.connect()
       } catch (err) {

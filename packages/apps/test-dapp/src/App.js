@@ -1,6 +1,6 @@
 /* global zeroExInstant */
 import React from 'react'
-import WalletProvider from '@huskiapp/provider'
+import WalletProvider from '@linkdrop-widget/provider'
 import Web3 from 'web3'
 import qs from 'querystring'
 import './App.css'
@@ -67,8 +67,8 @@ class App extends React.Component {
 
   async _connect () {
     try {
-      await this.widget.provider.enable()
-
+      console.log("enabling...")
+      await this.widget.provider.enable({ open: true })
 
       this.web3 = new Web3(this.widget.provider)
 

@@ -33,6 +33,9 @@ contract RecoveryModule is Module {
         _;
     }
 
+    string public constant NAME = "Recovery Module";
+    string public constant VERSION = "0.1.0";
+
     /**
     * @dev Function to setup the initial storage of module
     * @param _guardians Array of guardians addresses

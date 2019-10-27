@@ -4,8 +4,10 @@ import express from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
 import safesRoutes from './src/routes/safes'
+import safesRoutesP2P from './src/routes/safesP2P'
 import transactionsRoutes from './src/routes/transactions'
 import accountsRoutes from './src/routes/accounts'
+import linkdropsRoutes from './src/routes/linkdrops'
 import config from './config/config'
 import cookieParser from 'cookie-parser'
 
@@ -50,8 +52,10 @@ connectDB()
 // Define routes
 app.get('/', (req, res) => res.send('Safe Relay Service'))
 app.use('/api/v1/safes', safesRoutes)
+app.use('/api/v1/safesP2P', safesRoutesP2P)
 app.use('/api/v1/safes/execute', transactionsRoutes)
 app.use('/api/v1/accounts', accountsRoutes)
+app.use('/api/v1/linkdrops', linkdropsRoutes)
 
 // Boom error handling middleware
 app.use((err, req, res, next) => {

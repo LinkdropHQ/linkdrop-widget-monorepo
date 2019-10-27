@@ -1,5 +1,5 @@
 {
-  "name": "@huskiapp/scripts",
+  "name": "@linkdrop-widget/scripts",
   "version": "0.0.1",
   "description": "Scripts",
   "main": "index.js",
@@ -7,7 +7,9 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "ethers": "^4.0.37"
+    "csvtojson": "^2.0.10",
+    "ethers": "^4.0.37",
+    "fast-csv": "^3.4.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.3",

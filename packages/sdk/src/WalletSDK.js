@@ -9,8 +9,11 @@ import { computeSafeAddress } from './computeSafeAddress'
 import { computeLinkdropModuleAddress } from './computeLinkdropModuleAddress'
 import { computeRecoveryModuleAddress } from './computeRecoveryModuleAddress'
 import { precomputeSafeAddressWithModules } from './precomputeSafeAddressWithModules'
+import { create } from './create'
 import { claimAndCreate } from './claimAndCreate'
 import { claimAndCreateERC721 } from './claimAndCreateERC721'
+import { claimAndCreateP2P } from './claimAndCreateP2P'
+import { claimAndCreateERC721P2P } from './claimAndCreateERC721P2P'
 import { signTx } from './signTx'
 import { executeTx } from './executeTx'
 import { getEnsOwner, getEnsAddress } from './ensUtils'
@@ -36,7 +39,7 @@ class WalletSDK {
     jsonRpcUrl,
     gnosisSafeMasterCopy = '0xB945Bd4b447aF21C5B55eF859242829FBDc0bF0A', // custom version with ERC721 receiving support
     proxyFactory = '0x12302fE9c02ff50939BaAaaf415fc226C078613C',
-    linkdropModuleMasterCopy = '0xB74bBDb7830b7845b73184958Cd00B341C6644C9',
+    linkdropModuleMasterCopy = '0xFBaD822d2E2710EEe31DC3298a8866ebaaBd9328',
     createAndAddModules = '0x1a56aE690ab0818aF5cA349b7D21f1d7e76a3d36',
     multiSend = '0xD4B7B161E4779629C2717385114Bf78D612aEa72',
     recoveryModuleMasterCopy = '0xD3FaECC16097E96986F868220185F6470A3F1eA9',
@@ -237,6 +240,36 @@ class WalletSDK {
   }
 
   /**
+   * @param {String} privateKey Owner's private key
+   * @param {String} ensName Ens name
+
+   * @param {String} gasPrice Gas price in wei
+   * @param {String} email Email
+
+   */
+  async create ({ privateKey, gasPrice, email, ensName }) {
+    return create({
+      privateKey,
+      ensName,
+      gasPrice,
+      email,
+      saltNonce: new ethers.Wallet(privateKey).address,
+      recoveryPeriod: this.recoveryPeriod,
+      guardian: this.guardian,
+      ensAddress: this.ensAddress,
+      ensDomain: this.ensDomain,
+      gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
+      proxyFactory: this.proxyFactory,
+      linkdropModuleMasterCopy: this.linkdropModuleMasterCopy,
+      recoveryModuleMasterCopy: this.recoveryModuleMasterCopy,
+      multiSend: this.multiSend,
+      createAndAddModules: this.createAndAddModules,
+      jsonRpcUrl: this.jsonRpcUrl,
+      apiHost: this.apiHost
+    })
+  }
+
+  /**
    * Function to create new safe and claim linkdrop
    * @param {String} weiAmount Wei amount
    * @param {String} tokenAddress Token address
@@ -246,7 +279,8 @@ class WalletSDK {
    * @param {String} linkdropMasterAddress Linkdrop master address
    * @param {String} linkdropSignerSignature Linkdrop signer signature
    * @param {String} campaignId Campaign id
-   * @param {String} owner Safe owner address
+   * @param {String} privateKey Safe owner's private key
+   * @param {String} gasPrice Gas price in wei
    * @param {String} ensName ENS name (e.g. 'alice')
    * @param {String} email Email
    * @returns {Object} {success, txHash,safe, linkdropModule, recoveryModule, errors}
@@ -260,9 +294,10 @@ class WalletSDK {
     linkdropMasterAddress,
     linkdropSignerSignature,
     campaignId,
-    owner,
     ensName,
-    email
+    email,
+    privateKey,
+    gasPrice
   }) {
     return claimAndCreate({
       weiAmount,
@@ -273,8 +308,7 @@ class WalletSDK {
       linkdropMasterAddress,
       linkdropSignerSignature,
       campaignId,
-      owner,
-      saltNonce: owner,
+      saltNonce: new ethers.Wallet(privateKey).address,
       ensName,
       gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
       proxyFactory: this.proxyFactory,
@@ -288,7 +322,9 @@ class WalletSDK {
       ensDomain: this.ensDomain,
       ensAddress: this.ensAddress,
       jsonRpcUrl: this.jsonRpcUrl,
-      email
+      email,
+      privateKey,
+      gasPrice
     })
   }
 
@@ -304,7 +340,7 @@ class WalletSDK {
    * @param {String} campaignId Campaign id
    * @param {String} gnosisSafeMasterCopy Deployed gnosis safe mastercopy address
    * @param {String} proxyFactory Deployed proxy factory address
-   * @param {String} owner Safe owner address
+   * @param {String} privateKey Safe owner's private key
    * @param {String} linkdropModuleMasterCopy Deployed linkdrop module master copy address
    * @param {String} createAndAddModules Deployed createAndAddModules library address
    * @param {String} multiSend Deployed multiSend library address
@@ -319,6 +355,7 @@ class WalletSDK {
    * @param {String} jsonRpcUrl JSON RPC URL
    * @param {String} linkdropFactory Deployed linkdrop factory address
    * @param {String} email Email
+   * @param {String} gasPrice Gas price in wei
    * @returns {Object} {success, txHash,safe, linkdropModule, recoveryModule, errors}
    */
   async claimAndCreateERC721 ({
@@ -330,9 +367,10 @@ class WalletSDK {
     linkdropMasterAddress,
     linkdropSignerSignature,
     campaignId,
-    owner,
+    privateKey,
     ensName,
-    email
+    email,
+    gasPrice
   }) {
     return claimAndCreateERC721({
       weiAmount,
@@ -343,8 +381,7 @@ class WalletSDK {
       linkdropMasterAddress,
       linkdropSignerSignature,
       campaignId,
-      owner,
-      saltNonce: owner,
+      saltNonce: new ethers.Wallet(privateKey).address,
       ensName,
       gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
       proxyFactory: this.proxyFactory,
@@ -359,7 +396,121 @@ class WalletSDK {
       ensAddress: this.ensAddress,
       jsonRpcUrl: this.jsonRpcUrl,
       linkdropFactory: this.linkdropFactory,
-      email
+      email,
+      privateKey,
+      gasPrice
+    })
+  }
+
+  /**
+   * Function to create new safe and claim linkdrop
+   * @param {String} weiAmount Wei amount
+   * @param {String} tokenAddress Token address
+   * @param {String} tokenAmount Token amount
+   * @param {String} expirationTime Link expiration timestamp
+   * @param {String} linkKey Ephemeral key assigned to link
+   * @param {String} linkdropModuleAddress Linkdrop module address
+   * @param {String} linkdropSignerSignature Linkdrop signer signature
+   * @param {String} privateKey Safe owner's private key
+   * @param {String} gasPrice Gas price in wei
+   * @param {String} ensName ENS name (e.g. 'alice')
+   * @param {String} email Email
+   * @returns {Object} {success, txHash,safe, linkdropModule, recoveryModule, errors}
+   */
+  async claimAndCreateP2P ({
+    weiAmount,
+    tokenAddress,
+    tokenAmount,
+    expirationTime,
+    linkKey,
+    linkdropModuleAddress,
+    linkdropSignerSignature,
+    ensName,
+    email,
+    privateKey,
+    gasPrice
+  }) {
+    return claimAndCreateP2P({
+      weiAmount,
+      tokenAddress,
+      tokenAmount,
+      expirationTime,
+      linkKey,
+      linkdropModuleAddress,
+      linkdropSignerSignature,
+      saltNonce: new ethers.Wallet(privateKey).address,
+      ensName,
+      gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
+      proxyFactory: this.proxyFactory,
+      linkdropModuleMasterCopy: this.linkdropModuleMasterCopy,
+      createAndAddModules: this.createAndAddModules,
+      multiSend: this.multiSend,
+      apiHost: this.apiHost,
+      guardian: this.guardian,
+      recoveryPeriod: this.recoveryPeriod,
+      recoveryModuleMasterCopy: this.recoveryModuleMasterCopy,
+      ensDomain: this.ensDomain,
+      ensAddress: this.ensAddress,
+      jsonRpcUrl: this.jsonRpcUrl,
+      email,
+      privateKey,
+      gasPrice
+    })
+  }
+
+  /**
+   * Function to create new safe and claim linkdrop
+   * @param {String} weiAmount Wei amount
+   * @param {String} nftAddress Nft address
+   * @param {String} tokenId Token id
+   * @param {String} expirationTime Link expiration timestamp
+   * @param {String} linkKey Ephemeral key assigned to link
+   * @param {String} linkdropModuleAddress Linkdrop module address
+   * @param {String} linkdropSignerSignature Linkdrop signer signature
+   * @param {String} privateKey Safe owner's private key
+   * @param {String} gasPrice Gas price in wei
+   * @param {String} ensName ENS name (e.g. 'alice')
+   * @param {String} email Email
+   * @returns {Object} {success, txHash,safe, linkdropModule, recoveryModule, errors}
+   */
+  async claimAndCreateERC721P2P ({
+    weiAmount,
+    nftAddress,
+    tokenId,
+    expirationTime,
+    linkKey,
+    linkdropModuleAddress,
+    linkdropSignerSignature,
+    ensName,
+    email,
+    privateKey,
+    gasPrice
+  }) {
+    return claimAndCreateERC721P2P({
+      weiAmount,
+      nftAddress,
+      tokenId,
+      expirationTime,
+      linkKey,
+      linkdropModuleAddress,
+      linkdropSignerSignature,
+      saltNonce: new ethers.Wallet(privateKey).address,
+      ensName,
+      gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
+      proxyFactory: this.proxyFactory,
+      linkdropModuleMasterCopy: this.linkdropModuleMasterCopy,
+      createAndAddModules: this.createAndAddModules,
+      multiSend: this.multiSend,
+      apiHost: this.apiHost,
+      guardian: this.guardian,
+      recoveryPeriod: this.recoveryPeriod,
+      recoveryModuleMasterCopy: this.recoveryModuleMasterCopy,
+      ensDomain: this.ensDomain,
+      ensAddress: this.ensAddress,
+      jsonRpcUrl: this.jsonRpcUrl,
+      email,
+      privateKey,
+      gasPrice
     })
   }
 
@@ -380,6 +531,36 @@ class WalletSDK {
       guardian: this.guardian,
       recoveryPeriod: this.recoveryPeriod,
       recoveryModuleMasterCopy: this.recoveryModuleMasterCopy
+    })
+  }
+
+  /**
+   * Precomputes linkdrop module address
+   * @param {String} owner Safe owner's address
+   * @param {String} safe  Safe wallet address
+   */
+  precomputeLinkdropModuleAddress (owner, safe) {
+    return computeLinkdropModuleAddress({
+      owner,
+      saltNonce: owner,
+      linkdropModuleMasterCopy: this.linkdropModuleMasterCopy,
+      deployer: safe
+    })
+  }
+
+  /**
+   * Precomputes recovery module address
+   * @param {String} owner Safe owner's address
+   * @param {String} safe  Safe wallet address
+   */
+  precomputeRecoveryModuleAddress (owner, safe) {
+    return computeRecoveryModuleAddress({
+      owner,
+      saltNonce: owner,
+      guardian: this.guardian,
+      recoveryPeriod: this.recoveryPeriod,
+      recoveryModuleMasterCopy: this.recoveryModuleMasterCopy,
+      deployer: safe
     })
   }
 

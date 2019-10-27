@@ -4,7 +4,7 @@ import { ethers } from 'ethers'
 import { signTx } from './signTx'
 import GnosisSafe from '@gnosis.pm/safe-contracts/build/contracts/GnosisSafe'
 import { estimateGasCosts } from './estimateTxGas'
-import Web3 from 'web3'
+import { encodeParams } from './utils'
 
 const getGasSpectrum = async ({
   jsonRpcUrl,
@@ -17,10 +17,10 @@ const getGasSpectrum = async ({
   gasToken,
   refundReceiver
 }) => {
-  const web3 = new Web3(jsonRpcUrl)
-  const gnosisSafe = new web3.eth.Contract(GnosisSafe.abi, safe)
-  const nonce = await gnosisSafe.methods.nonce().call()
-  
+  const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
+  const gnosisSafe = new ethers.Contract(safe, GnosisSafe.abi, provider)
+  const nonce = (await gnosisSafe.nonce()).toString()
+
   const gasSpectrum = await estimateGasCosts({
     jsonRpcUrl,
     safe,
@@ -34,7 +34,6 @@ const getGasSpectrum = async ({
   })
 
   for (let i = 0; i < gasSpectrum.length; i++) {
-    
     gasSpectrum[i].signature = await signTx({
       safe,
       privateKey,
@@ -50,27 +49,30 @@ const getGasSpectrum = async ({
       nonce
     })
 
-    // Estimate gas of paying transaction
-    const estimate = await gnosisSafe.methods
-      .execTransaction(
-        to,
-        value,
-        data,
-        operation,
-        gasSpectrum[i].safeTxGas,
-        gasSpectrum[i].baseGas,
-        gasSpectrum[i].gasPrice,
-        gasToken,
-        refundReceiver,
-        gasSpectrum[i].signature
-      )
-      .estimateGas({
-        from: new ethers.Wallet(privateKey).address,
-        gasPrice: gasSpectrum[i].gasPrice
-      })
+    const estimateData = encodeParams(GnosisSafe.abi, 'execTransaction', [
+      to,
+      value,
+      data,
+      operation,
+      gasSpectrum[i].safeTxGas,
+      gasSpectrum[i].baseGas,
+      gasSpectrum[i].gasPrice,
+      gasToken,
+      refundReceiver,
+      gasSpectrum[i].signature
+    ])
+
+    const tx = {
+      from: new ethers.Wallet(privateKey).address,
+      to: safe,
+      data: estimateData,
+      gasPrice: gasSpectrum[i].gasPrice
+    }
+
+    const estimate = await provider.estimateGas(tx)
 
     // Add the txGasEstimate and an additional 10k to the estimate to ensure that there is enough gas for the safe transaction
-    gasSpectrum[i].gasLimit = estimate + gasSpectrum[i].safeTxGas + 100000
+    gasSpectrum[i].gasLimit = +estimate + gasSpectrum[i].safeTxGas + 100000
   }
   return gasSpectrum
 }
@@ -113,7 +115,7 @@ export const executeTx = async ({
   assert.string(data, 'Data is required')
   assert.string(gasToken, 'Gas token is required')
   assert.string(refundReceiver, 'Refund receiver address is required')
-  
+
   const gasSpectrum = await getGasSpectrum({
     jsonRpcUrl,
     safe,

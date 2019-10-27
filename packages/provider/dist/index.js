@@ -40,7 +40,7 @@ function () {
     (0, _classCallCheck2["default"])(this, Provider);
     this.network = opts.network || 'mainnet';
     this.rpcUrl = opts.rpcUrl || "https://".concat(this.network, ".infura.io/v3/d4d1a2b933e048e28fb6fe1abe3e813a");
-    this.widgetUrl = opts.widgetUrl || "https://".concat(this.network, "-widget.linkdrop.io"); // 'http://localhost:9002'
+    this.widgetUrl = opts.widgetUrl || "https://".concat(this.network, "-widget.linkdrop.io");
 
     if (!opts.network) {
       throw new Error('network should be provided');
@@ -58,10 +58,10 @@ function () {
     value: function _addWidgetIcon() {
       var _this = this;
 
-      var iconEl = document.createElement('div');
-      iconEl.className = 'ld-widget-icon';
-      document.body.appendChild(iconEl);
-      iconEl.addEventListener('click', function (event) {
+      this.iconEl = document.createElement('div');
+      this.iconEl.className = 'ld-widget-icon';
+      document.body.appendChild(this.iconEl);
+      this.iconEl.addEventListener('click', function (event) {
         // Log the clicked element in the console
         // hide or show widget window
         _this._toggleWidget();
@@ -99,17 +99,16 @@ function () {
   }, {
     key: "toggleOpenIconClass",
     value: function toggleOpenIconClass(widgetOpened) {
-      var container = this.widget.iframe.closest('body').querySelector('.ld-widget-icon');
-
+      //const container = this.widget.iframe.closest('body').querySelector('.ld-widget-icon')
       if (widgetOpened) {
-        return container.classList.add('ld-widget-icon-opened');
+        return this.iconEl.classList.add('ld-widget-icon-opened');
       }
 
-      return container.classList.remove('ld-widget-icon-opened');
+      return this.iconEl.classList.remove('ld-widget-icon-opened');
     }
   }, {
     key: "_initWidget",
-    value: function _initWidget() {
+    value: function _initWidget(opts) {
       var _this2 = this;
 
       return new Promise(function (resolve, reject) {
@@ -200,20 +199,24 @@ function () {
     value: function () {
       var _initWidgetFrame2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee3() {
+      _regenerator["default"].mark(function _callee3(opts) {
         return _regenerator["default"].wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
                 _context3.next = 2;
-                return this._initWidget();
+                return this._initWidget(opts);
 
               case 2:
                 this.widget = _context3.sent;
 
                 this._addWidgetIcon();
 
-              case 4:
+                if (opts.openWidget) {
+                  this.showWidget();
+                }
+
+              case 5:
               case "end":
                 return _context3.stop();
             }
@@ -221,7 +224,7 @@ function () {
         }, _callee3, this);
       }));
 
-      function _initWidgetFrame() {
+      function _initWidgetFrame(_x) {
         return _initWidgetFrame2.apply(this, arguments);
       }
 
@@ -239,36 +242,43 @@ function () {
       (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
       _regenerator["default"].mark(function _callee4() {
+        var opts,
+            openWidget,
+            _args4 = arguments;
         return _regenerator["default"].wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
               case 0:
-                _context4.next = 2;
-                return _this3._initWidgetFrame();
+                opts = _args4.length > 0 && _args4[0] !== undefined ? _args4[0] : null;
+                openWidget = opts && opts.open;
+                _context4.next = 4;
+                return _this3._initWidgetFrame({
+                  openWidget: openWidget
+                });
 
-              case 2:
-                _context4.prev = 2;
-                _context4.next = 5;
+              case 4:
+                _context4.prev = 4;
+                _context4.next = 7;
                 return _this3.widget.communication.connect();
 
-              case 5:
-                _context4.next = 10;
+              case 7:
+                _context4.next = 12;
                 break;
 
-              case 7:
-                _context4.prev = 7;
-                _context4.t0 = _context4["catch"](2);
+              case 9:
+                _context4.prev = 9;
+                _context4.t0 = _context4["catch"](4);
                 throw _context4.t0;
 
-              case 10:
+              case 12:
               case "end":
                 return _context4.stop();
             }
           }
-        }, _callee4, null, [[2, 7]]);
+        }, _callee4, null, [[4, 9]]);
       }));
 
-      function _handleRequest2(_x) {
+      function _handleRequest2(_x2) {
         return _handleRequest.apply(this, arguments);
       }
 
@@ -394,7 +404,7 @@ function () {
           }, _callee5);
         }));
 
-        return function (_x2, _x3) {
+        return function (_x3, _x4) {
           return _ref3.apply(this, arguments);
         };
       }();
@@ -447,7 +457,7 @@ function () {
             }, _callee6, null, [[0, 7]]);
           }));
 
-          function getAccounts(_x4) {
+          function getAccounts(_x5) {
             return _getAccounts.apply(this, arguments);
           }
 
@@ -498,7 +508,7 @@ function () {
             }, _callee7, null, [[0, 10]]);
           }));
 
-          function processTransaction(_x5, _x6) {
+          function processTransaction(_x6, _x7) {
             return _processTransaction.apply(this, arguments);
           }
 
@@ -552,7 +562,7 @@ function () {
             }, _callee8, null, [[0, 8]]);
           }));
 
-          function handleRequest(_x7, _x8, _x9) {
+          function handleRequest(_x8, _x9, _x10) {
             return _handleRequest3.apply(this, arguments);
           }
 

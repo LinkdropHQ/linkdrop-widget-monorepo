@@ -1,9 +1,9 @@
 {
-  "name": "@huskiapp/monorepo",
+  "name": "@linkdrop-widget/monorepo",
   "version": "0.0.1",
   "private": true,
   "main": "index.js",
-  "repository": "https://github.com/LinkdropHQ/huskiapp.git",
+  "repository": "https://github.com/LinkdropHQ/linkdrop-widget-monorepo.git",
   "license": "MIT",
   "workspaces": {
     "packages": [
