@@ -535,6 +535,36 @@ class WalletSDK {
   }
 
   /**
+   * Precomputes linkdrop module address
+   * @param {String} owner Safe owner's address
+   * @param {String} safe  Safe wallet address
+   */
+  precomputeLinkdropModuleAddress (owner, safe) {
+    return computeLinkdropModuleAddress({
+      owner,
+      saltNonce: owner,
+      linkdropModuleMasterCopy: this.linkdropModuleMasterCopy,
+      deployer: safe
+    })
+  }
+
+  /**
+   * Precomputes recovery module address
+   * @param {String} owner Safe owner's address
+   * @param {String} safe  Safe wallet address
+   */
+  precomputeRecoveryModuleAddress (owner, safe) {
+    return computeRecoveryModuleAddress({
+      owner,
+      saltNonce: owner,
+      guardian: this.guardian,
+      recoveryPeriod: this.recoveryPeriod,
+      recoveryModuleMasterCopy: this.recoveryModuleMasterCopy,
+      deployer: safe
+    })
+  }
+
+  /**
    * Function to calculate the linkdrop module address based on given params
    * @param {String} owner Safe owner address
    * @param {String} saltNonce Random salt nonce

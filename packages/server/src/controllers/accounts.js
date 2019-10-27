@@ -57,7 +57,7 @@ export const register = wrapAsync(async (req, res, next) => {
 
     // register with snark art
     snarkArtService.register({ email, address: walletAddress })
-    
+
     await _setCookie(account._id, res)
     const sessionKey = await authService.getSessionKey(email)
 
@@ -99,7 +99,7 @@ export const login = wrapAsync(async (req, res, next) => {
 
     // register with snark art
     snarkArtService.register({ email, address: account.safe })
-    
+
     res.json({
       encryptedEncryptionKey: account.encryptedEncryptionKey,
       encryptedMnemonic: account.encryptedMnemonic,
