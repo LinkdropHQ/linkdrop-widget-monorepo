@@ -1,33 +1,24 @@
 import React from 'react'
 import { translate, actions } from 'decorators'
 import styles from './styles.module'
-import classNames from 'classnames'
-import variables from 'variables'
-import { Icons } from '@linkdrop/ui-kit'
+import { Loading } from '@linkdrop/ui-kit'
 import { AssetBalance, AssetBalanceERC721 } from 'components/common'
+import ShareLink from './share-link'
 
-@actions(({ user: { ens }, assets: { items } }) => ({
+@actions(({ user: { ens }, assets: { loading, items, link } }) => ({
   items,
-  ens
+  ens,
+  loading,
+  link
 }))
 @translate('pages.common.assetsList')
 class AssetsList extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      expanded: false
-    }
-  }
-
   render () {
-    const { items } = this.props
-    const { expanded } = this.state
+    const { items, link, loading } = this.props
     return <div className={styles.container}>
-      <div className={classNames(styles.assets, { [styles.assetsExpanded]: expanded })}>
-        <div className={styles.assetsHeader} onClick={_ => this.setState({ expanded: !expanded })}>
-          {this.t('titles.digitalAssets')}
-          <Icons.PolygonArrow fill={variables.dbBlue} />
-        </div>
+      {loading && <Loading withOverlay />}
+      {link && <ShareLink link={link} />}
+      <div className={styles.assets}>
         <div className={styles.assetsContent}>
           <div className={styles.assetsContentItems}>
             {this.renderAssets({ items })}
@@ -68,6 +59,7 @@ class AssetsList extends React.Component {
       symbol={symbol}
       icon={image}
       name={name}
+      onClick={_ => this.actions().assets.generateLink()}
       tokenId={tokenId}
     />)
 

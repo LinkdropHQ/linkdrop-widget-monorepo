@@ -97,7 +97,6 @@ class Wallet extends React.Component {
     const { items, loading, chainId } = this.props
     return <Page disableFlex dynamicHeader>
       <div className={styles.container}>
-        <AccountBalance items={items} />
         {this.renderLoader({ sendingAssets })}
         <AssetsList />
       </div>
