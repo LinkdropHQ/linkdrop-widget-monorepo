@@ -12,6 +12,8 @@ import { precomputeSafeAddressWithModules } from './precomputeSafeAddressWithMod
 import { create } from './create'
 import { claimAndCreate } from './claimAndCreate'
 import { claimAndCreateERC721 } from './claimAndCreateERC721'
+import { claimAndCreateP2P } from './claimAndCreateP2P'
+import { claimAndCreateERC721P2P } from './claimAndCreateERC721P2P'
 import { signTx } from './signTx'
 import { executeTx } from './executeTx'
 import { getEnsOwner, getEnsAddress } from './ensUtils'
@@ -394,6 +396,118 @@ class WalletSDK {
       ensAddress: this.ensAddress,
       jsonRpcUrl: this.jsonRpcUrl,
       linkdropFactory: this.linkdropFactory,
+      email,
+      privateKey,
+      gasPrice
+    })
+  }
+
+  /**
+   * Function to create new safe and claim linkdrop
+   * @param {String} weiAmount Wei amount
+   * @param {String} tokenAddress Token address
+   * @param {String} tokenAmount Token amount
+   * @param {String} expirationTime Link expiration timestamp
+   * @param {String} linkKey Ephemeral key assigned to link
+   * @param {String} linkdropModuleAddress Linkdrop module address
+   * @param {String} linkdropSignerSignature Linkdrop signer signature
+   * @param {String} privateKey Safe owner's private key
+   * @param {String} gasPrice Gas price in wei
+   * @param {String} ensName ENS name (e.g. 'alice')
+   * @param {String} email Email
+   * @returns {Object} {success, txHash,safe, linkdropModule, recoveryModule, errors}
+   */
+  async claimAndCreateP2P ({
+    weiAmount,
+    tokenAddress,
+    tokenAmount,
+    expirationTime,
+    linkKey,
+    linkdropModuleAddress,
+    linkdropSignerSignature,
+    ensName,
+    email,
+    privateKey,
+    gasPrice
+  }) {
+    return claimAndCreateP2P({
+      weiAmount,
+      tokenAddress,
+      tokenAmount,
+      expirationTime,
+      linkKey,
+      linkdropModuleAddress,
+      linkdropSignerSignature,
+      saltNonce: new ethers.Wallet(privateKey).address,
+      ensName,
+      gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
+      proxyFactory: this.proxyFactory,
+      linkdropModuleMasterCopy: this.linkdropModuleMasterCopy,
+      createAndAddModules: this.createAndAddModules,
+      multiSend: this.multiSend,
+      apiHost: this.apiHost,
+      guardian: this.guardian,
+      recoveryPeriod: this.recoveryPeriod,
+      recoveryModuleMasterCopy: this.recoveryModuleMasterCopy,
+      ensDomain: this.ensDomain,
+      ensAddress: this.ensAddress,
+      jsonRpcUrl: this.jsonRpcUrl,
+      email,
+      privateKey,
+      gasPrice
+    })
+  }
+
+  /**
+   * Function to create new safe and claim linkdrop
+   * @param {String} weiAmount Wei amount
+   * @param {String} nftAddress Nft address
+   * @param {String} tokenId Token id
+   * @param {String} expirationTime Link expiration timestamp
+   * @param {String} linkKey Ephemeral key assigned to link
+   * @param {String} linkdropModuleAddress Linkdrop module address
+   * @param {String} linkdropSignerSignature Linkdrop signer signature
+   * @param {String} privateKey Safe owner's private key
+   * @param {String} gasPrice Gas price in wei
+   * @param {String} ensName ENS name (e.g. 'alice')
+   * @param {String} email Email
+   * @returns {Object} {success, txHash,safe, linkdropModule, recoveryModule, errors}
+   */
+  async claimAndCreateERC721P2P ({
+    weiAmount,
+    nftAddress,
+    tokenId,
+    expirationTime,
+    linkKey,
+    linkdropModuleAddress,
+    linkdropSignerSignature,
+    ensName,
+    email,
+    privateKey,
+    gasPrice
+  }) {
+    return claimAndCreateERC721P2P({
+      weiAmount,
+      nftAddress,
+      tokenId,
+      expirationTime,
+      linkKey,
+      linkdropModuleAddress,
+      linkdropSignerSignature,
+      saltNonce: new ethers.Wallet(privateKey).address,
+      ensName,
+      gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
+      proxyFactory: this.proxyFactory,
+      linkdropModuleMasterCopy: this.linkdropModuleMasterCopy,
+      createAndAddModules: this.createAndAddModules,
+      multiSend: this.multiSend,
+      apiHost: this.apiHost,
+      guardian: this.guardian,
+      recoveryPeriod: this.recoveryPeriod,
+      recoveryModuleMasterCopy: this.recoveryModuleMasterCopy,
+      ensDomain: this.ensDomain,
+      ensAddress: this.ensAddress,
+      jsonRpcUrl: this.jsonRpcUrl,
       email,
       privateKey,
       gasPrice

@@ -11,10 +11,10 @@ const router = express.Router()
 router.post('/claim', linkdropsController.claim)
 
 /**
- * @route POST api/v1/linkdrops/claimERC721
+ * @route POST api/v1/linkdrops/claim-erc721
  * @desc Claim ETH and/or ERC721
  * @access Public
  */
-router.post('/claimERC721', linkdropsController.claimERC721)
+router.post('/claim-erc721', linkdropsController.claimERC721)
 
 export default router

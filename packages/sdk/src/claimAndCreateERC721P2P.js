@@ -6,9 +6,9 @@ import {
   encodeParams,
   encodeDataForCreateAndAddModules
 } from './utils'
-import { computeSafeAddress } from './computeSafeAddress'
 import { computeLinkdropModuleAddress } from './computeLinkdropModuleAddress'
 import { computeRecoveryModuleAddress } from './computeRecoveryModuleAddress'
+import { computeSafeAddress } from './computeSafeAddress'
 import { getEnsOwner } from './ensUtils'
 import { signTx } from './signTx'
 
@@ -21,13 +21,13 @@ import RecoveryModule from '../../contracts/build/RecoveryModule'
 const ADDRESS_ZERO = ethers.constants.AddressZero
 
 /**
- * Function to create new safe and claim linkdrop from module (p2p)
+ * Function to create new safe and claim linkdrop
  * @param {String} weiAmount Wei amount
- * @param {String} tokenAddress Token address
- * @param {String} tokenAmount Token amount
+ * @param {String} nftAddress Nft address
+ * @param {String} tokenId Token id
  * @param {String} expirationTime Link expiration timestamp
  * @param {String} linkKey Ephemeral key assigned to link
- * @param {String} linkdropModuleAddress Linkdrop module address
+ * @param {String} linkdropModulesAddress Linkdrop modules address
  * @param {String} linkdropSignerSignature Linkdrop signer signature
  * @param {String} gnosisSafeMasterCopy Deployed gnosis safe mastercopy address
  * @param {String} proxyFactory Deployed proxy factory address
@@ -46,15 +46,14 @@ const ADDRESS_ZERO = ethers.constants.AddressZero
  * @param {String} jsonRpcUrl JSON RPC URL
  * @returns {Object} {success, txHash, safe, errors}
  */
-export const claimAndCreateP2P = async ({
+export const claimAndCreateERC721P2P = async ({
   weiAmount,
-  tokenAddress,
-  tokenAmount,
+  nftAddress,
+  tokenId,
   expirationTime,
   linkKey,
   linkdropModuleAddress,
   linkdropSignerSignature,
-  //
   gnosisSafeMasterCopy,
   proxyFactory,
   privateKey,
@@ -74,11 +73,11 @@ export const claimAndCreateP2P = async ({
   email
 }) => {
   assert.string(weiAmount, 'Wei amount is required')
-  assert.string(tokenAddress, 'Token address is required')
-  assert.string(tokenAmount, 'Token amount is required')
+  assert.string(nftAddress, 'Nft address is required')
+  assert.string(tokenId, 'Token id is required')
   assert.string(expirationTime, 'Expiration time is required')
   assert.string(linkKey, 'Link key is required')
-  assert.string(linkdropModuleAddress, 'Linkdrop module address is required')
+  assert.string(linkdropModuleAddress, 'Linkdrop master address is requred')
   assert.string(
     linkdropSignerSignature,
     'Linkdrop signer signature is required'
@@ -117,6 +116,7 @@ export const claimAndCreateP2P = async ({
   )
   assert.string(jsonRpcUrl, 'Json rpc url is required')
   assert.string(apiHost, 'Api host is required')
+
   assert.string(email, 'Email is required')
 
   const ensOwner = await getEnsOwner({
@@ -264,7 +264,7 @@ export const claimAndCreateP2P = async ({
   )
 
   const response = await axios.post(
-    `${apiHost}/api/v1/safesP2P/claimAndCreateP2P`,
+    `${apiHost}/api/v1/safesP2P/claimAndCreateERC721P2P`,
     {
       owner,
       saltNonce,
@@ -273,8 +273,8 @@ export const claimAndCreateP2P = async ({
       recoveryPeriod,
       gasPrice,
       weiAmount,
-      tokenAddress,
-      tokenAmount,
+      nftAddress,
+      tokenId,
       expirationTime,
       linkId,
       linkdropModuleAddress,
