@@ -8,7 +8,6 @@ import {
 import { computeSafeAddress } from './computeSafeAddress'
 import { computeLinkdropModuleAddress } from './computeLinkdropModuleAddress'
 import { computeRecoveryModuleAddress } from './computeRecoveryModuleAddress'
-import { precomputeSafeAddressWithModules } from './precomputeSafeAddressWithModules'
 import { create } from './create'
 import { claimAndCreate } from './claimAndCreate'
 import { claimAndCreateERC721 } from './claimAndCreateERC721'
@@ -521,17 +520,14 @@ class WalletSDK {
    * @returns {String} safeAddress
    */
   precomputeAddress ({ owner }) {
-    return precomputeSafeAddressWithModules({
+    return computeSafeAddress({
       owner,
       saltNonce: owner,
       gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
-      proxyFactory: this.proxyFactory,
-      linkdropModuleMasterCopy: this.linkdropModuleMasterCopy,
-      createAndAddModules: this.createAndAddModules,
-      multiSend: this.multiSend,
-      guardian: this.guardian,
-      recoveryPeriod: this.recoveryPeriod,
-      recoveryModuleMasterCopy: this.recoveryModuleMasterCopy
+      deployer: this.proxyFactory,
+      to: ADDRESS_ZERO,
+      data: '0x',
+      paymentAmount: '0'
     })
   }
 
