@@ -52,7 +52,7 @@ export const generateLink = async ({
   })
 
   // Construct url
-  const url = `${claimHost}/#/claim?linkdropModuleAddress=${linkdropModuleAddress}&weiAmount=${weiAmount}&tokenAddress=${tokenAddress}&tokenAmount=${tokenAmount}&expirationTime=${expirationTime}&linkKey=${linkKey}&linkdropSignerSignature=${linkdropSignerSignature}`
+  const url = `${claimHost}/#/receive?linkdropModuleAddress=${linkdropModuleAddress}&weiAmount=${weiAmount}&tokenAddress=${tokenAddress}&tokenAmount=${tokenAmount}&expirationTime=${expirationTime}&linkKey=${linkKey}&linkdropSignerSignature=${linkdropSignerSignature}`
 
   return { url, linkId, linkKey, linkdropSignerSignature }
 }
@@ -108,7 +108,7 @@ export const generateLinkERC721 = async ({
   })
 
   // Construct url
-  const url = `${claimHost}/#/claim?linkdropModuleAddress=${linkdropModuleAddress}&weiAmount=${weiAmount}&nftAddress=${nftAddress}&tokenId=${tokenId}&expirationTime=${expirationTime}&linkKey=${linkKey}&linkdropSignerSignature=${linkdropSignerSignature}`
+  const url = `${claimHost}/#/receive?linkdropModuleAddress=${linkdropModuleAddress}&weiAmount=${weiAmount}&nftAddress=${nftAddress}&tokenId=${tokenId}&expirationTime=${expirationTime}&linkKey=${linkKey}&linkdropSignerSignature=${linkdropSignerSignature}`
 
   return { url, linkId, linkKey, linkdropSignerSignature }
 }
