@@ -38,6 +38,14 @@ class Assets {
   sendEth ({ to, amount, chainId }) {
     this.actions.dispatch({ type: '*ASSETS.SEND_ETH', payload: { to, amount, chainId } })
   }
+
+  clearLink () {
+    this.actions.dispatch({ type: 'ASSETS.SET_LINK', payload: { link: null } })
+  }
+
+  generateLink ({ nftAddress, tokenId }) {
+    this.actions.dispatch({ type: '*ASSETS.GENERATE_LINK', payload: { nftAddress, tokenId } })
+  }
 }
 
 export default Assets

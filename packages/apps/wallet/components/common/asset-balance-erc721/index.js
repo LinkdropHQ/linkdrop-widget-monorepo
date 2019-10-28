@@ -16,7 +16,6 @@ class AssetBalanceERC721 extends React.Component {
   render () {
     const { imageType } = this.state
     const { loading, symbol, icon, name, tokenId, onClick, className } = this.props
-    console.log({ icon })
     const finalImage = imageType === 'default'
       ? <img onError={_ => this.setState({ imageType: 'blank' })} className={styles.imageMain} src={icon} />
       : <Icons.Star width={30} height={30} />

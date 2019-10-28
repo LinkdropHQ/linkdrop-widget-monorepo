@@ -1,40 +1,33 @@
 import { put, select } from 'redux-saga/effects'
 import { ERRORS } from './data'
-import { ethers } from 'ethers'
 import { getEns } from 'helpers'
 
 const generator = function * ({ payload }) {
   try {
-    const { campaignId, nftAddress, tokenId, weiAmount, expirationTime, linkKey, linkdropSignerSignature, linkdropMasterAddress } = payload
+    const { nftAddress, tokenId, weiAmount, expirationTime, linkKey, linkdropSignerSignature, linkdropModuleAddress } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const sdk = yield select(generator.selectors.sdk)
     const email = yield select(generator.selectors.email)
     const chainId = yield select(generator.selectors.chainId)
     const privateKey = yield select(generator.selectors.privateKey)
-    const ens = getEns({ email, chainId })
 
-    const { success, txHash, errors } = yield sdk.claimAndCreateERC721({
+    // const owner = new ethers.Wallet(privateKey).address
+    // const safe = sdk.precomputeAddress({ owner })
+    // const linkdropModuleAddress = sdk.precomputeLinkdropModuleAddress(owner, safe)
+    const ens = getEns({ email, chainId })
+    const { success, txHash, errors } = yield sdk.claimAndCreateERC721P2P({
       weiAmount: weiAmount || '0',
       nftAddress,
       tokenId,
       expirationTime,
       linkKey,
       linkdropSignerSignature,
-      linkdropMasterAddress,
-      campaignId,
+      linkdropModuleAddress,
       email,
-      owner: new ethers.Wallet(privateKey).address,
+      privateKey,
       ensName: ens.slice(0, ens.indexOf('.')),
-      saltNonce: String(+(new Date())),
       gasPrice: '0'
     })
-
-    // {
-    //   owner: new ethers.Wallet(privateKey).address, +
-    //   ensName: динамически создать на основе имейла, +
-    //   saltNonce: String(+(new Date())),
-    //   gasPrice: "0",
-    // }
 
     if (success) {
       yield put({ type: 'TOKENS.SET_TRANSACTION_ID', payload: { transactionId: txHash } })

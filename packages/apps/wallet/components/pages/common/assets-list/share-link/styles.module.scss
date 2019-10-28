@@ -1,0 +1,79 @@
+@import "variables";
+
+.container {
+  position: fixed;
+  top: 0;
+  left: 0%;
+  height: 100vh;
+  padding-top: 30px;
+  width: 100vw;
+  background: #FFF;
+  z-index: 100;
+}
+
+.qr {
+  width: 100%;
+  height: 190px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid $greyStrokeMenuColor;
+  padding-bottom: 30px;
+
+  .qrItem {
+    padding: 5px 5px 2px 5px;
+    border: 1px solid $dbBlue;
+    border-radius: 5px;
+  }
+}
+
+.close {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  transform: rotate(180deg);
+}
+
+.address {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-bottom: 1px solid $greyStrokeMenuColor;
+
+  .addressText {
+    max-width: 330px;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 18px;
+    text-overflow: ellipsis;
+    color: $dbBlue;
+  }
+
+  .addressTitle {
+    background: #FFF;
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-block;
+    color: $textGreyColor;
+    padding: 0px 6px;
+  }
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 20px;
+}
+
+.button {
+  background-color: $dbBlue;
+  max-width: 300px;
+  min-width: 300px;
+}

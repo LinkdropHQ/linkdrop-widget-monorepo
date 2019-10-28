@@ -9,6 +9,7 @@ import DappHeader from './dapp-header'
 import Note from './note'
 import Input from './input'
 import Button from './button'
+import AvatarIcon from './avatar-icon'
 
 export {
   WalletHeader,
@@ -21,5 +22,6 @@ export {
   DappHeader,
   Note,
   Input,
-  Button
+  Button,
+  AvatarIcon
 }

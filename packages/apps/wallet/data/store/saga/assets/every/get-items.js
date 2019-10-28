@@ -1,5 +1,5 @@
 import { put, call, all, select } from 'redux-saga/effects'
-import { getItems, getAssetPrice, getItemsERC721 } from 'data/api/assets'
+import { getAssetPrice, getItemsERC721, getItemsTrustwallet } from 'data/api/assets'
 import { ethers, utils } from 'ethers'
 import { getERC721TokenData } from 'data/api/tokens'
 import TokenMock from 'contracts/TokenMock.json'
@@ -63,21 +63,31 @@ const generator = function * () {
   try {
     const chainId = yield select(generator.selectors.chainId)
     const wallet = yield select(generator.selectors.wallet)
+
     if (!wallet) {
       return
     }
     const networkName = defineNetworkName({ chainId })
 
-    const { status = 0, result = [], message } = yield call(getItems, { address: wallet, networkName })
+    // const { status = 0, result = [], message } = yield call(getItems, { address: wallet, networkName })
     const { assets: resultERC721 } = yield call(getItemsERC721, { address: wallet, networkName })
     const provider = yield ethers.getDefaultProvider(networkName)
     const ethBalance = yield provider.getBalance(wallet)
 
     let assetsStorage = []
-    if (status && status === '1' && message === 'OK') {
-      const erc20Assets = result.filter(asset => asset.type === 'ERC-20')
-      const erc20AssetsFormatted = yield all(erc20Assets.map(({ contractAddress: address, symbol, decimals }) => getTokenDataERC20({ address, symbol, decimals, chainId, provider, wallet })))
-      assetsStorage = assetsStorage.concat(erc20AssetsFormatted)
+    // that was for blockscout
+    // if (status && status === '1' && message === 'OK') {
+    //   const erc20Assets = result.filter(asset => asset.type === 'ERC-20')
+    //   const erc20AssetsFormatted = yield all(erc20Assets.map(({ contractAddress: address, symbol, decimals }) => getTokenDataERC20({ address, symbol, decimals, chainId, provider, wallet })))
+    //   assetsStorage = assetsStorage.concat(erc20AssetsFormatted)
+    // }
+
+    if (Number(chainId) === '1') {
+      const { total, docs } = yield call(getItemsTrustwallet, { wallet })
+      if (total && total > 0) {
+        const erc20AssetsFormatted = yield all(docs.map(({ contract: { address, symbol, decimals } }) => getTokenDataERC20({ address, symbol, decimals, chainId, provider, wallet })))
+        assetsStorage = assetsStorage.concat(erc20AssetsFormatted)
+      }
     }
 
     if (resultERC721 && resultERC721.length > 0) {

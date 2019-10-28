@@ -27,10 +27,10 @@ class Claim extends React.Component {
     const { contractAddress, chainId } = this.props
     const {
       linkKey,
-      linkdropMasterAddress,
+      linkdropModuleAddress,
       campaignId
     } = getHashVariables()
-    this.actions().tokens.checkIfClaimed({ linkKey, chainId, linkdropMasterAddress, campaignId })
+    this.actions().tokens.checkIfClaimed({ linkKey, chainId, linkdropModuleAddress, campaignId })
   }
 
   componentWillReceiveProps ({ readyToClaim, alreadyClaimed, chainId }) {

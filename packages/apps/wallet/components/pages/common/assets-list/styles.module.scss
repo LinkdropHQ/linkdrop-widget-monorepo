@@ -3,7 +3,7 @@
 .assets {
   min-height: 78px;
   position: relative;
-  max-width: 300px;
+  max-width: 335px;
   margin: 0 auto;
   
   .assetsContent {
@@ -16,32 +16,7 @@
   }
 
   .assetsContentItems {
-    display: none;
     margin-bottom: 50px;
-  }
-}
-
-.assetsHeader {
-  font-size: 18px;
-  color: $dbBlue;
-  user-select: none;
-  
-  svg {
-    transition: transform .3s;
-    margin-left: 5px;
-  }
-}
-
-.assetsExpanded {
-  .assetsContentItems {
-    display: block;
-  }
-
-  .assetsHeader {
-    margin-bottom: 25px;
-    svg {
-      transform: rotate(180deg);
-    }
   }
 }
 

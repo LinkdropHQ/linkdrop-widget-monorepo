@@ -3,20 +3,20 @@ class Tokens {
     this.actions = actions
   }
 
-  claimTokensERC20 ({ campaignId, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature }) {
-    this.actions.dispatch({ type: '*TOKENS.CLAIM_TOKENS', payload: { tokenType: 'erc20', campaignId, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature } })
+  claimTokensERC20 ({ campaignId, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropModuleAddress, linkdropSignerSignature }) {
+    this.actions.dispatch({ type: '*TOKENS.CLAIM_TOKENS', payload: { tokenType: 'erc20', campaignId, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropModuleAddress, linkdropSignerSignature } })
   }
 
-  claimTokensERC721 ({ campaignId, nftAddress, tokenId, weiAmount, expirationTime, linkKey, linkdropSignerSignature, linkdropMasterAddress }) {
-    this.actions.dispatch({ type: '*TOKENS.CLAIM_TOKENS', payload: { tokenType: 'erc721', campaignId, nftAddress, tokenId, weiAmount, linkdropMasterAddress, expirationTime, linkKey, linkdropSignerSignature } })
+  claimTokensERC721 ({ campaignId, nftAddress, tokenId, weiAmount, expirationTime, linkKey, linkdropSignerSignature, linkdropModuleAddress }) {
+    this.actions.dispatch({ type: '*TOKENS.CLAIM_TOKENS', payload: { tokenType: 'erc721', campaignId, nftAddress, tokenId, weiAmount, linkdropModuleAddress, expirationTime, linkKey, linkdropSignerSignature } })
   }
 
   checkTransactionStatus ({ transactionId, chainId, statusToAdd }) {
     this.actions.dispatch({ type: '*TOKENS.CHECK_TRANSACTION_STATUS', payload: { transactionId, chainId, statusToAdd } })
   }
 
-  checkIfClaimed ({ linkKey, chainId, linkdropMasterAddress, campaignId }) {
-    this.actions.dispatch({ type: '*TOKENS.CHECK_IF_CLAIMED', payload: { linkKey, chainId, linkdropMasterAddress, campaignId } })
+  checkIfClaimed ({ linkKey, chainId, linkdropModuleAddress, campaignId }) {
+    this.actions.dispatch({ type: '*TOKENS.CHECK_IF_CLAIMED', payload: { linkKey, chainId, linkdropModuleAddress, campaignId } })
   }
 
   setTransactionId ({ transactionId }) {
