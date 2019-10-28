@@ -19,6 +19,7 @@ import { executeTx } from './executeTx'
 import { getEnsOwner, getEnsAddress } from './ensUtils'
 import { generateLink, generateLinkERC721 } from './generateLink'
 import { claim, claimERC721 } from './claim'
+import { isClaimedLink } from './linkdropModuleUtils'
 import {
   register,
   login,
@@ -786,6 +787,19 @@ class WalletSDK {
    */
   async isDeployed (email) {
     return isDeployed({ email, apiHost: this.apiHost })
+  }
+
+  /**
+   * Return whether a link has already been claimed or not
+   * @param {String} linkdropModule Linkdrop module address
+   * @param {String} linkId Link id
+   */
+  async isClaimedLink ({ linkdropModule, linkId }) {
+    return isClaimedLink({
+      linkdropModule,
+      linkId,
+      jsonRpcUrl: this.jsonRpcUrl
+    })
   }
 }
 
