@@ -2,7 +2,7 @@ import { put, select } from 'redux-saga/effects'
 import { initializeWalletSdk, initializeSdk } from 'data/sdk'
 import { defineNetworkName } from '@linkdrop/commons'
 import config from 'app.config.js'
-import { getApiHost, getApiHostWallet } from 'helpers'
+import { getApiHost, getApiHostWallet, getParentHost } from 'helpers'
 
 const generator = function * ({ payload }) {
   try {
@@ -11,11 +11,15 @@ const generator = function * ({ payload }) {
     const { factory, infuraPk } = config
     const networkName = defineNetworkName({ chainId })
     const apiHost = getApiHostWallet({ chainId })
+    const claimHost = getParentHost()
     const sdk = initializeWalletSdk({
       chain: networkName,
       infuraPk: config.infuraPk,
-      apiHost
+      apiHost,
+      claimHost
     })
+
+    console.log({ sdk })
 
     if (linkdropMasterAddress) {
       // creating original sdk for claim

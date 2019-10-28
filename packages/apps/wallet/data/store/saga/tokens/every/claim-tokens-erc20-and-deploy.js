@@ -6,7 +6,7 @@ import { getEns } from 'helpers'
 
 const generator = function * ({ payload }) {
   try {
-    const { campaignId, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature } = payload
+    const { tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropModuleAddress, linkdropSignerSignature } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const sdk = yield select(generator.selectors.sdk)
     const chainId = yield select(generator.selectors.chainId)
@@ -19,11 +19,10 @@ const generator = function * ({ payload }) {
       tokenAmount: tokenAmount || '0',
       expirationTime,
       linkKey,
-      linkdropMasterAddress,
+      linkdropModuleAddress,
       linkdropSignerSignature,
-      campaignId,
       factoryAddress: factory,
-      owner: new ethers.Wallet(privateKey).address,
+      privateKey,
       ensName: getEns({ email, chainId }),
       saltNonce: String(+(new Date())),
       gasPrice: '0'

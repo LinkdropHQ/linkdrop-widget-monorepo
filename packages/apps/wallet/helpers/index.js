@@ -16,6 +16,7 @@ import getApiHost from './get-api-host'
 import getApiHostWallet from './get-api-host-wallet'
 import defineError from './define-error'
 import validateEmail from './validate-email'
+import getParentHost from './get-parent-host'
 
 export {
   getImages,
@@ -35,5 +36,6 @@ export {
   getApiHost,
   defineError,
   validateEmail,
-  getApiHostWallet
+  getApiHostWallet,
+  getParentHost
 }
