@@ -10,7 +10,7 @@ module.exports = shipit => {
 
   shipit.initConfig({
     default: {
-      repositoryUrl: 'git@github.com:LinkdropHQ/huskiapp.git',
+      repositoryUrl: 'git@github.com:LinkdropHQ/linkdrop-widget-monorepo.git',
       keepReleases: 3
     },
     rinkeby: {
