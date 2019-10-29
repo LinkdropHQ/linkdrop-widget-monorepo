@@ -107,6 +107,7 @@ class Wallet extends React.Component {
         <AssetsList />
         <Button
           inverted
+          className={styles.button}
           onClick={_ => this.setState({
             showInviteFriend: true
           })}

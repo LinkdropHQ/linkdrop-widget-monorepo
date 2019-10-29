@@ -22,7 +22,7 @@ class Page extends React.Component {
       const { privateKey } = this.props
       if (!privateKey) { return }
       this.actions().assets.getItems({ chainId })
-    }, 30000)
+    }, 10000)
   }
 
   componentWillReceiveProps ({ privateKey, chainId }) {
