@@ -48,6 +48,7 @@ const generator = function * ({ payload }) {
       icon: image,
       image,
       symbol: name,
+      tokenId,
       name,
       decimals: null,
       type: 'erc721',
