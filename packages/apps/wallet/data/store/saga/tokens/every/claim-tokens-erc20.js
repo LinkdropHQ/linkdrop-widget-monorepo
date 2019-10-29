@@ -1,24 +1,20 @@
 import { put, select } from 'redux-saga/effects'
 import { ERRORS } from './data'
-import { factory } from 'app.config.js'
 
 const generator = function * ({ payload }) {
   try {
-    const { campaignId, wallet, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature } = payload
+    const { wallet, tokenAddress, tokenAmount, weiAmount, linkdropModuleAddress, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const sdk = yield select(generator.selectors.sdk)
-
     const { success, errors, txHash } = yield sdk.claim({
       weiAmount: weiAmount || '0',
       tokenAddress,
       tokenAmount: tokenAmount || '0',
       expirationTime,
       linkKey,
-      linkdropMasterAddress,
+      linkdropModuleAddress,
       linkdropSignerSignature,
-      receiverAddress: wallet,
-      campaignId,
-      factoryAddress: factory
+      receiverAddress: wallet
     })
 
     if (success) {
@@ -42,5 +38,5 @@ const generator = function * ({ payload }) {
 
 export default generator
 generator.selectors = {
-  sdk: ({ user: { sdkOriginal: sdk } }) => sdk
+  sdk: ({ user: { sdk } }) => sdk
 }

@@ -1,6 +1,5 @@
 import { put, select } from 'redux-saga/effects'
 import { ERRORS } from './data'
-import { ethers } from 'ethers'
 import { factory } from 'app.config.js'
 import { getEns } from 'helpers'
 

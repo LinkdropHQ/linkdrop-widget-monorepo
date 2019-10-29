@@ -3,7 +3,7 @@ import { ERRORS } from './data'
 
 const generator = function * ({ payload }) {
   try {
-    const { wallet, campaignId, nftAddress, tokenId, weiAmount, expirationTime, linkKey, linkdropSignerSignature } = payload
+    const { wallet, nftAddress, tokenId, linkdropModuleAddress, weiAmount, expirationTime, linkKey, linkdropSignerSignature } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const sdk = yield select(generator.selectors.sdk)
     const { success, txHash, errors } = yield sdk.claimERC721({
@@ -12,9 +12,9 @@ const generator = function * ({ payload }) {
       tokenId,
       expirationTime,
       linkKey,
+      linkdropModuleAddress,
       linkdropSignerSignature,
-      receiverAddress: wallet,
-      campaignId
+      receiverAddress: wallet
     })
 
     if (success) {
@@ -37,5 +37,5 @@ const generator = function * ({ payload }) {
 
 export default generator
 generator.selectors = {
-  sdk: ({ user: { sdkOriginal: sdk } }) => sdk
+  sdk: ({ user: { sdk } }) => sdk
 }
