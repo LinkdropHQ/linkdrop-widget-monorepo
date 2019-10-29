@@ -73,8 +73,7 @@ const getTokenDataERC721 = function * ({ wallet, tokenId, name, address, chainId
 const generator = function * () {
   try {
     const chainId = yield select(generator.selectors.chainId)
-    // const wallet = yield select(generator.selectors.wallet)
-    const wallet = '0xb7ae70e6c04ce71d60e1a2f11d7bf75df8c8d2bd'
+    const wallet = yield select(generator.selectors.wallet)
 
     if (!wallet) {
       return
