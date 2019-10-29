@@ -9,6 +9,16 @@ const getImage = function * ({ metadataURL }) {
     const data = yield call(getERC721TokenData, { erc721URL: metadataURL })
     return data.image
   } catch (error) {
+    console.error(error)
+    return ''
+  }
+}
+
+const getMetadataURL = function * ({ tokenId, nftContract }) {
+  try {
+    return yield nftContract.tokenURI(tokenId)
+  } catch (err) {
+    console.error(err)
     return ''
   }
 }
@@ -22,7 +32,7 @@ const generator = function * ({ payload }) {
     const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
     const nftContract = yield new ethers.Contract(nftAddress, NFTMock.abi, provider)
-    const metadataURL = yield nftContract.tokenURI(tokenId)
+    const metadataURL = yield getMetadataURL({ tokenId, nftContract })
     const name = yield nftContract.symbol()
     const assetsToClaim = yield select(generator.selectors.itemsToClaim)
 
@@ -50,12 +60,6 @@ const generator = function * ({ payload }) {
     yield put({ type: 'USER.SET_STEP', payload: { step: 1 } })
   } catch (e) {
     console.error(e)
-    const chainId = yield select(generator.selectors.chainId)
-    const { nftAddress } = payload
-    const networkName = defineNetworkName({ chainId })
-    const provider = yield ethers.getDefaultProvider(networkName)
-    const nftContract = yield new ethers.Contract(nftAddress, NFTMock.abi, provider)
-    // const name = yield nftContract.name()
     yield put({ type: 'CONTRACT.SET_LOADING', payload: { loading: false } })
     yield put({ type: 'USER.SET_ERRORS', payload: { errors: ['LINK_INVALID'] } })
     yield put({ type: 'USER.SET_STEP', payload: { step: 1 } })
