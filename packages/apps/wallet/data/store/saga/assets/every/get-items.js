@@ -53,7 +53,7 @@ const getTokenDataERC20 = function * ({ address, symbol, decimals, chainId, prov
 const getTokenDataERC721 = function * ({ wallet, tokenId, name, address, chainId, provider }) {
   const nftContract = yield new ethers.Contract(address, NFTMock.abi, provider)
   const ownerOfToken = yield nftContract.ownerOf(tokenId)
-  if (wallet !== ownerOfToken) { return }
+  if (!ownerOfToken || wallet.toUpperCase() !== ownerOfToken.toUpperCase()) { return }
   const metadataURL = yield getMetadataURL({ tokenId, nftContract })
   const symbol = yield nftContract.symbol()
   let image
@@ -73,7 +73,8 @@ const getTokenDataERC721 = function * ({ wallet, tokenId, name, address, chainId
 const generator = function * () {
   try {
     const chainId = yield select(generator.selectors.chainId)
-    const wallet = yield select(generator.selectors.wallet)
+    // const wallet = yield select(generator.selectors.wallet)
+    const wallet = '0xb7ae70e6c04ce71d60e1a2f11d7bf75df8c8d2bd'
 
     if (!wallet) {
       return
