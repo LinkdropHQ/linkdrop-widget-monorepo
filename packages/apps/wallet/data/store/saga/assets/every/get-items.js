@@ -16,6 +16,15 @@ const getImage = function * ({ metadataURL }) {
   }
 }
 
+const getMetadataURL = function * ({ tokenId, nftContract }) {
+  try {
+    return yield nftContract.tokenURI(tokenId)
+  } catch (err) {
+    console.error(err)
+    return ''
+  }
+}
+
 const getTokenDataERC20 = function * ({ address, symbol, decimals, chainId, provider, wallet }) {
   let assetPrice = 0
   if (Number(chainId) === 1) {
@@ -43,7 +52,7 @@ const getTokenDataERC20 = function * ({ address, symbol, decimals, chainId, prov
 
 const getTokenDataERC721 = function * ({ tokenId, name, address, chainId, provider }) {
   const nftContract = yield new ethers.Contract(address, NFTMock.abi, provider)
-  const metadataURL = yield nftContract.tokenURI(tokenId)
+  const metadataURL = yield getMetadataURL({ tokenId, nftContract })
   const symbol = yield nftContract.symbol()
   let image
   if (metadataURL !== '') {
