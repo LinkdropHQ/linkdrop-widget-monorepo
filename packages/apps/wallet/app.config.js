@@ -17,7 +17,8 @@
   AUTH_SCOPE_CONTACTS,
   AUTH_SCOPE_DRIVE,
   INFURA_PK,
-  DEFAULT_CHAIN_ID
+  DEFAULT_CHAIN_ID,
+  OPENSEA_API_KEY
 */
 
 let config
@@ -66,6 +67,8 @@ const apiHostWalletMainnet =
 const apiHostWalletGoerli =
   API_HOST_WALLET_GOERLI || String(config.apiHostWalletGoerli)
 
+const openseaApiKey = OPENSEA_API_KEY || String(config.openseaApiKey)
+
 module.exports = {
   claimHost,
   apiHostMainnet,
@@ -85,5 +88,6 @@ module.exports = {
   authScopeContacts,
   authScopeDrive,
   infuraPk,
+  openseaApiKey,
   defaultChainId
 }
