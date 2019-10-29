@@ -474,7 +474,7 @@ class SafeCreationServiceP2P {
           gasPrice > 0
             ? ethers.utils.parseUnits(gasPrice, 'wei')
             : ethers.utils.parseUnits('10', 'gwei'),
-        gasLimit: 4500000
+        gasLimit: 1000000
       })
 
       account = await accountsService.update({

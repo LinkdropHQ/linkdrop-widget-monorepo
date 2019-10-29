@@ -28,7 +28,7 @@ const main = async () => {
     linkKey,
     linkdropModuleAddress,
     linkdropSignerSignature
-  } = await getUrlParams('erc721P2P', 1)
+  } = await getUrlParams('erc721P2P', 4)
 
   console.log({
     weiAmount,
