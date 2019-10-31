@@ -18,7 +18,6 @@ const initialState = {
   readyToClaim: false,
   alreadyClaimed: false,
   sdk: null,
-  sdkOriginal: null,
   privateKey: null,
   // надо null
   sessionKeyStore,
@@ -45,7 +44,6 @@ const ACTIONS = {
   'USER.SET_READY_TO_CLAIM': reducers.setReadyToClaim,
   'USER.SET_ALREADY_CLAIMED': reducers.setAlreadyClaimed,
   'USER.SET_SDK': reducers.setSdk,
-  'USER.SET_SDK_ORIGINAL': reducers.setSdkOriginal,
   'USER.SET_PRIVATE_KEY': reducers.setPrivateKey,
   'USER.SET_USER_DATA': reducers.setUserData,
   'USER.TOGGLE_NOTE': reducers.toggleNote,

@@ -1,43 +1,18 @@
 import { put, call, all, select } from 'redux-saga/effects'
 import { getAssetPrice, getItemsERC721, getItemsTrustwallet } from 'data/api/assets'
 import { ethers, utils } from 'ethers'
-import { getERC721TokenData } from 'data/api/tokens'
 import TokenMock from 'contracts/TokenMock.json'
 import NFTMock from 'contracts/NFTMock.json'
 import { defineNetworkName } from '@linkdrop/commons'
 import { getImages } from 'helpers'
-
-const getImage = function * ({ metadataURL }) {
-  try {
-    const data = yield call(getERC721TokenData, { erc721URL: metadataURL })
-    return data.image
-  } catch (error) {
-    return ''
-  }
-}
-
-const getMetadataURL = function * ({ tokenId, nftContract }) {
-  try {
-    return yield nftContract.tokenURI(tokenId)
-  } catch (err) {
-    console.error(err)
-    return ''
-  }
-}
+import getAssetImage from './get-asset-image'
+import getAssetMetadataURL from './get-asset-metadata-url'
 
 const getTokenDataERC20 = function * ({ address, symbol, decimals, chainId, provider, wallet }) {
-  let assetPrice = 0
-  if (Number(chainId) === 1) {
-    assetPrice = yield call(getAssetPrice, { symbol })
-  }
-
+  const assetPrice = yield getAssetPrice({ symbol, chainId })
   const tokenContract = new ethers.Contract(address, TokenMock.abi, provider)
-
   const balance = yield tokenContract.balanceOf(wallet)
-  // currentAddress - кошелек пользователя
-  // account
   const amountFormatted = yield utils.formatUnits(balance, decimals)
-  // const assetsToClaim = select(generator.selectors.itemsToClaim)
   return {
     balanceFormatted: Number(amountFormatted),
     balance,
@@ -54,11 +29,11 @@ const getTokenDataERC721 = function * ({ wallet, tokenId, name, address, chainId
   const nftContract = yield new ethers.Contract(address, NFTMock.abi, provider)
   const ownerOfToken = yield nftContract.ownerOf(tokenId)
   if (!ownerOfToken || wallet.toUpperCase() !== ownerOfToken.toUpperCase()) { return }
-  const metadataURL = yield getMetadataURL({ tokenId, nftContract })
+  const metadataURL = yield getAssetMetadataURL({ tokenId, nftContract })
   const symbol = yield nftContract.symbol()
   let image
   if (metadataURL !== '') {
-    image = yield getImage({ metadataURL })
+    image = yield getAssetImage({ metadataURL })
   }
   return {
     tokenId,

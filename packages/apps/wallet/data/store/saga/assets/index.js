@@ -1,5 +1,4 @@
 import { takeEvery } from 'redux-saga/effects'
-
 import getTokenERC20Data from './every/get-token-erc20-data'
 import getTokenERC721Data from './every/get-token-erc721-data'
 import getPastEvents from './every/get-past-events'
@@ -10,7 +9,6 @@ import getItems from './every/get-items'
 import sendErc20 from './every/send-erc20'
 import sendEth from './every/send-eth'
 import sendErc721 from './every/send-erc721'
-
 import generateLink from './every/generate-link'
 
 export default function * () {

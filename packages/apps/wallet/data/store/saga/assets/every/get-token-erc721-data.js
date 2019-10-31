@@ -1,27 +1,10 @@
-import { put, call, select } from 'redux-saga/effects'
-import { getERC721TokenData } from 'data/api/tokens'
+import { put, select } from 'redux-saga/effects'
 import { ethers } from 'ethers'
 import NFTMock from 'contracts/NFTMock.json'
 import { defineNetworkName } from '@linkdrop/commons'
-
-const getImage = function * ({ metadataURL }) {
-  try {
-    const data = yield call(getERC721TokenData, { erc721URL: metadataURL })
-    return data.image
-  } catch (error) {
-    console.error(error)
-    return ''
-  }
-}
-
-const getMetadataURL = function * ({ tokenId, nftContract }) {
-  try {
-    return yield nftContract.tokenURI(tokenId)
-  } catch (err) {
-    console.error(err)
-    return ''
-  }
-}
+import getAssetImage from './get-asset-image'
+import getAssetMetadataURL from './get-asset-metadata-url'
+import getAssetSymbol from './get-asset-symbol'
 
 const generator = function * ({ payload }) {
   let image = +(new Date())
@@ -32,13 +15,11 @@ const generator = function * ({ payload }) {
     const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
     const nftContract = yield new ethers.Contract(nftAddress, NFTMock.abi, provider)
-    const metadataURL = yield getMetadataURL({ tokenId, nftContract })
-    const name = yield nftContract.symbol()
+    const metadataURL = yield getAssetMetadataURL({ tokenId, nftContract })
+    const symbol = yield getAssetSymbol({ contract: nftContract, tokenAddress: nftAddress })
     const assetsToClaim = yield select(generator.selectors.itemsToClaim)
-
     if (metadataURL !== '') {
-      // strip 'ipfs://' from hash
-      image = yield getImage({ metadataURL })
+      image = yield getAssetImage({ metadataURL })
     }
 
     const newAssetToClaim = {
@@ -47,9 +28,9 @@ const generator = function * ({ payload }) {
       tokenAddress: nftAddress,
       icon: image,
       image,
-      symbol: name,
+      symbol,
       tokenId,
-      name,
+      name: symbol,
       decimals: null,
       type: 'erc721',
       price: 0

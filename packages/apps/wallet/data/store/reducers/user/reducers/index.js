@@ -10,7 +10,6 @@ import setUserData from './set-user-data'
 import toggleNote from './toggle-note'
 import setChainId from './set-chain-id'
 import setEmail from './set-email'
-import setSdkOriginal from './set-sdk-original'
 import setWallet from './set-wallet'
 
 export default {
@@ -26,6 +25,5 @@ export default {
   toggleNote,
   setChainId,
   setEmail,
-  setSdkOriginal,
   setWallet
 }

@@ -1,14 +1,12 @@
 import { put, select } from 'redux-saga/effects'
-import { initializeWalletSdk, initializeSdk } from 'data/sdk'
+import { initializeWalletSdk } from 'data/sdk'
 import { defineNetworkName } from '@linkdrop/commons'
 import config from 'app.config.js'
-import { getApiHost, getApiHostWallet, getParentHost } from 'helpers'
+import { getApiHostWallet, getParentHost } from 'helpers'
 
 const generator = function * ({ payload }) {
   try {
-    const { linkdropMasterAddress } = payload
     const chainId = yield select(generator.selectors.chainId)
-    const { factory, infuraPk } = config
     const networkName = defineNetworkName({ chainId })
     const apiHost = getApiHostWallet({ chainId })
     const claimHost = getParentHost()
@@ -18,21 +16,6 @@ const generator = function * ({ payload }) {
       apiHost,
       claimHost
     })
-
-    console.log({ sdk })
-
-    if (linkdropMasterAddress) {
-      // creating original sdk for claim
-      const apiHost = getApiHost({ chainId })
-      const sdkOriginal = initializeSdk({
-        chain: networkName,
-        apiHost,
-        linkdropMasterAddress,
-        jsonRpcUrl: `https://${networkName}.infura.io/v3/${infuraPk}`,
-        factoryAddress: factory
-      })
-      yield put({ type: 'USER.SET_SDK_ORIGINAL', payload: { sdkOriginal } })
-    }
 
     yield put({ type: 'USER.SET_CHAIN_ID', payload: { chainId } })
     yield put({ type: 'USER.SET_SDK', payload: { sdk } })
