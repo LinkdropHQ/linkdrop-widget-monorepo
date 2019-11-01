@@ -2,7 +2,6 @@ import User from './user'
 import Routing from './routing'
 import Tokens from './tokens'
 import Assets from './assets'
-import Contracts from './contracts'
 import Contacts from './contacts'
 import Widget from './widget'
 import Authorization from './authorization'
@@ -16,7 +15,6 @@ class Actions {
     this.user = new User(this)
     this.tokens = new Tokens(this)
     this.assets = new Assets(this)
-    this.contracts = new Contracts(this)
     this.contacts = new Contacts(this)
     this.widget = new Widget(this)
     this.authorization = new Authorization(this)

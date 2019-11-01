@@ -5,46 +5,40 @@ import styles from './styles.module'
 import { translate, actions } from 'decorators'
 import classNames from 'classnames'
 
-@actions(({ user: { showNote, chainId, moonpayShow, privateKey } }) => ({ chainId, showNote, moonpayShow, privateKey }))
+@actions(({ user: { showNote, moonpayShow, privateKey } }) => ({ showNote, moonpayShow, privateKey }))
 @translate('pages.page')
 class Page extends React.Component {
   componentDidMount () {
-    const { chainId, privateKey } = this.props
+    const { privateKey } = this.props
 
     const interval = window.checkAssets
     if (interval) {
       interval && window.clearInterval(interval)
     }
     if (privateKey) {
-      this.actions().assets.getItems({ chainId })
+      this.actions().assets.getItems()
     }
     window.checkAssets = window.setInterval(_ => {
       const { privateKey } = this.props
       if (!privateKey) { return }
-      this.actions().assets.getItems({ chainId })
+      this.actions().assets.getItems()
     }, 10000)
   }
 
-  componentWillReceiveProps ({ privateKey, chainId }) {
+  componentWillReceiveProps ({ privateKey }) {
     const { privateKey: prevPrivateKey } = this.props
     if (privateKey && !prevPrivateKey) {
-      this.actions().assets.getItems({ chainId })
+      this.actions().assets.getItems()
     }
   }
 
   render () {
-    const { showNote, disableFlex, dynamicHeader, moonpayShow, children, hideHeader, disableProfile, note } = this.props
+    const { disableFlex, dynamicHeader, moonpayShow, children, hideHeader, disableProfile, note } = this.props
     return <div className={classNames(styles.container, {
       [styles.hideHeader]: hideHeader
     })}
     >
       {this.renderHeader({ hideHeader, dynamicHeader, disableProfile })}
-      {false && note && showNote && <div className={styles.note}>
-        <Note
-          title={note}
-          onClose={_ => this.actions().user.toggleNote({ showNote: false })}
-        />
-      </div>}
       <div
         className={classNames(styles.main, {
           [styles.disableFlex]: disableFlex

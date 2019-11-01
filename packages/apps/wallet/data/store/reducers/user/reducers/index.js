@@ -7,7 +7,6 @@ import setAlreadyClaimed from './set-already-claimed'
 import setSdk from './set-sdk'
 import setPrivateKey from './set-private-key'
 import setUserData from './set-user-data'
-import toggleNote from './toggle-note'
 import setChainId from './set-chain-id'
 import setEmail from './set-email'
 import setWallet from './set-wallet'
@@ -22,7 +21,6 @@ export default {
   setSdk,
   setPrivateKey,
   setUserData,
-  toggleNote,
   setChainId,
   setEmail,
   setWallet

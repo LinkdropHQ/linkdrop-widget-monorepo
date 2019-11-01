@@ -17,5 +17,5 @@ export default function * () {
   yield takeEvery('*AUTHORIZATION.SYNC_DATA_WITH_DRIVE', syncDataWithDrive)
   yield takeEvery('*AUTHORIZATION.GET_EMAIL_AND_AVATAR', getEmailAndAvatar)
   yield takeEvery('*AUTHORIZATION.SIGN_IN_WITH_GOOGLE', signInWithGoogle)
-  yield takeEvery('AUTHORIZATION.SIGN_OUT', signOut)
+  yield takeEvery('*AUTHORIZATION.SIGN_OUT', signOut)
 }

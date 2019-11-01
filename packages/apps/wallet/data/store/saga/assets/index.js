@@ -6,10 +6,10 @@ import getEthData from './every/get-eth-data'
 import subscribeToClaimEvent from './every/subscribe-to-claim-event'
 import saveClaimedAssets from './every/save-claimed-assets'
 import getItems from './every/get-items'
-import sendErc20 from './every/send-erc20'
+import sendERC20 from './every/send-erc20'
 import sendEth from './every/send-eth'
-import sendErc721 from './every/send-erc721'
-import generateLink from './every/generate-link'
+import sendERC721 from './every/send-erc721'
+import generateERC721Link from './every/generate-erc721-link'
 
 export default function * () {
   yield takeEvery('*ASSETS.GET_TOKEN_ERC20_DATA', getTokenERC20Data)
@@ -19,9 +19,8 @@ export default function * () {
   yield takeEvery('*ASSETS.SUBSCRIBE_TO_CLAIM_EVENT', subscribeToClaimEvent)
   yield takeEvery('*ASSETS.SAVE_CLAIMED_ASSETS', saveClaimedAssets)
   yield takeEvery('*ASSETS.GET_ITEMS', getItems)
-  yield takeEvery('*ASSETS.SEND_ERC20', sendErc20)
+  yield takeEvery('*ASSETS.SEND_ERC20', sendERC20)
   yield takeEvery('*ASSETS.SEND_ETH', sendEth)
-  yield takeEvery('*ASSETS.SEND_ERC721', sendErc721)
-
-  yield takeEvery('*ASSETS.GENERATE_LINK', generateLink)
+  yield takeEvery('*ASSETS.SEND_ERC721', sendERC721)
+  yield takeEvery('*ASSETS.GENERATE_ERC721_LINK', generateERC721Link)
 }
