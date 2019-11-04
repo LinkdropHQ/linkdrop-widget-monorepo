@@ -4,7 +4,6 @@ import styles from './styles.module'
 import { Input, Button, Icons } from '@linkdrop/ui-kit'
 import classNames from 'classnames'
 import variables from 'variables'
-import { prepareRedirectUrl } from 'helpers'
 
 @actions(({ user: { loading, contractAddress }, tokens: { transactionStatus, transactionId }, assets: { items } }) => ({ transactionStatus, transactionId, items, loading, contractAddress }))
 @translate('pages.send')
@@ -41,14 +40,6 @@ class Header extends React.Component {
     const { finished } = this.state
     return <div className={classNames(styles.container, { [styles.loading]: loading && !transactionId })}>
       <div className={styles.content}>
-        <div
-          className={styles.close} onClick={_ => {
-            if (loading && !transactionId) { return }
-            window.location.href = prepareRedirectUrl({ link: '/#/' })
-          }}
-        >
-          <Icons.Cross />
-        </div>
         <div className={styles.amount}>
           <Input
             type='number'
@@ -59,7 +50,8 @@ class Header extends React.Component {
             onChange={({ value }) => onChange({ amount: value })}
             className={classNames(styles.input, {
               [styles.empty]: amount === null || Number(amount) === 0,
-              [styles.errored]: error && error === this.t('errors.balance')
+              [styles.errored]: error && error === this.t('errors.balance'),
+              [styles.erc721]: tokenType === 'erc721'
             })}
           />
         </div>

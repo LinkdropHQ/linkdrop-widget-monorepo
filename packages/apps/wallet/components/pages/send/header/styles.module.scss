@@ -77,6 +77,11 @@
     }
   }
 
+  &.erc721 {
+    &::placeholder {
+      color: #000;
+    }
+  }
 
   &.errored {
     color: $redColor;

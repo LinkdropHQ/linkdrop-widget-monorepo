@@ -17,16 +17,16 @@ class AssetBalance extends React.Component {
 
   render () {
     const { iconType } = this.state
-    const { loading, symbol, amount, onClick, icon, type, tokenAddress, price, className, image } = this.props
+    const { loading, symbol, amount, onClick, icon, type, tokenId, tokenAddress, price, className, image } = this.props
     if (type === 'erc721') {
-      return this.renderTokenERC721({ symbol, icon: image, iconType, onClick, loading, className })
+      return this.renderTokenERC721({ tokenId, symbol, icon: image, iconType, onClick, loading, className })
     }
     return this.renderTokenERC20({ symbol, icon, iconType, onClick, loading, className, amount, price })
   }
 
-  renderTokenERC721 ({ symbol, icon, iconType, onClick, loading, className }) {
+  renderTokenERC721 ({ symbol, tokenId, icon, iconType, onClick, loading, className }) {
     const image = this.renderImage({ iconType, icon })
-    return this.renderBody({ image, onClick, loading, symbol, className, iconType })
+    return this.renderBody({ image, tokenId, onClick, loading, symbol, className, iconType })
   }
 
   renderTokenERC20 ({ symbol, icon, iconType, onClick, loading, className, amount, price }) {
@@ -41,7 +41,7 @@ class AssetBalance extends React.Component {
       : <Icons.Star width={30} height={30} />
   }
 
-  renderBody ({ image, onClick, loading, symbol, className, iconType, priceData }) {
+  renderBody ({ image, onClick, tokenId, loading, symbol, className, iconType, priceData }) {
     return <div
       onClick={_ => onClick && onClick()} className={classNames(styles.container, className, {
         [styles.loading]: loading,
@@ -54,7 +54,10 @@ class AssetBalance extends React.Component {
       >
         {image}
       </div>
-      <div className={styles.symbol}>{symbol}</div>
+      <div className={styles.symbol}>
+        {symbol}
+        {tokenId && <span className={styles.tokenId}>#{tokenId}</span>}
+      </div>
       {priceData}
     </div>
   }

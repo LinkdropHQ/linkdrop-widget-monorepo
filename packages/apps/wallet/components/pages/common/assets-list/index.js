@@ -17,7 +17,7 @@ class AssetsList extends React.Component {
     const { items, link, loading } = this.props
     return <div className={styles.container}>
       {loading && <Loading withOverlay />}
-      {link && <ShareLink link={link} />}
+      <ShareLink show={link} onClose={_ => this.actions().assets.clearLink()} />
       <div className={styles.assets}>
         <div className={styles.assetsContent}>
           <div className={styles.assetsContentItems}>

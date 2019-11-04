@@ -2,6 +2,7 @@ import React from 'react'
 import styles from './styles.module'
 import { translate, actions } from 'decorators'
 import { Icons } from '@linkdrop/ui-kit'
+import CloseArrow from 'components/common/icons/close-arrow'
 import classNames from 'classnames'
 import Menu from './menu'
 import Footer from './footer'
@@ -52,7 +53,7 @@ class WalletHeader extends React.Component {
               opened: !opened
             })}
           >
-            <Icons.CloseArrow />
+            <CloseArrow />
           </div>
         </div>
         <div className={styles.bodyMain}>

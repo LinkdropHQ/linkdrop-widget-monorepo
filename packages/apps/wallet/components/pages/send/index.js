@@ -1,16 +1,15 @@
 import React from 'react'
 import { translate, actions } from 'decorators'
-import { Page } from 'components/pages'
+import { PageExpandable } from 'components/pages'
 import styles from './styles.module'
 import Header from './header'
 import Assets from './assets'
 import Input from './input'
-import Contacts from './contacts'
-import LinkPay from './link-pay'
 import { defineEtherscanUrl } from '@linkdrop/commons'
 import { Scrollbars } from 'react-custom-scrollbars'
 import { ethers } from 'ethers'
 import classNames from 'classnames'
+import { prepareRedirectUrl } from 'helpers'
 
 @actions(({ tokens: { transactionId, transactionStatus }, user: { chainId, loading, contractAddress, errors }, assets: { items } }) => ({ errors, transactionId, transactionStatus, items, loading, contractAddress, chainId }))
 @translate('pages.send')
@@ -37,7 +36,7 @@ class Send extends React.Component {
         showTx: true
       }), 2000)
     }
-    if (items != null && (items || {}).length !== 0 && (prevItems || {}).length === 0) {
+    if (items != null && (items || []).length !== 0 && (prevItems || []).length === 0) {
       const currentAsset = items[0] || {}
       this.setState({
         currentAsset: currentAsset.tokenAddress,
@@ -72,9 +71,15 @@ class Send extends React.Component {
   }
 
   render () {
-    const { sendTo, currentAsset, amount, showTx, error, tokenType } = this.state
+    const { sendTo, currentAsset, amount, showTx, error, tokenType, tokenId } = this.state
     const { loading, transactionId, chainId, errors } = this.props
-    return <Page hideHeader>
+    return <PageExpandable
+      show
+      onClose={_ => {
+        if (loading && !transactionId) { return }
+        window.location.href = prepareRedirectUrl({ link: '/#/' })
+      }}
+    >
       <div className={styles.container}>
         <Header
           sendTo={sendTo}
@@ -97,7 +102,10 @@ class Send extends React.Component {
                   tokenType,
                   tokenId
                 })
-              }} currentAsset={currentAsset}
+              }}
+              currentAsset={currentAsset}
+              tokenId={tokenId}
+              tokenType={tokenType}
             />
             <Input
               onChange={({ value }) => this.setState({
@@ -111,9 +119,6 @@ class Send extends React.Component {
               title={this.t('titles.to')}
               placeholder={this.t('titles.toPlaceholder')}
             />
-            {false && <Input title={this.t('titles.for')} placeholder={this.t('titles.forPlaceholder')} />}
-            {false && <Contacts />}
-            {false && <LinkPay title={this.t('titles.payViaLink')} disabled={!amount || !Number(amount) || loading} />}
             {showTx && transactionId && <div
               className={styles.note}
               dangerouslySetInnerHTML={{
@@ -124,7 +129,7 @@ class Send extends React.Component {
           </div>
         </Scrollbars>
       </div>
-    </Page>
+    </PageExpandable>
   }
 
   renderErrors ({ error, errors }) {
@@ -166,12 +171,12 @@ class Send extends React.Component {
     const { sendTo, currentAsset, amount, tokenId, tokenType } = this.state
     const { decimals } = items.find(item => item.tokenAddress === currentAsset)
     if (currentAsset === ethers.constants.AddressZero) {
-      this.actions().assets.sendEth({ to: sendTo, amount })
+      this.actions().assets.sendETH({ to: sendTo, amount })
     } else {
       if (tokenType === 'erc721') {
-        this.actions().assets.sendErc721({ to: sendTo, tokenId, tokenAddress: currentAsset })
+        this.actions().assets.sendERC721({ to: sendTo, tokenId, tokenAddress: currentAsset })
       } else {
-        this.actions().assets.sendErc20({ to: sendTo, amount, tokenAddress: currentAsset, decimals })
+        this.actions().assets.sendERC20({ to: sendTo, amount, tokenAddress: currentAsset, decimals })
       }
     }
   }

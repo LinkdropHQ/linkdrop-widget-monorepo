@@ -1,8 +1,8 @@
 import React from 'react'
 import { actions, translate } from 'decorators'
-import { Icons, Button } from '@linkdrop/ui-kit'
+import { Button } from '@linkdrop/ui-kit'
 import styles from './styles.module'
-import { Page } from 'components/pages'
+import { PageExpandable } from 'components/pages'
 import classNames from 'classnames'
 import QRCode from 'qrcode.react'
 import { copyToClipboard, defineEtherscanUrl } from '@linkdrop/commons'
@@ -13,11 +13,13 @@ import { prepareRedirectUrl } from 'helpers'
 class Receive extends React.Component {
   render () {
     const { wallet, chainId } = this.props
-    return <Page hideHeader>
+    return <PageExpandable
+      show
+      onClose={_ => {
+        window.location.href = prepareRedirectUrl({ link: '/#/' })
+      }}
+    >
       <div className={classNames(styles.container)}>
-        <div className={styles.close} onClick={_ => { window.location.href = prepareRedirectUrl({ link: '/#/' }) }}>
-          <Icons.Cross />
-        </div>
         <div className={styles.content}>
           <div className={styles.qr}>
             {wallet && <div className={styles.qrItem}>
@@ -42,7 +44,7 @@ class Receive extends React.Component {
           </div>}
         </div>
       </div>
-    </Page>
+    </PageExpandable>
   }
 }
 

@@ -1,5 +1,6 @@
 import NotFound from './not-found'
 import Page from './page'
+import PageExpandable from './page-expandable'
 import Claim from './claim'
 import Wallet from './wallet'
 import Confirm from './confirm'
@@ -21,5 +22,6 @@ export {
   Receive,
   Common,
   Widget,
-  BuyTokens
+  BuyTokens,
+  PageExpandable
 }

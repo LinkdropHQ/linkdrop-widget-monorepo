@@ -1,16 +1,5 @@
 @import "variables";
 
-.container {
-  position: fixed;
-  top: 0;
-  left: 0%;
-  height: 100vh;
-  padding-top: 30px;
-  width: 100vw;
-  background: #FFF;
-  z-index: 100;
-}
-
 .qr {
   width: 100%;
   height: 190px;
@@ -25,13 +14,6 @@
     border: 1px solid $dbBlue;
     border-radius: 5px;
   }
-}
-
-.close {
-  position: absolute;
-  top: 30px;
-  left: 30px;
-  transform: rotate(180deg);
 }
 
 .address {
@@ -63,6 +45,11 @@
     color: $textGreyColor;
     padding: 0px 6px;
   }
+}
+
+.content {
+  width: 100%;
+  padding-top: 40px;
 }
 
 .controls {

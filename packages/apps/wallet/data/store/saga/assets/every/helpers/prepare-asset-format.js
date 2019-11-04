@@ -27,6 +27,7 @@ export default function ({
     image,
     symbol,
     decimals,
+    tokenId,
     type,
     price,
     name: symbol

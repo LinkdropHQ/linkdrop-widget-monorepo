@@ -23,7 +23,7 @@
   .bodyHeaderCloseIcon, .bodyHeaderQrIcon {
     position: absolute;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(-50%) rotate(180deg);
     cursor: pointer;
   }
 
