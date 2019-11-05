@@ -56,7 +56,7 @@ const generator = function * () {
     const provider = yield ethers.getDefaultProvider(networkName)
     const ethBalance = yield provider.getBalance(wallet)
     let assetsStorage = []
-    if (Number(chainId) === '1') {
+    if (Number(chainId) === 1) {
       const { total, docs } = yield call(getItemsTrustwallet, { wallet })
       if (total && total > 0) {
         const erc20AssetsFormatted = yield all(docs.map(({ contract: { address, symbol, decimals } }) => getTokenDataERC20({ address, symbol, decimals, chainId, provider, wallet })))
