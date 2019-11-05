@@ -1,39 +1,15 @@
 import React from 'react'
 import { Header } from '@linkdrop/ui-kit'
-import { WalletHeader, MoonpayWidget, Note } from 'components/common'
+import { WalletHeader, MoonpayWidget } from 'components/common'
 import styles from './styles.module'
 import { translate, actions } from 'decorators'
 import classNames from 'classnames'
 
-@actions(({ user: { showNote, moonpayShow, privateKey } }) => ({ showNote, moonpayShow, privateKey }))
+@actions(({ user: { moonpayShow } }) => ({ moonpayShow }))
 @translate('pages.page')
 class Page extends React.Component {
-  componentDidMount () {
-    const { privateKey } = this.props
-
-    const interval = window.checkAssets
-    if (interval) {
-      interval && window.clearInterval(interval)
-    }
-    if (privateKey) {
-      this.actions().assets.getItems()
-    }
-    window.checkAssets = window.setInterval(_ => {
-      const { privateKey } = this.props
-      if (!privateKey) { return }
-      this.actions().assets.getItems()
-    }, 10000)
-  }
-
-  componentWillReceiveProps ({ privateKey }) {
-    const { privateKey: prevPrivateKey } = this.props
-    if (privateKey && !prevPrivateKey) {
-      this.actions().assets.getItems()
-    }
-  }
-
   render () {
-    const { disableFlex, dynamicHeader, moonpayShow, children, hideHeader, disableProfile, note } = this.props
+    const { disableFlex, dynamicHeader, moonpayShow, children, hideHeader, disableProfile } = this.props
     return <div className={classNames(styles.container, {
       [styles.hideHeader]: hideHeader
     })}

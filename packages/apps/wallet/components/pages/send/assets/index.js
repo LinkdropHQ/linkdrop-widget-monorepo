@@ -55,12 +55,12 @@ class Assets extends React.Component {
 
   defineCurrentAsset ({ items, tokenType, tokenId, currentAsset }) {
     if (!currentAsset) {
-      return items[0]
+      return items[0] || {}
     }
     if (tokenType === 'erc721') {
-      return items.find(asset => asset.tokenId === tokenId && asset.tokenAddress === currentAsset)
+      return items.find(asset => asset.tokenId === tokenId && asset.tokenAddress === currentAsset) || {}
     }
-    return items.find(asset => asset.tokenAddress === currentAsset)
+    return items.find(asset => asset.tokenAddress === currentAsset) || {}
   }
 
   defineOtherAssets ({ items, tokenType, tokenId, currentAsset }) {

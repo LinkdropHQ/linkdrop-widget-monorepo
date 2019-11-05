@@ -3,6 +3,7 @@ import { put } from 'redux-saga/effects'
 const generator = function * ({ payload }) {
   try {
     const { linkId, contract } = payload
+    console.log({ linkId, contract })
     const eventPromise = new Promise((resolve, reject) => {
       const filter = contract.filters.Claimed(linkId)
       contract.on(filter, (linkId, ethAmount, token, tokenAmount, receiver, event) => {

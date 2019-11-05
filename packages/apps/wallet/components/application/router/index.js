@@ -1,31 +1,50 @@
 import React from 'react'
-import i18next from 'i18next'
 import { Route, Switch } from 'react-router-dom'
 import { Claim, NotFound, Wallet, Confirm, Send, Receive, BuyTokens } from 'components/pages'
 import './styles'
 import { getHashVariables } from '@linkdrop/commons'
-import config from 'app.config.js'
 
 import { actions } from 'decorators'
-@actions(({ user: { sdk, loading, loacale } }) => ({
+@actions(({ user: { sdk, privateKey, loading, loacale } }) => ({
   sdk,
   loading,
-  loacale
+  loacale,
+  privateKey
 }))
 class AppRouter extends React.Component {
-  componentWillReceiveProps ({ locale }) {
-    const { locale: prevLocale } = this.props
-    if (locale === prevLocale) { return }
-    i18next.changeLanguage(locale)
+  componentWillReceiveProps ({ privateKey }) {
+    const { privateKey: prevPrivateKey } = this.props
+    if (privateKey && !prevPrivateKey) {
+      this.actions().assets.getItems()
+    }
   }
 
   componentDidMount () {
-    const { sdk } = this.props
+    const { sdk, privateKey } = this.props
     if (!sdk) {
       const {
         linkdropMasterAddress
       } = getHashVariables()
       this.actions().user.createSdk({ linkdropMasterAddress })
+    }
+    const interval = window.checkAssets
+    if (interval) {
+      interval && window.clearInterval(interval)
+    }
+    if (privateKey) {
+      this.actions().assets.getItems()
+    }
+    window.checkAssets = window.setInterval(_ => {
+      const { privateKey } = this.props
+      if (!privateKey) { return }
+      this.actions().assets.getItems()
+    }, 10000)
+  }
+
+  componentWillUnmount () {
+    const interval = window.checkAssets
+    if (interval) {
+      interval && window.clearInterval(interval)
     }
   }
 
