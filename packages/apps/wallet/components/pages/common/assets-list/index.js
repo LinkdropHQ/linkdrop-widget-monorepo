@@ -16,8 +16,8 @@ class AssetsList extends React.Component {
   render () {
     const { items, link, loading } = this.props
     return <div className={styles.container}>
-      {loading && <Loading withOverlay />}
-      {link && <ShareLink link={link} />}
+      {items === null && <Loading withOverlay />}
+      <ShareLink show={link} onClose={_ => this.actions().assets.clearLink()} />
       <div className={styles.assets}>
         <div className={styles.assetsContent}>
           <div className={styles.assetsContentItems}>
@@ -59,7 +59,7 @@ class AssetsList extends React.Component {
       symbol={symbol}
       icon={image}
       name={name}
-      onClick={_ => this.actions().assets.generateLink({ nftAddress: address, tokenId })}
+      onClick={_ => this.actions().assets.generateERC721Link({ nftAddress: address, tokenId })}
       tokenId={tokenId}
     />)
 

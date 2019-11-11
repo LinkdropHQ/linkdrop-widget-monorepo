@@ -48,7 +48,7 @@ class Wallet extends React.Component {
           }), 3000)
           return
         }
-        this.statusCheck = window.setInterval(_ => this.actions().tokens.checkTransactionStatus({ transactionId, chainId, statusToAdd: 'sent' }), 3000)
+        this.statusCheck = window.setInterval(_ => this.actions().tokens.checkTransactionStatus({ statusToAdd: 'sent' }), 3000)
       })
     }
   }
@@ -57,7 +57,7 @@ class Wallet extends React.Component {
     const { transactionId: prevId, transactionStatus: prevStatus } = this.props
     const { sendingAssets } = this.state
     if (status != null && status === 'sent' && prevStatus === null) {
-      this.actions().assets.getItems({ chainId, wallet: contractAddress })
+      this.actions().assets.getItems()
     }
 
     if (status != null && status === 'failed' && prevStatus === null) {
@@ -86,7 +86,7 @@ class Wallet extends React.Component {
   componentWillUnmount () {
     const { items, chainId } = this.props
     if (items === null) {
-      this.actions().assets.getItems({ chainId })
+      this.actions().assets.getItems()
     }
     this.hideLoader && window.clearTimeout(this.hideLoader)
     this.statusCheck && window.clearInterval(this.statusCheck)

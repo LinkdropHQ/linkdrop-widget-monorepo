@@ -1,50 +1,20 @@
 import React from 'react'
 import { Header } from '@linkdrop/ui-kit'
-import { WalletHeader, MoonpayWidget, Note } from 'components/common'
+import { WalletHeader, MoonpayWidget } from 'components/common'
 import styles from './styles.module'
 import { translate, actions } from 'decorators'
 import classNames from 'classnames'
 
-@actions(({ user: { showNote, chainId, moonpayShow, privateKey } }) => ({ chainId, showNote, moonpayShow, privateKey }))
+@actions(({ user: { moonpayShow } }) => ({ moonpayShow }))
 @translate('pages.page')
 class Page extends React.Component {
-  componentDidMount () {
-    const { chainId, privateKey } = this.props
-
-    const interval = window.checkAssets
-    if (interval) {
-      interval && window.clearInterval(interval)
-    }
-    if (privateKey) {
-      this.actions().assets.getItems({ chainId })
-    }
-    window.checkAssets = window.setInterval(_ => {
-      const { privateKey } = this.props
-      if (!privateKey) { return }
-      this.actions().assets.getItems({ chainId })
-    }, 10000)
-  }
-
-  componentWillReceiveProps ({ privateKey, chainId }) {
-    const { privateKey: prevPrivateKey } = this.props
-    if (privateKey && !prevPrivateKey) {
-      this.actions().assets.getItems({ chainId })
-    }
-  }
-
   render () {
-    const { showNote, disableFlex, dynamicHeader, moonpayShow, children, hideHeader, disableProfile, note } = this.props
+    const { disableFlex, dynamicHeader, moonpayShow, children, hideHeader, disableProfile } = this.props
     return <div className={classNames(styles.container, {
       [styles.hideHeader]: hideHeader
     })}
     >
       {this.renderHeader({ hideHeader, dynamicHeader, disableProfile })}
-      {false && note && showNote && <div className={styles.note}>
-        <Note
-          title={note}
-          onClose={_ => this.actions().user.toggleNote({ showNote: false })}
-        />
-      </div>}
       <div
         className={classNames(styles.main, {
           [styles.disableFlex]: disableFlex

@@ -1,4 +1,3 @@
-/* global gapi */
 import { put } from 'redux-saga/effects'
 import gapiService from 'data/api/google-api'
 import syncDataWithDrive from './sync-data-with-drive'

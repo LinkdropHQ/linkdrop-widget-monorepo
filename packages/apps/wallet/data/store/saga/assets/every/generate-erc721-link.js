@@ -24,7 +24,7 @@ const generator = function * ({ payload }) {
     if (url) {
       yield put({ type: 'ASSETS.SET_LINK', payload: { link: url } })
     } else {
-      alert('come error occured with sdk method generateLinkERC721')
+      alert('some error occured with sdk method generateLinkERC721')
     }
 
     yield put({ type: 'ASSETS.SET_LOADING', payload: { loading: false } })
@@ -36,10 +36,6 @@ const generator = function * ({ payload }) {
 
 export default generator
 generator.selectors = {
-  contractAddress: ({ user: { contractAddress } }) => contractAddress,
   sdk: ({ user: { sdk } }) => sdk,
-  chainId: ({ user: { chainId } }) => chainId,
-  privateKey: ({ user: { privateKey } }) => privateKey,
-  wallet: ({ user: { wallet } }) => wallet,
-  items: ({ assets: { items } }) => items
+  privateKey: ({ user: { privateKey } }) => privateKey
 }

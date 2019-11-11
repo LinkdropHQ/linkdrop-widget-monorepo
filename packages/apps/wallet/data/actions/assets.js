@@ -3,48 +3,40 @@ class Assets {
     this.actions = actions
   }
 
-  getTokenERC20Data ({ tokenAddress, tokenAmount, weiAmount, chainId }) {
-    this.actions.dispatch({ type: '*ASSETS.GET_TOKEN_ERC20_DATA', payload: { tokenAddress, tokenAmount, weiAmount, chainId } })
+  getTokenERC20Data ({ tokenAddress, tokenAmount, weiAmount }) {
+    this.actions.dispatch({ type: '*ASSETS.GET_TOKEN_ERC20_DATA', payload: { tokenAddress, tokenAmount, weiAmount } })
   }
 
-  getEthData ({ weiAmount, chainId }) {
-    this.actions.dispatch({ type: '*ASSETS.GET_ETH_DATA', payload: { weiAmount, chainId } })
-  }
-
-  getTokenERC721Data ({ nftAddress, tokenId, chainId }) {
-    this.actions.dispatch({ type: '*ASSETS.GET_TOKEN_ERC721_DATA', payload: { nftAddress, tokenId, chainId } })
-  }
-
-  getPastEvents ({ linkKey, chainId, campaignId }) {
-    this.actions.dispatch({ type: '*ASSETS.GET_PAST_EVENTS', payload: { linkKey, chainId, campaignId } })
+  getTokenERC721Data ({ nftAddress, tokenId, weiAmount }) {
+    this.actions.dispatch({ type: '*ASSETS.GET_TOKEN_ERC721_DATA', payload: { nftAddress, tokenId, weiAmount } })
   }
 
   saveClaimedAssets () {
     this.actions.dispatch({ type: '*ASSETS.SAVE_CLAIMED_ASSETS' })
   }
 
-  getItems ({ wallet, chainId }) {
-    this.actions.dispatch({ type: '*ASSETS.GET_ITEMS', payload: { wallet, chainId } })
+  getItems () {
+    this.actions.dispatch({ type: '*ASSETS.GET_ITEMS' })
   }
 
-  sendErc20 ({ to, amount, chainId, tokenAddress, decimals }) {
-    this.actions.dispatch({ type: '*ASSETS.SEND_ERC20', payload: { to, amount, tokenAddress, decimals, chainId } })
+  sendERC20 ({ to, amount, tokenAddress, decimals }) {
+    this.actions.dispatch({ type: '*ASSETS.SEND_ERC20', payload: { to, amount, tokenAddress, decimals } })
   }
 
-  sendErc721 ({ to, chainId, tokenId, tokenAddress }) {
-    this.actions.dispatch({ type: '*ASSETS.SEND_ERC721', payload: { to, chainId, tokenId, tokenAddress } })
+  sendERC721 ({ to, tokenId, tokenAddress }) {
+    this.actions.dispatch({ type: '*ASSETS.SEND_ERC721', payload: { to, tokenId, tokenAddress } })
   }
 
-  sendEth ({ to, amount, chainId }) {
-    this.actions.dispatch({ type: '*ASSETS.SEND_ETH', payload: { to, amount, chainId } })
+  sendETH ({ to, amount }) {
+    this.actions.dispatch({ type: '*ASSETS.SEND_ETH', payload: { to, amount } })
   }
 
   clearLink () {
     this.actions.dispatch({ type: 'ASSETS.SET_LINK', payload: { link: null } })
   }
 
-  generateLink ({ nftAddress, tokenId }) {
-    this.actions.dispatch({ type: '*ASSETS.GENERATE_LINK', payload: { nftAddress, tokenId } })
+  generateERC721Link ({ nftAddress, tokenId }) {
+    this.actions.dispatch({ type: '*ASSETS.GENERATE_ERC721_LINK', payload: { nftAddress, tokenId } })
   }
 }
 

@@ -8,7 +8,7 @@ import ErrorPage from './error-page'
 import ClaimingFinishedPage from './claiming-finished-page'
 import { getHashVariables } from '@linkdrop/commons'
 
-@actions(({ user: { chainId, errors, step, loading: userLoading, readyToClaim, alreadyClaimed, contractAddress }, tokens: { transactionId }, assets: { loading, itemsToClaim } }) => ({
+@actions(({ user: { errors, step, loading: userLoading, readyToClaim, alreadyClaimed, contractAddress }, tokens: { transactionId }, assets: { loading, itemsToClaim } }) => ({
   userLoading,
   loading,
   itemsToClaim,
@@ -17,23 +17,20 @@ import { getHashVariables } from '@linkdrop/commons'
   errors,
   alreadyClaimed,
   readyToClaim,
-  chainId,
   contractAddress
 }))
 @platform()
 @translate('pages.claim')
 class Claim extends React.Component {
   componentDidMount () {
-    const { contractAddress, chainId } = this.props
     const {
       linkKey,
-      linkdropModuleAddress,
-      campaignId
+      linkdropModuleAddress
     } = getHashVariables()
-    this.actions().tokens.checkIfClaimed({ linkKey, chainId, linkdropModuleAddress, campaignId })
+    this.actions().tokens.checkIfClaimed({ linkKey, linkdropModuleAddress })
   }
 
-  componentWillReceiveProps ({ readyToClaim, alreadyClaimed, chainId }) {
+  componentWillReceiveProps ({ readyToClaim, alreadyClaimed }) {
     const { readyToClaim: prevReadyToClaim } = this.props
     if (
       (readyToClaim === true && prevReadyToClaim === true) ||
@@ -49,53 +46,34 @@ class Claim extends React.Component {
       nftAddress,
       tokenId
     } = getHashVariables()
-    // params in url:
-    // token - contract/token address,
-    // amount - tokens amount,
-    // expirationTime - expiration time of link,
-    // sender,
-    // linkdropSignerSignature,
-    // linkKey - private key for link,
-    // chainId - network id
-
-    // params needed for claim
-    // sender: sender key address, e.g. 0x1234...ff
-    // linkdropSignerSignature: ECDSA signature signed by sender (contained in claim link)
-    // receiverSignature: ECDSA signature signed by receiver using link key
-
-    // destination: destination address - can be received from web3-react context
-    // token: ERC20 token address, 0x000...000 for ether - can be received from url params
-    // tokenAmount: token amount in atomic values - can be received from url params
-    // expirationTime: link expiration time - can be received from url params
     if (Number(expirationTime) < (+(new Date()) / 1000)) {
-      // show error page if link expired
       return this.actions().user.setErrors({ errors: ['LINK_EXPIRED'] })
     }
-    this.getAssetsData({ nftAddress, tokenId, weiAmount, chainId, tokenAddress, tokenAmount })
+    this.getAssetsData({ nftAddress, tokenId, weiAmount, tokenAddress, tokenAmount })
   }
 
-  getAssetsData ({ nftAddress, tokenId, weiAmount, chainId, tokenAddress, tokenAmount }) {
+  getAssetsData ({ nftAddress, tokenId, weiAmount, tokenAddress, tokenAmount }) {
     if (nftAddress && tokenId) {
-      this.actions().assets.getTokenERC721Data({ nftAddress, tokenId, chainId })
-    } else {
-      this.actions().assets.getTokenERC20Data({ tokenAddress, tokenAmount, chainId })
+      return this.actions().assets.getTokenERC721Data({ nftAddress, tokenId, weiAmount })
     }
-    setTimeout(_ => this.actions().assets.getEthData({ weiAmount, chainId }), 3000)
+
+    if (tokenAddress) {
+      return this.actions().assets.getTokenERC20Data({ tokenAddress, tokenAmount, weiAmount })
+    }
   }
 
   render () {
-    const { step, alreadyClaimed } = this.props
+    const { step, itemsToClaim, userLoading, errors, alreadyClaimed, contractAddress, loading } = this.props
     return <Page dynamicHeader disableFlex>
-      {this.renderCurrentPage()}
+      {this.renderCurrentPage({ step, itemsToClaim, userLoading, errors, alreadyClaimed, contractAddress, loading })}
     </Page>
   }
 
-  renderCurrentPage () {
-    const { step, widgetShow, chainId, itemsToClaim, userLoading, errors, alreadyClaimed, contractAddress, loading } = this.props
+  renderCurrentPage ({ step, widgetShow, itemsToClaim, userLoading, errors, alreadyClaimed, contractAddress, loading }) {
     const {
       linkdropMasterAddress
     } = getHashVariables()
-    const commonData = { linkdropMasterAddress, chainId, itemsToClaim, loading: userLoading || loading, wallet: contractAddress }
+    const commonData = { linkdropMasterAddress, itemsToClaim, loading: userLoading || loading, wallet: contractAddress }
     if (errors && errors.length > 0) {
       // if some errors occured and can be found in redux store, then show error page
       return <ErrorPage error={errors[0]} />

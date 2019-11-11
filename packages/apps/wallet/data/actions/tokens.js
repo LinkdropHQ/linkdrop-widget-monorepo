@@ -11,12 +11,12 @@ class Tokens {
     this.actions.dispatch({ type: '*TOKENS.CLAIM_TOKENS', payload: { tokenType: 'erc721', campaignId, nftAddress, tokenId, weiAmount, linkdropModuleAddress, expirationTime, linkKey, linkdropSignerSignature } })
   }
 
-  checkTransactionStatus ({ transactionId, chainId, statusToAdd }) {
-    this.actions.dispatch({ type: '*TOKENS.CHECK_TRANSACTION_STATUS', payload: { transactionId, chainId, statusToAdd } })
+  checkTransactionStatus ({ statusToAdd }) {
+    this.actions.dispatch({ type: '*TOKENS.CHECK_TRANSACTION_STATUS', payload: { statusToAdd } })
   }
 
-  checkIfClaimed ({ linkKey, chainId, linkdropModuleAddress, campaignId }) {
-    this.actions.dispatch({ type: '*TOKENS.CHECK_IF_CLAIMED', payload: { linkKey, chainId, linkdropModuleAddress, campaignId } })
+  checkIfClaimed ({ linkKey, linkdropModuleAddress }) {
+    this.actions.dispatch({ type: '*TOKENS.CHECK_IF_CLAIMED', payload: { linkKey, linkdropModuleAddress } })
   }
 
   setTransactionId ({ transactionId }) {

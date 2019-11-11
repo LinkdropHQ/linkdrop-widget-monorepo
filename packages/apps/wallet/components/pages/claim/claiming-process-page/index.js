@@ -8,7 +8,7 @@ import styles from './styles.module'
 import { Alert, Icons } from '@linkdrop/ui-kit'
 import classNames from 'classnames'
 
-@actions(({ user: { chainId }, tokens: { transactionId, transactionStatus } }) => ({ transactionId, chainId, transactionStatus }))
+@actions(({ tokens: { transactionId, transactionStatus } }) => ({ transactionId, transactionStatus }))
 @translate('pages.claim')
 class ClaimingProcessPage extends React.Component {
   constructor (props) {
@@ -39,10 +39,10 @@ class ClaimingProcessPage extends React.Component {
     return this.actions().tokens.claimTokensERC20({ campaignId, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropModuleAddress, linkdropSignerSignature })
   }
 
-  componentWillReceiveProps ({ transactionId: id, transactionStatus: status, chainId }) {
+  componentWillReceiveProps ({ transactionId: id, transactionStatus: status }) {
     const { transactionId: prevId, transactionStatus: prevStatus } = this.props
     if (id != null && prevId === null) {
-      this.statusCheck = window.setInterval(_ => this.actions().tokens.checkTransactionStatus({ transactionId: id, chainId, statusToAdd: 'claimed' }), 3000)
+      this.statusCheck = window.setInterval(_ => this.actions().tokens.checkTransactionStatus({ statusToAdd: 'claimed' }), 3000)
     }
     if (status != null && status === 'claimed' && prevStatus === null) {
       this.statusCheck && window.clearInterval(this.statusCheck)
@@ -54,7 +54,7 @@ class ClaimingProcessPage extends React.Component {
   }
 
   render () {
-    const { itemsToClaim, transactionId, chainId } = this.props
+    const { itemsToClaim, transactionId } = this.props
     const { loading } = this.state
     const mainAsset = getCurrentAsset({ itemsToClaim })
     if (!mainAsset) { return null }
@@ -62,7 +62,7 @@ class ClaimingProcessPage extends React.Component {
     return <div className={commonStyles.container}>
       {this.renderPreview({ mainAsset, loading, itemsToClaim })}
       <div className={styles.loading}>
-        <TokensAmount chainId={chainId} transactionId={transactionId} claimingFinished={!loading} loading={loading} symbol={symbol} amount={balanceFormatted} />
+        <TokensAmount transactionId={transactionId} claimingFinished={!loading} loading={loading} symbol={symbol} amount={balanceFormatted} />
       </div>
     </div>
   }

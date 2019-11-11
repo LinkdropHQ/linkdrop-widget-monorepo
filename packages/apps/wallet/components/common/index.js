@@ -10,6 +10,7 @@ import Note from './note'
 import Input from './input'
 import Button from './button'
 import AvatarIcon from './avatar-icon'
+import Icons from './icons'
 
 export {
   WalletHeader,
@@ -23,5 +24,6 @@ export {
   Note,
   Input,
   Button,
-  AvatarIcon
+  AvatarIcon,
+  Icons
 }

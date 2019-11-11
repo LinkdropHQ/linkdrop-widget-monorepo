@@ -2,10 +2,8 @@ import { takeEvery } from 'redux-saga/effects'
 
 import claimTokensERC20 from './every/claim-tokens-erc20'
 import claimTokensERC721 from './every/claim-tokens-erc721'
-
 import claimTokensERC20AndDeploy from './every/claim-tokens-erc20-and-deploy'
 import claimTokensERC721AndDeploy from './every/claim-tokens-erc721-and-deploy'
-
 import checkTransactionStatus from './every/check-transaction-status'
 import checkIfClaimed from './every/check-if-claimed'
 import claimTokens from './every/claim-tokens'

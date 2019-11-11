@@ -18,22 +18,24 @@ class Assets extends React.Component {
   componentsWillReceiveProps ({ items }) {
     const { items: prevItems, onChange } = this.props
     if (items && items.length > 0 && (!prevItems || prevItems.length === 0)) {
-      onChange && onChange({ currentAsset: items[0].tokenAddress })
+      const currentAsset = items[0].tokenAddress
+      onChange && onChange({
+        currentAsset,
+        tokenId: currentAsset.tokenId
+      })
     }
   }
 
   render () {
     const { expanded } = this.state
-    const { items, currentAsset, onChange } = this.props
+    const { items, currentAsset, onChange, tokenId, tokenType } = this.props
     if (!items || items.length === 0) { return null }
-    const height = expanded ? `${(items.length * (40 + 15) + 30 - 15)}px` : '70px'
+    const height = expanded ? `${(items.length * 55 + 15)}px` : '70px'
     const style = { height }
-    items.sort((a, b) => {
-      if (b.tokenAddress === currentAsset) { return 1 }
-      if (a.tokenAddress === currentAsset) { return -1 }
-      return 0
-    })
-    const assetsList = this.createAssetsList({ items, onChange })
+    const mainAsset = this.defineCurrentAsset({ items, tokenType, tokenId, currentAsset })
+    const otherAssets = this.defineOtherAssets({ items, tokenType, tokenId, currentAsset })
+
+    const assetsList = this.createAssetsList({ items: [mainAsset].concat(otherAssets), onChange })
     return <div
       style={style}
       onClick={e => {
@@ -49,6 +51,26 @@ class Assets extends React.Component {
       </div>
       {assetsList}
     </div>
+  }
+
+  defineCurrentAsset ({ items, tokenType, tokenId, currentAsset }) {
+    if (!currentAsset) {
+      return items[0] || {}
+    }
+    if (tokenType === 'erc721') {
+      return items.find(asset => asset.tokenId === tokenId && asset.tokenAddress === currentAsset) || {}
+    }
+    return items.find(asset => asset.tokenAddress === currentAsset) || {}
+  }
+
+  defineOtherAssets ({ items, tokenType, tokenId, currentAsset }) {
+    if (!currentAsset) {
+      return items.filter((asset, idx) => idx !== 0)
+    }
+    if (tokenType === 'erc721') {
+      return items.filter(asset => !(asset.tokenId === tokenId && asset.tokenAddress === currentAsset))
+    }
+    return items.filter(asset => asset.tokenAddress !== currentAsset)
   }
 
   createAssetsList ({ items, onChange }) {
@@ -80,6 +102,7 @@ class Assets extends React.Component {
       amount={balanceFormatted}
       price={price}
       icon={icon}
+      tokenId={tokenId}
     />)
   }
 }
