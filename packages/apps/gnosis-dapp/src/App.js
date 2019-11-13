@@ -81,7 +81,7 @@ class App extends React.Component {
         connected: true
       })
 
-      this._openZrxInstantModal()
+      // this._openZrxInstantModal()
     } catch (error) {
       console.log(error)
     }
@@ -103,35 +103,25 @@ class App extends React.Component {
     )
   }
 
-  _openZrxInstantModal () {
-    console.log('on submit clicked')
-    zeroExInstant.render(
-      {
-        orderSource: 'https://api.radarrelay.com/0x/v2/',
-        provider: this.widget.provider
-      },
-      '.page-widget'
-    )
-  }
+  // _openZrxInstantModal () {
+  //   console.log('on submit clicked')
+  //   zeroExInstant.render(
+  //     {
+  //       orderSource: 'https://api.radarrelay.com/0x/v2/',
+  //       provider: this.widget.provider
+  //     },
+  //     '.page-widget'
+  //   )
+  // }
 
   _renderIfNotLoggedIn () {
     return (
       <div>
-        <h3 className={styles.title}>
-          {' '}
-          Connect
-          <br />
-          your account{' '}
-        </h3>
-        {/*
-        <input className='ens-input' placeholder='Your ENS, e.g. user.my-wallet.eth' type='text' name='ens' onChange={({ target }) => this.setState({ ensNameInput: target.value })} />
-        <br/> */}
-
         <Button
           className={styles.button}
           inverted
           onClick={() => {
-            this.widget.showWidget()
+            // this.widget.showWidget()
             // this._connect(this.state.ensNameInput)
           }}
         >
@@ -162,30 +152,8 @@ class App extends React.Component {
 
   _renderIfLoggedIn () {
     return (
-      <div>
-        <p>
-          Logged in{' '}
-          {/* as <span style={{fontWeight: 'bold'}}> {this.state.ensName} </span> */}
-          <br />
-          <small> {this.state.address} </small>
-        </p>
-        {this._renderButton()}
-        <p>
-          <a
-            style={{ fontSize: 10, color: 'blue', textDecoration: 'none' }}
-            onClick={() => {
-              this.setState({
-                ensNameInput: null,
-                ensName: null,
-                connected: false
-              })
-            }}
-            href='javascript:;'
-          >
-            {' '}
-            Logout{' '}
-          </a>
-        </p>
+      <div className={styles.connected}>
+        Connected to {this.state.address}
       </div>
     )
   }

@@ -1,5 +1,7 @@
 .button {
   width: 300px;
+  border-radius: 5px;
+  font-size: 20px;
 }
 
 .title {
@@ -7,4 +9,20 @@
   font-family: 'Inter-Regular';
   text-align: center;
   margin: 0 0 30px;
+}
+
+.connected {
+  height: 50px;
+  width: 300px!important;
+  display: block!important;
+  background: #DADADA;
+  color: #979797;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 20px;
+  line-height: 50px;
+  text-align: center;
+  padding: 0 35px;
+  border-radius: 5px;
 }
