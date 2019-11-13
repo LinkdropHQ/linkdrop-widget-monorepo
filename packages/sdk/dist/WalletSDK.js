@@ -27,11 +27,15 @@ var _computeLinkdropModuleAddress2 = require("./computeLinkdropModuleAddress");
 
 var _computeRecoveryModuleAddress2 = require("./computeRecoveryModuleAddress");
 
-var _precomputeSafeAddressWithModules = require("./precomputeSafeAddressWithModules");
+var _create3 = require("./create");
 
 var _claimAndCreate3 = require("./claimAndCreate");
 
 var _claimAndCreateERC3 = require("./claimAndCreateERC721");
+
+var _claimAndCreateP2P3 = require("./claimAndCreateP2P");
+
+var _claimAndCreateERC721P2P3 = require("./claimAndCreateERC721P2P");
 
 var _signTx2 = require("./signTx");
 
@@ -42,6 +46,8 @@ var _ensUtils = require("./ensUtils");
 var _generateLink3 = require("./generateLink");
 
 var _claim3 = require("./claim");
+
+var _linkdropModuleUtils = require("./linkdropModuleUtils");
 
 var _accounts = require("./accounts");
 
@@ -355,6 +361,59 @@ function () {
       return getEnsOwner;
     }()
     /**
+     * @param {String} privateKey Owner's private key
+     * @param {String} ensName Ens name
+      * @param {String} gasPrice Gas price in wei
+     * @param {String} email Email
+      */
+
+  }, {
+    key: "create",
+    value: function () {
+      var _create2 = (0, _asyncToGenerator2["default"])(
+      /*#__PURE__*/
+      _regenerator["default"].mark(function _callee4(_ref6) {
+        var privateKey, gasPrice, email, ensName;
+        return _regenerator["default"].wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                privateKey = _ref6.privateKey, gasPrice = _ref6.gasPrice, email = _ref6.email, ensName = _ref6.ensName;
+                return _context4.abrupt("return", (0, _create3.create)({
+                  privateKey: privateKey,
+                  ensName: ensName,
+                  gasPrice: gasPrice,
+                  email: email,
+                  saltNonce: new _ethers.ethers.Wallet(privateKey).address,
+                  recoveryPeriod: this.recoveryPeriod,
+                  guardian: this.guardian,
+                  ensAddress: this.ensAddress,
+                  ensDomain: this.ensDomain,
+                  gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
+                  proxyFactory: this.proxyFactory,
+                  linkdropModuleMasterCopy: this.linkdropModuleMasterCopy,
+                  recoveryModuleMasterCopy: this.recoveryModuleMasterCopy,
+                  multiSend: this.multiSend,
+                  createAndAddModules: this.createAndAddModules,
+                  jsonRpcUrl: this.jsonRpcUrl,
+                  apiHost: this.apiHost
+                }));
+
+              case 2:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, this);
+      }));
+
+      function create(_x7) {
+        return _create2.apply(this, arguments);
+      }
+
+      return create;
+    }()
+    /**
      * Function to create new safe and claim linkdrop
      * @param {String} weiAmount Wei amount
      * @param {String} tokenAddress Token address
@@ -364,7 +423,8 @@ function () {
      * @param {String} linkdropMasterAddress Linkdrop master address
      * @param {String} linkdropSignerSignature Linkdrop signer signature
      * @param {String} campaignId Campaign id
-     * @param {String} owner Safe owner address
+     * @param {String} privateKey Safe owner's private key
+     * @param {String} gasPrice Gas price in wei
      * @param {String} ensName ENS name (e.g. 'alice')
      * @param {String} email Email
      * @returns {Object} {success, txHash,safe, linkdropModule, recoveryModule, errors}
@@ -375,14 +435,14 @@ function () {
     value: function () {
       var _claimAndCreate2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee4(_ref6) {
-        var weiAmount, tokenAddress, tokenAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature, campaignId, owner, ensName, email;
-        return _regenerator["default"].wrap(function _callee4$(_context4) {
+      _regenerator["default"].mark(function _callee5(_ref7) {
+        var weiAmount, tokenAddress, tokenAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature, campaignId, ensName, email, privateKey, gasPrice;
+        return _regenerator["default"].wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
-                weiAmount = _ref6.weiAmount, tokenAddress = _ref6.tokenAddress, tokenAmount = _ref6.tokenAmount, expirationTime = _ref6.expirationTime, linkKey = _ref6.linkKey, linkdropMasterAddress = _ref6.linkdropMasterAddress, linkdropSignerSignature = _ref6.linkdropSignerSignature, campaignId = _ref6.campaignId, owner = _ref6.owner, ensName = _ref6.ensName, email = _ref6.email;
-                return _context4.abrupt("return", (0, _claimAndCreate3.claimAndCreate)({
+                weiAmount = _ref7.weiAmount, tokenAddress = _ref7.tokenAddress, tokenAmount = _ref7.tokenAmount, expirationTime = _ref7.expirationTime, linkKey = _ref7.linkKey, linkdropMasterAddress = _ref7.linkdropMasterAddress, linkdropSignerSignature = _ref7.linkdropSignerSignature, campaignId = _ref7.campaignId, ensName = _ref7.ensName, email = _ref7.email, privateKey = _ref7.privateKey, gasPrice = _ref7.gasPrice;
+                return _context5.abrupt("return", (0, _claimAndCreate3.claimAndCreate)({
                   weiAmount: weiAmount,
                   tokenAddress: tokenAddress,
                   tokenAmount: tokenAmount,
@@ -391,8 +451,7 @@ function () {
                   linkdropMasterAddress: linkdropMasterAddress,
                   linkdropSignerSignature: linkdropSignerSignature,
                   campaignId: campaignId,
-                  owner: owner,
-                  saltNonce: owner,
+                  saltNonce: new _ethers.ethers.Wallet(privateKey).address,
                   ensName: ensName,
                   gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
                   proxyFactory: this.proxyFactory,
@@ -406,18 +465,20 @@ function () {
                   ensDomain: this.ensDomain,
                   ensAddress: this.ensAddress,
                   jsonRpcUrl: this.jsonRpcUrl,
-                  email: email
+                  email: email,
+                  privateKey: privateKey,
+                  gasPrice: gasPrice
                 }));
 
               case 2:
               case "end":
-                return _context4.stop();
+                return _context5.stop();
             }
           }
-        }, _callee4, this);
+        }, _callee5, this);
       }));
 
-      function claimAndCreate(_x7) {
+      function claimAndCreate(_x8) {
         return _claimAndCreate2.apply(this, arguments);
       }
 
@@ -435,7 +496,7 @@ function () {
      * @param {String} campaignId Campaign id
      * @param {String} gnosisSafeMasterCopy Deployed gnosis safe mastercopy address
      * @param {String} proxyFactory Deployed proxy factory address
-     * @param {String} owner Safe owner address
+     * @param {String} privateKey Safe owner's private key
      * @param {String} linkdropModuleMasterCopy Deployed linkdrop module master copy address
      * @param {String} createAndAddModules Deployed createAndAddModules library address
      * @param {String} multiSend Deployed multiSend library address
@@ -450,6 +511,7 @@ function () {
      * @param {String} jsonRpcUrl JSON RPC URL
      * @param {String} linkdropFactory Deployed linkdrop factory address
      * @param {String} email Email
+     * @param {String} gasPrice Gas price in wei
      * @returns {Object} {success, txHash,safe, linkdropModule, recoveryModule, errors}
      */
 
@@ -458,14 +520,14 @@ function () {
     value: function () {
       var _claimAndCreateERC2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee5(_ref7) {
-        var weiAmount, nftAddress, tokenId, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature, campaignId, owner, ensName, email;
-        return _regenerator["default"].wrap(function _callee5$(_context5) {
+      _regenerator["default"].mark(function _callee6(_ref8) {
+        var weiAmount, nftAddress, tokenId, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature, campaignId, privateKey, ensName, email, gasPrice;
+        return _regenerator["default"].wrap(function _callee6$(_context6) {
           while (1) {
-            switch (_context5.prev = _context5.next) {
+            switch (_context6.prev = _context6.next) {
               case 0:
-                weiAmount = _ref7.weiAmount, nftAddress = _ref7.nftAddress, tokenId = _ref7.tokenId, expirationTime = _ref7.expirationTime, linkKey = _ref7.linkKey, linkdropMasterAddress = _ref7.linkdropMasterAddress, linkdropSignerSignature = _ref7.linkdropSignerSignature, campaignId = _ref7.campaignId, owner = _ref7.owner, ensName = _ref7.ensName, email = _ref7.email;
-                return _context5.abrupt("return", (0, _claimAndCreateERC3.claimAndCreateERC721)({
+                weiAmount = _ref8.weiAmount, nftAddress = _ref8.nftAddress, tokenId = _ref8.tokenId, expirationTime = _ref8.expirationTime, linkKey = _ref8.linkKey, linkdropMasterAddress = _ref8.linkdropMasterAddress, linkdropSignerSignature = _ref8.linkdropSignerSignature, campaignId = _ref8.campaignId, privateKey = _ref8.privateKey, ensName = _ref8.ensName, email = _ref8.email, gasPrice = _ref8.gasPrice;
+                return _context6.abrupt("return", (0, _claimAndCreateERC3.claimAndCreateERC721)({
                   weiAmount: weiAmount,
                   nftAddress: nftAddress,
                   tokenId: tokenId,
@@ -474,8 +536,7 @@ function () {
                   linkdropMasterAddress: linkdropMasterAddress,
                   linkdropSignerSignature: linkdropSignerSignature,
                   campaignId: campaignId,
-                  owner: owner,
-                  saltNonce: owner,
+                  saltNonce: new _ethers.ethers.Wallet(privateKey).address,
                   ensName: ensName,
                   gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
                   proxyFactory: this.proxyFactory,
@@ -490,22 +551,162 @@ function () {
                   ensAddress: this.ensAddress,
                   jsonRpcUrl: this.jsonRpcUrl,
                   linkdropFactory: this.linkdropFactory,
-                  email: email
+                  email: email,
+                  privateKey: privateKey,
+                  gasPrice: gasPrice
                 }));
 
               case 2:
               case "end":
-                return _context5.stop();
+                return _context6.stop();
             }
           }
-        }, _callee5, this);
+        }, _callee6, this);
       }));
 
-      function claimAndCreateERC721(_x8) {
+      function claimAndCreateERC721(_x9) {
         return _claimAndCreateERC2.apply(this, arguments);
       }
 
       return claimAndCreateERC721;
+    }()
+    /**
+     * Function to create new safe and claim linkdrop
+     * @param {String} weiAmount Wei amount
+     * @param {String} tokenAddress Token address
+     * @param {String} tokenAmount Token amount
+     * @param {String} expirationTime Link expiration timestamp
+     * @param {String} linkKey Ephemeral key assigned to link
+     * @param {String} linkdropModuleAddress Linkdrop module address
+     * @param {String} linkdropSignerSignature Linkdrop signer signature
+     * @param {String} privateKey Safe owner's private key
+     * @param {String} gasPrice Gas price in wei
+     * @param {String} ensName ENS name (e.g. 'alice')
+     * @param {String} email Email
+     * @returns {Object} {success, txHash,safe, linkdropModule, recoveryModule, errors}
+     */
+
+  }, {
+    key: "claimAndCreateP2P",
+    value: function () {
+      var _claimAndCreateP2P2 = (0, _asyncToGenerator2["default"])(
+      /*#__PURE__*/
+      _regenerator["default"].mark(function _callee7(_ref9) {
+        var weiAmount, tokenAddress, tokenAmount, expirationTime, linkKey, linkdropModuleAddress, linkdropSignerSignature, ensName, email, privateKey, gasPrice;
+        return _regenerator["default"].wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                weiAmount = _ref9.weiAmount, tokenAddress = _ref9.tokenAddress, tokenAmount = _ref9.tokenAmount, expirationTime = _ref9.expirationTime, linkKey = _ref9.linkKey, linkdropModuleAddress = _ref9.linkdropModuleAddress, linkdropSignerSignature = _ref9.linkdropSignerSignature, ensName = _ref9.ensName, email = _ref9.email, privateKey = _ref9.privateKey, gasPrice = _ref9.gasPrice;
+                return _context7.abrupt("return", (0, _claimAndCreateP2P3.claimAndCreateP2P)({
+                  weiAmount: weiAmount,
+                  tokenAddress: tokenAddress,
+                  tokenAmount: tokenAmount,
+                  expirationTime: expirationTime,
+                  linkKey: linkKey,
+                  linkdropModuleAddress: linkdropModuleAddress,
+                  linkdropSignerSignature: linkdropSignerSignature,
+                  saltNonce: new _ethers.ethers.Wallet(privateKey).address,
+                  ensName: ensName,
+                  gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
+                  proxyFactory: this.proxyFactory,
+                  linkdropModuleMasterCopy: this.linkdropModuleMasterCopy,
+                  createAndAddModules: this.createAndAddModules,
+                  multiSend: this.multiSend,
+                  apiHost: this.apiHost,
+                  guardian: this.guardian,
+                  recoveryPeriod: this.recoveryPeriod,
+                  recoveryModuleMasterCopy: this.recoveryModuleMasterCopy,
+                  ensDomain: this.ensDomain,
+                  ensAddress: this.ensAddress,
+                  jsonRpcUrl: this.jsonRpcUrl,
+                  email: email,
+                  privateKey: privateKey,
+                  gasPrice: gasPrice
+                }));
+
+              case 2:
+              case "end":
+                return _context7.stop();
+            }
+          }
+        }, _callee7, this);
+      }));
+
+      function claimAndCreateP2P(_x10) {
+        return _claimAndCreateP2P2.apply(this, arguments);
+      }
+
+      return claimAndCreateP2P;
+    }()
+    /**
+     * Function to create new safe and claim linkdrop
+     * @param {String} weiAmount Wei amount
+     * @param {String} nftAddress Nft address
+     * @param {String} tokenId Token id
+     * @param {String} expirationTime Link expiration timestamp
+     * @param {String} linkKey Ephemeral key assigned to link
+     * @param {String} linkdropModuleAddress Linkdrop module address
+     * @param {String} linkdropSignerSignature Linkdrop signer signature
+     * @param {String} privateKey Safe owner's private key
+     * @param {String} gasPrice Gas price in wei
+     * @param {String} ensName ENS name (e.g. 'alice')
+     * @param {String} email Email
+     * @returns {Object} {success, txHash,safe, linkdropModule, recoveryModule, errors}
+     */
+
+  }, {
+    key: "claimAndCreateERC721P2P",
+    value: function () {
+      var _claimAndCreateERC721P2P2 = (0, _asyncToGenerator2["default"])(
+      /*#__PURE__*/
+      _regenerator["default"].mark(function _callee8(_ref10) {
+        var weiAmount, nftAddress, tokenId, expirationTime, linkKey, linkdropModuleAddress, linkdropSignerSignature, ensName, email, privateKey, gasPrice;
+        return _regenerator["default"].wrap(function _callee8$(_context8) {
+          while (1) {
+            switch (_context8.prev = _context8.next) {
+              case 0:
+                weiAmount = _ref10.weiAmount, nftAddress = _ref10.nftAddress, tokenId = _ref10.tokenId, expirationTime = _ref10.expirationTime, linkKey = _ref10.linkKey, linkdropModuleAddress = _ref10.linkdropModuleAddress, linkdropSignerSignature = _ref10.linkdropSignerSignature, ensName = _ref10.ensName, email = _ref10.email, privateKey = _ref10.privateKey, gasPrice = _ref10.gasPrice;
+                return _context8.abrupt("return", (0, _claimAndCreateERC721P2P3.claimAndCreateERC721P2P)({
+                  weiAmount: weiAmount,
+                  nftAddress: nftAddress,
+                  tokenId: tokenId,
+                  expirationTime: expirationTime,
+                  linkKey: linkKey,
+                  linkdropModuleAddress: linkdropModuleAddress,
+                  linkdropSignerSignature: linkdropSignerSignature,
+                  saltNonce: new _ethers.ethers.Wallet(privateKey).address,
+                  ensName: ensName,
+                  gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
+                  proxyFactory: this.proxyFactory,
+                  linkdropModuleMasterCopy: this.linkdropModuleMasterCopy,
+                  createAndAddModules: this.createAndAddModules,
+                  multiSend: this.multiSend,
+                  apiHost: this.apiHost,
+                  guardian: this.guardian,
+                  recoveryPeriod: this.recoveryPeriod,
+                  recoveryModuleMasterCopy: this.recoveryModuleMasterCopy,
+                  ensDomain: this.ensDomain,
+                  ensAddress: this.ensAddress,
+                  jsonRpcUrl: this.jsonRpcUrl,
+                  email: email,
+                  privateKey: privateKey,
+                  gasPrice: gasPrice
+                }));
+
+              case 2:
+              case "end":
+                return _context8.stop();
+            }
+          }
+        }, _callee8, this);
+      }));
+
+      function claimAndCreateERC721P2P(_x11) {
+        return _claimAndCreateERC721P2P2.apply(this, arguments);
+      }
+
+      return claimAndCreateERC721P2P;
     }()
     /**
      * Function to precompute Safe address with specific params and gas price 0
@@ -515,19 +716,50 @@ function () {
 
   }, {
     key: "precomputeAddress",
-    value: function precomputeAddress(_ref8) {
-      var owner = _ref8.owner;
-      return (0, _precomputeSafeAddressWithModules.precomputeSafeAddressWithModules)({
+    value: function precomputeAddress(_ref11) {
+      var owner = _ref11.owner;
+      return (0, _computeSafeAddress2.computeSafeAddress)({
         owner: owner,
         saltNonce: owner,
         gnosisSafeMasterCopy: this.gnosisSafeMasterCopy,
-        proxyFactory: this.proxyFactory,
+        deployer: this.proxyFactory,
+        to: ADDRESS_ZERO,
+        data: '0x',
+        paymentAmount: '0'
+      });
+    }
+    /**
+     * Precomputes linkdrop module address
+     * @param {String} owner Safe owner's address
+     * @param {String} safe  Safe wallet address
+     */
+
+  }, {
+    key: "precomputeLinkdropModuleAddress",
+    value: function precomputeLinkdropModuleAddress(owner, safe) {
+      return (0, _computeLinkdropModuleAddress2.computeLinkdropModuleAddress)({
+        owner: owner,
+        saltNonce: owner,
         linkdropModuleMasterCopy: this.linkdropModuleMasterCopy,
-        createAndAddModules: this.createAndAddModules,
-        multiSend: this.multiSend,
+        deployer: safe
+      });
+    }
+    /**
+     * Precomputes recovery module address
+     * @param {String} owner Safe owner's address
+     * @param {String} safe  Safe wallet address
+     */
+
+  }, {
+    key: "precomputeRecoveryModuleAddress",
+    value: function precomputeRecoveryModuleAddress(owner, safe) {
+      return (0, _computeRecoveryModuleAddress2.computeRecoveryModuleAddress)({
+        owner: owner,
+        saltNonce: owner,
         guardian: this.guardian,
         recoveryPeriod: this.recoveryPeriod,
-        recoveryModuleMasterCopy: this.recoveryModuleMasterCopy
+        recoveryModuleMasterCopy: this.recoveryModuleMasterCopy,
+        deployer: safe
       });
     }
     /**
@@ -540,13 +772,13 @@ function () {
 
   }, {
     key: "computeLinkdropModuleAddress",
-    value: function computeLinkdropModuleAddress(_ref9) {
-      var owner = _ref9.owner,
-          saltNonce = _ref9.saltNonce,
-          _ref9$linkdropModuleM = _ref9.linkdropModuleMasterCopy,
-          linkdropModuleMasterCopy = _ref9$linkdropModuleM === void 0 ? this.linkdropModuleMasterCopy : _ref9$linkdropModuleM,
-          _ref9$deployer = _ref9.deployer,
-          deployer = _ref9$deployer === void 0 ? this.proxyFactory : _ref9$deployer;
+    value: function computeLinkdropModuleAddress(_ref12) {
+      var owner = _ref12.owner,
+          saltNonce = _ref12.saltNonce,
+          _ref12$linkdropModule = _ref12.linkdropModuleMasterCopy,
+          linkdropModuleMasterCopy = _ref12$linkdropModule === void 0 ? this.linkdropModuleMasterCopy : _ref12$linkdropModule,
+          _ref12$deployer = _ref12.deployer,
+          deployer = _ref12$deployer === void 0 ? this.proxyFactory : _ref12$deployer;
       return (0, _computeLinkdropModuleAddress2.computeLinkdropModuleAddress)({
         owner: owner,
         saltNonce: saltNonce,
@@ -565,15 +797,15 @@ function () {
 
   }, {
     key: "computeRecoveryModuleAddress",
-    value: function computeRecoveryModuleAddress(_ref10) {
-      var guardian = _ref10.guardian,
-          _ref10$recoveryPeriod = _ref10.recoveryPeriod,
-          recoveryPeriod = _ref10$recoveryPeriod === void 0 ? this.recoveryPeriod : _ref10$recoveryPeriod,
-          saltNonce = _ref10.saltNonce,
-          _ref10$recoveryModule = _ref10.recoveryModuleMasterCopy,
-          recoveryModuleMasterCopy = _ref10$recoveryModule === void 0 ? this.recoveryModuleMasterCopy : _ref10$recoveryModule,
-          _ref10$deployer = _ref10.deployer,
-          deployer = _ref10$deployer === void 0 ? this.proxyFactory : _ref10$deployer;
+    value: function computeRecoveryModuleAddress(_ref13) {
+      var guardian = _ref13.guardian,
+          _ref13$recoveryPeriod = _ref13.recoveryPeriod,
+          recoveryPeriod = _ref13$recoveryPeriod === void 0 ? this.recoveryPeriod : _ref13$recoveryPeriod,
+          saltNonce = _ref13.saltNonce,
+          _ref13$recoveryModule = _ref13.recoveryModuleMasterCopy,
+          recoveryModuleMasterCopy = _ref13$recoveryModule === void 0 ? this.recoveryModuleMasterCopy : _ref13$recoveryModule,
+          _ref13$deployer = _ref13.deployer,
+          deployer = _ref13$deployer === void 0 ? this.proxyFactory : _ref13$deployer;
       return (0, _computeRecoveryModuleAddress2.computeRecoveryModuleAddress)({
         guardian: guardian,
         recoveryPeriod: recoveryPeriod,
@@ -607,14 +839,14 @@ function () {
     value: function () {
       var _generateLink2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee6(_ref11) {
+      _regenerator["default"].mark(function _callee9(_ref14) {
         var signingKeyOrWallet, linkdropModuleAddress, weiAmount, tokenAddress, tokenAmount, expirationTime;
-        return _regenerator["default"].wrap(function _callee6$(_context6) {
+        return _regenerator["default"].wrap(function _callee9$(_context9) {
           while (1) {
-            switch (_context6.prev = _context6.next) {
+            switch (_context9.prev = _context9.next) {
               case 0:
-                signingKeyOrWallet = _ref11.signingKeyOrWallet, linkdropModuleAddress = _ref11.linkdropModuleAddress, weiAmount = _ref11.weiAmount, tokenAddress = _ref11.tokenAddress, tokenAmount = _ref11.tokenAmount, expirationTime = _ref11.expirationTime;
-                return _context6.abrupt("return", (0, _generateLink3.generateLink)({
+                signingKeyOrWallet = _ref14.signingKeyOrWallet, linkdropModuleAddress = _ref14.linkdropModuleAddress, weiAmount = _ref14.weiAmount, tokenAddress = _ref14.tokenAddress, tokenAmount = _ref14.tokenAmount, expirationTime = _ref14.expirationTime;
+                return _context9.abrupt("return", (0, _generateLink3.generateLink)({
                   claimHost: this.claimHost,
                   linkdropModuleAddress: linkdropModuleAddress,
                   signingKeyOrWallet: signingKeyOrWallet,
@@ -626,13 +858,13 @@ function () {
 
               case 2:
               case "end":
-                return _context6.stop();
+                return _context9.stop();
             }
           }
-        }, _callee6, this);
+        }, _callee9, this);
       }));
 
-      function generateLink(_x9) {
+      function generateLink(_x12) {
         return _generateLink2.apply(this, arguments);
       }
 
@@ -653,14 +885,14 @@ function () {
     value: function () {
       var _generateLinkERC2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee7(_ref12) {
+      _regenerator["default"].mark(function _callee10(_ref15) {
         var signingKeyOrWallet, linkdropModuleAddress, weiAmount, nftAddress, tokenId, expirationTime;
-        return _regenerator["default"].wrap(function _callee7$(_context7) {
+        return _regenerator["default"].wrap(function _callee10$(_context10) {
           while (1) {
-            switch (_context7.prev = _context7.next) {
+            switch (_context10.prev = _context10.next) {
               case 0:
-                signingKeyOrWallet = _ref12.signingKeyOrWallet, linkdropModuleAddress = _ref12.linkdropModuleAddress, weiAmount = _ref12.weiAmount, nftAddress = _ref12.nftAddress, tokenId = _ref12.tokenId, expirationTime = _ref12.expirationTime;
-                return _context7.abrupt("return", (0, _generateLink3.generateLinkERC721)({
+                signingKeyOrWallet = _ref15.signingKeyOrWallet, linkdropModuleAddress = _ref15.linkdropModuleAddress, weiAmount = _ref15.weiAmount, nftAddress = _ref15.nftAddress, tokenId = _ref15.tokenId, expirationTime = _ref15.expirationTime;
+                return _context10.abrupt("return", (0, _generateLink3.generateLinkERC721)({
                   claimHost: this.claimHost,
                   signingKeyOrWallet: signingKeyOrWallet,
                   linkdropModuleAddress: linkdropModuleAddress,
@@ -672,13 +904,13 @@ function () {
 
               case 2:
               case "end":
-                return _context7.stop();
+                return _context10.stop();
             }
           }
-        }, _callee7, this);
+        }, _callee10, this);
       }));
 
-      function generateLinkERC721(_x10) {
+      function generateLinkERC721(_x13) {
         return _generateLinkERC2.apply(this, arguments);
       }
 
@@ -701,14 +933,14 @@ function () {
     value: function () {
       var _claim2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee8(_ref13) {
+      _regenerator["default"].mark(function _callee11(_ref16) {
         var weiAmount, tokenAddress, tokenAmount, expirationTime, linkKey, linkdropModuleAddress, linkdropSignerSignature, receiverAddress;
-        return _regenerator["default"].wrap(function _callee8$(_context8) {
+        return _regenerator["default"].wrap(function _callee11$(_context11) {
           while (1) {
-            switch (_context8.prev = _context8.next) {
+            switch (_context11.prev = _context11.next) {
               case 0:
-                weiAmount = _ref13.weiAmount, tokenAddress = _ref13.tokenAddress, tokenAmount = _ref13.tokenAmount, expirationTime = _ref13.expirationTime, linkKey = _ref13.linkKey, linkdropModuleAddress = _ref13.linkdropModuleAddress, linkdropSignerSignature = _ref13.linkdropSignerSignature, receiverAddress = _ref13.receiverAddress;
-                return _context8.abrupt("return", (0, _claim3.claim)({
+                weiAmount = _ref16.weiAmount, tokenAddress = _ref16.tokenAddress, tokenAmount = _ref16.tokenAmount, expirationTime = _ref16.expirationTime, linkKey = _ref16.linkKey, linkdropModuleAddress = _ref16.linkdropModuleAddress, linkdropSignerSignature = _ref16.linkdropSignerSignature, receiverAddress = _ref16.receiverAddress;
+                return _context11.abrupt("return", (0, _claim3.claim)({
                   apiHost: this.apiHost,
                   weiAmount: weiAmount,
                   tokenAddress: tokenAddress,
@@ -722,13 +954,13 @@ function () {
 
               case 2:
               case "end":
-                return _context8.stop();
+                return _context11.stop();
             }
           }
-        }, _callee8, this);
+        }, _callee11, this);
       }));
 
-      function claim(_x11) {
+      function claim(_x14) {
         return _claim2.apply(this, arguments);
       }
 
@@ -751,14 +983,14 @@ function () {
     value: function () {
       var _claimERC2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee9(_ref14) {
+      _regenerator["default"].mark(function _callee12(_ref17) {
         var weiAmount, nftAddress, tokenId, expirationTime, linkKey, linkdropModuleAddress, linkdropSignerSignature, receiverAddress;
-        return _regenerator["default"].wrap(function _callee9$(_context9) {
+        return _regenerator["default"].wrap(function _callee12$(_context12) {
           while (1) {
-            switch (_context9.prev = _context9.next) {
+            switch (_context12.prev = _context12.next) {
               case 0:
-                weiAmount = _ref14.weiAmount, nftAddress = _ref14.nftAddress, tokenId = _ref14.tokenId, expirationTime = _ref14.expirationTime, linkKey = _ref14.linkKey, linkdropModuleAddress = _ref14.linkdropModuleAddress, linkdropSignerSignature = _ref14.linkdropSignerSignature, receiverAddress = _ref14.receiverAddress;
-                return _context9.abrupt("return", (0, _claim3.claimERC721)({
+                weiAmount = _ref17.weiAmount, nftAddress = _ref17.nftAddress, tokenId = _ref17.tokenId, expirationTime = _ref17.expirationTime, linkKey = _ref17.linkKey, linkdropModuleAddress = _ref17.linkdropModuleAddress, linkdropSignerSignature = _ref17.linkdropSignerSignature, receiverAddress = _ref17.receiverAddress;
+                return _context12.abrupt("return", (0, _claim3.claimERC721)({
                   apiHost: this.apiHost,
                   weiAmount: weiAmount,
                   nftAddress: nftAddress,
@@ -772,13 +1004,13 @@ function () {
 
               case 2:
               case "end":
-                return _context9.stop();
+                return _context12.stop();
             }
           }
-        }, _callee9, this);
+        }, _callee12, this);
       }));
 
-      function claimERC721(_x12) {
+      function claimERC721(_x15) {
         return _claimERC2.apply(this, arguments);
       }
 
@@ -795,17 +1027,17 @@ function () {
     value: function () {
       var _register2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee10(email, password) {
+      _regenerator["default"].mark(function _callee13(email, password) {
         var ownerWallet, walletAddress;
-        return _regenerator["default"].wrap(function _callee10$(_context10) {
+        return _regenerator["default"].wrap(function _callee13$(_context13) {
           while (1) {
-            switch (_context10.prev = _context10.next) {
+            switch (_context13.prev = _context13.next) {
               case 0:
                 ownerWallet = _ethers.ethers.Wallet.createRandom();
                 walletAddress = this.precomputeAddress({
                   owner: ownerWallet.address
                 });
-                return _context10.abrupt("return", (0, _accounts.register)({
+                return _context13.abrupt("return", (0, _accounts.register)({
                   email: email,
                   password: password,
                   apiHost: this.apiHost,
@@ -815,13 +1047,13 @@ function () {
 
               case 3:
               case "end":
-                return _context10.stop();
+                return _context13.stop();
             }
           }
-        }, _callee10, this);
+        }, _callee13, this);
       }));
 
-      function register(_x13, _x14) {
+      function register(_x16, _x17) {
         return _register2.apply(this, arguments);
       }
 
@@ -838,12 +1070,12 @@ function () {
     value: function () {
       var _login2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee11(email, password) {
-        return _regenerator["default"].wrap(function _callee11$(_context11) {
+      _regenerator["default"].mark(function _callee14(email, password) {
+        return _regenerator["default"].wrap(function _callee14$(_context14) {
           while (1) {
-            switch (_context11.prev = _context11.next) {
+            switch (_context14.prev = _context14.next) {
               case 0:
-                return _context11.abrupt("return", (0, _accounts.login)({
+                return _context14.abrupt("return", (0, _accounts.login)({
                   email: email,
                   password: password,
                   apiHost: this.apiHost
@@ -851,13 +1083,13 @@ function () {
 
               case 1:
               case "end":
-                return _context11.stop();
+                return _context14.stop();
             }
           }
-        }, _callee11, this);
+        }, _callee14, this);
       }));
 
-      function login(_x15, _x16) {
+      function login(_x18, _x19) {
         return _login2.apply(this, arguments);
       }
 
@@ -874,25 +1106,25 @@ function () {
     value: function () {
       var _extractPrivateKeyFromSession2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee12(sessionKeyStore) {
-        return _regenerator["default"].wrap(function _callee12$(_context12) {
+      _regenerator["default"].mark(function _callee15(sessionKeyStore) {
+        return _regenerator["default"].wrap(function _callee15$(_context15) {
           while (1) {
-            switch (_context12.prev = _context12.next) {
+            switch (_context15.prev = _context15.next) {
               case 0:
-                return _context12.abrupt("return", (0, _accounts.extractPrivateKeyFromSession)({
+                return _context15.abrupt("return", (0, _accounts.extractPrivateKeyFromSession)({
                   sessionKeyStore: sessionKeyStore,
                   apiHost: this.apiHost
                 }));
 
               case 1:
               case "end":
-                return _context12.stop();
+                return _context15.stop();
             }
           }
-        }, _callee12, this);
+        }, _callee15, this);
       }));
 
-      function extractPrivateKeyFromSession(_x17) {
+      function extractPrivateKeyFromSession(_x20) {
         return _extractPrivateKeyFromSession2.apply(this, arguments);
       }
 
@@ -909,29 +1141,67 @@ function () {
     value: function () {
       var _isDeployed2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee13(email) {
-        return _regenerator["default"].wrap(function _callee13$(_context13) {
+      _regenerator["default"].mark(function _callee16(email) {
+        return _regenerator["default"].wrap(function _callee16$(_context16) {
           while (1) {
-            switch (_context13.prev = _context13.next) {
+            switch (_context16.prev = _context16.next) {
               case 0:
-                return _context13.abrupt("return", (0, _accounts.isDeployed)({
+                return _context16.abrupt("return", (0, _accounts.isDeployed)({
                   email: email,
                   apiHost: this.apiHost
                 }));
 
               case 1:
               case "end":
-                return _context13.stop();
+                return _context16.stop();
             }
           }
-        }, _callee13, this);
+        }, _callee16, this);
       }));
 
-      function isDeployed(_x18) {
+      function isDeployed(_x21) {
         return _isDeployed2.apply(this, arguments);
       }
 
       return isDeployed;
+    }()
+    /**
+     * Return whether a link has already been claimed or not
+     * @param {String} linkdropModule Linkdrop module address
+     * @param {String} linkId Link id
+     */
+
+  }, {
+    key: "isClaimedLink",
+    value: function () {
+      var _isClaimedLink2 = (0, _asyncToGenerator2["default"])(
+      /*#__PURE__*/
+      _regenerator["default"].mark(function _callee17(_ref18) {
+        var linkdropModule, linkId;
+        return _regenerator["default"].wrap(function _callee17$(_context17) {
+          while (1) {
+            switch (_context17.prev = _context17.next) {
+              case 0:
+                linkdropModule = _ref18.linkdropModule, linkId = _ref18.linkId;
+                return _context17.abrupt("return", (0, _linkdropModuleUtils.isClaimedLink)({
+                  linkdropModule: linkdropModule,
+                  linkId: linkId,
+                  jsonRpcUrl: this.jsonRpcUrl
+                }));
+
+              case 2:
+              case "end":
+                return _context17.stop();
+            }
+          }
+        }, _callee17, this);
+      }));
+
+      function isClaimedLink(_x22) {
+        return _isClaimedLink2.apply(this, arguments);
+      }
+
+      return isClaimedLink;
     }()
   }]);
   return WalletSDK;

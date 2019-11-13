@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.claimAndCreate = void 0;
+exports.claimAndCreateP2P = void 0;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 
@@ -41,15 +41,14 @@ var _RecoveryModule = _interopRequireDefault(require("../../contracts/build/Reco
 
 var ADDRESS_ZERO = _ethers.ethers.constants.AddressZero;
 /**
- * Function to create new safe and claim linkdrop
+ * Function to create new safe and claim linkdrop from module (p2p)
  * @param {String} weiAmount Wei amount
  * @param {String} tokenAddress Token address
  * @param {String} tokenAmount Token amount
  * @param {String} expirationTime Link expiration timestamp
  * @param {String} linkKey Ephemeral key assigned to link
- * @param {String} linkdropMasterAddress Linkdrop master address
+ * @param {String} linkdropModuleAddress Linkdrop module address
  * @param {String} linkdropSignerSignature Linkdrop signer signature
- * @param {String} campaignId Campaign id
  * @param {String} gnosisSafeMasterCopy Deployed gnosis safe mastercopy address
  * @param {String} proxyFactory Deployed proxy factory address
  * @param {String} privateKey Safe owner's private key
@@ -68,19 +67,19 @@ var ADDRESS_ZERO = _ethers.ethers.constants.AddressZero;
  * @returns {Object} {success, txHash, safe, errors}
  */
 
-var claimAndCreate =
+var claimAndCreateP2P =
 /*#__PURE__*/
 function () {
   var _ref2 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
   _regenerator["default"].mark(function _callee(_ref) {
-    var weiAmount, tokenAddress, tokenAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature, campaignId, gnosisSafeMasterCopy, proxyFactory, privateKey, linkdropModuleMasterCopy, createAndAddModules, multiSend, apiHost, saltNonce, guardian, recoveryPeriod, recoveryModuleMasterCopy, gasPrice, ensName, ensDomain, ensAddress, jsonRpcUrl, email, ensOwner, provider, owner, gnosisSafeData, createSafeData, estimate, creationCosts, safe, linkdropModule, recoveryModule, receiverSignature, linkId, linkdropModuleSetupData, linkdropModuleCreationData, recoveryModuleSetupData, recoveryModuleCreationData, modulesCreationData, createAndAddModulesData, signature, createAndAddModulesSafeTxData, response, _response$data, success, txHash, errors;
+    var weiAmount, tokenAddress, tokenAmount, expirationTime, linkKey, linkdropModuleAddress, linkdropSignerSignature, gnosisSafeMasterCopy, proxyFactory, privateKey, linkdropModuleMasterCopy, createAndAddModules, multiSend, apiHost, saltNonce, guardian, recoveryPeriod, recoveryModuleMasterCopy, gasPrice, ensName, ensDomain, ensAddress, jsonRpcUrl, email, ensOwner, provider, owner, gnosisSafeData, createSafeData, estimate, creationCosts, safe, linkdropModule, recoveryModule, receiverSignature, linkId, linkdropModuleSetupData, linkdropModuleCreationData, recoveryModuleSetupData, recoveryModuleCreationData, modulesCreationData, createAndAddModulesData, signature, createAndAddModulesSafeTxData, response, _response$data, success, txHash, errors;
 
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            weiAmount = _ref.weiAmount, tokenAddress = _ref.tokenAddress, tokenAmount = _ref.tokenAmount, expirationTime = _ref.expirationTime, linkKey = _ref.linkKey, linkdropMasterAddress = _ref.linkdropMasterAddress, linkdropSignerSignature = _ref.linkdropSignerSignature, campaignId = _ref.campaignId, gnosisSafeMasterCopy = _ref.gnosisSafeMasterCopy, proxyFactory = _ref.proxyFactory, privateKey = _ref.privateKey, linkdropModuleMasterCopy = _ref.linkdropModuleMasterCopy, createAndAddModules = _ref.createAndAddModules, multiSend = _ref.multiSend, apiHost = _ref.apiHost, saltNonce = _ref.saltNonce, guardian = _ref.guardian, recoveryPeriod = _ref.recoveryPeriod, recoveryModuleMasterCopy = _ref.recoveryModuleMasterCopy, gasPrice = _ref.gasPrice, ensName = _ref.ensName, ensDomain = _ref.ensDomain, ensAddress = _ref.ensAddress, jsonRpcUrl = _ref.jsonRpcUrl, email = _ref.email;
+            weiAmount = _ref.weiAmount, tokenAddress = _ref.tokenAddress, tokenAmount = _ref.tokenAmount, expirationTime = _ref.expirationTime, linkKey = _ref.linkKey, linkdropModuleAddress = _ref.linkdropModuleAddress, linkdropSignerSignature = _ref.linkdropSignerSignature, gnosisSafeMasterCopy = _ref.gnosisSafeMasterCopy, proxyFactory = _ref.proxyFactory, privateKey = _ref.privateKey, linkdropModuleMasterCopy = _ref.linkdropModuleMasterCopy, createAndAddModules = _ref.createAndAddModules, multiSend = _ref.multiSend, apiHost = _ref.apiHost, saltNonce = _ref.saltNonce, guardian = _ref.guardian, recoveryPeriod = _ref.recoveryPeriod, recoveryModuleMasterCopy = _ref.recoveryModuleMasterCopy, gasPrice = _ref.gasPrice, ensName = _ref.ensName, ensDomain = _ref.ensDomain, ensAddress = _ref.ensAddress, jsonRpcUrl = _ref.jsonRpcUrl, email = _ref.email;
 
             _assertJs["default"].string(weiAmount, 'Wei amount is required');
 
@@ -92,11 +91,9 @@ function () {
 
             _assertJs["default"].string(linkKey, 'Link key is required');
 
-            _assertJs["default"].string(linkdropMasterAddress, 'Linkdrop master address is requred');
+            _assertJs["default"].string(linkdropModuleAddress, 'Linkdrop module address is required');
 
             _assertJs["default"].string(linkdropSignerSignature, 'Linkdrop signer signature is required');
-
-            _assertJs["default"].string(campaignId, 'Campaign id is required');
 
             _assertJs["default"].string(gnosisSafeMasterCopy, 'Gnosis safe mastercopy address is required');
 
@@ -136,7 +133,7 @@ function () {
 
             _assertJs["default"].string(email, 'Email is required');
 
-            _context.next = 30;
+            _context.next = 29;
             return (0, _ensUtils.getEnsOwner)({
               ensName: ensName,
               ensDomain: ensDomain,
@@ -144,7 +141,7 @@ function () {
               jsonRpcUrl: jsonRpcUrl
             });
 
-          case 30:
+          case 29:
             ensOwner = _context.sent;
 
             _assertJs["default"]["true"](ensOwner === ADDRESS_ZERO, 'Provided name already has an owner');
@@ -160,14 +157,14 @@ function () {
             ADDRESS_ZERO // payment receiver address
             ]);
             createSafeData = (0, _utils.encodeParams)(_ProxyFactory["default"].abi, 'createProxyWithNonce', [gnosisSafeMasterCopy, gnosisSafeData, saltNonce]);
-            _context.next = 38;
+            _context.next = 37;
             return provider.estimateGas({
               to: proxyFactory,
               data: createSafeData,
               gasPrice: gasPrice
             });
 
-          case 38:
+          case 37:
             estimate = _context.sent.add(104000);
             creationCosts = estimate.mul(gasPrice);
             gnosisSafeData = (0, _utils.encodeParams)(_GnosisSafe["default"].abi, 'setup', [[owner], // owners
@@ -201,10 +198,10 @@ function () {
               recoveryModuleMasterCopy: recoveryModuleMasterCopy,
               deployer: safe
             });
-            _context.next = 47;
+            _context.next = 46;
             return (0, _utils.signReceiverAddress)(linkKey, safe);
 
-          case 47:
+          case 46:
             receiverSignature = _context.sent;
             linkId = new _ethers.ethers.Wallet(linkKey).address;
             linkdropModuleSetupData = (0, _utils.encodeParams)(_LinkdropModule["default"].abi, 'setup', [[owner]]);
@@ -229,8 +226,8 @@ function () {
               nonce: '0'
             });
             createAndAddModulesSafeTxData = (0, _utils.encodeParams)(_GnosisSafe["default"].abi, 'execTransaction', [createAndAddModules, 0, createAndAddModulesData, 1, 0, 0, 0, ADDRESS_ZERO, ADDRESS_ZERO, signature]);
-            _context.next = 59;
-            return _axios["default"].post("".concat(apiHost, "/api/v1/safes/claimAndCreate"), {
+            _context.next = 58;
+            return _axios["default"].post("".concat(apiHost, "/api/v1/safesP2P/claimAndCreateP2P"), {
               owner: owner,
               saltNonce: saltNonce,
               ensName: ensName,
@@ -242,15 +239,14 @@ function () {
               tokenAmount: tokenAmount,
               expirationTime: expirationTime,
               linkId: linkId,
-              linkdropMasterAddress: linkdropMasterAddress,
-              campaignId: campaignId,
+              linkdropModuleAddress: linkdropModuleAddress,
               linkdropSignerSignature: linkdropSignerSignature,
               receiverSignature: receiverSignature,
               email: email,
               createAndAddModulesSafeTxData: createAndAddModulesSafeTxData
             });
 
-          case 59:
+          case 58:
             response = _context.sent;
             _response$data = response.data, success = _response$data.success, txHash = _response$data.txHash, errors = _response$data.errors;
             return _context.abrupt("return", {
@@ -263,7 +259,7 @@ function () {
               errors: errors
             });
 
-          case 62:
+          case 61:
           case "end":
             return _context.stop();
         }
@@ -271,9 +267,9 @@ function () {
     }, _callee);
   }));
 
-  return function claimAndCreate(_x) {
+  return function claimAndCreateP2P(_x) {
     return _ref2.apply(this, arguments);
   };
 }();
 
-exports.claimAndCreate = claimAndCreate;
+exports.claimAndCreateP2P = claimAndCreateP2P;
