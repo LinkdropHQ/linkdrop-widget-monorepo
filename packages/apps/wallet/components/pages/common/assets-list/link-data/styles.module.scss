@@ -1,0 +1,42 @@
+@import "variables";
+
+.header {
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid $greyStrokeColor;
+}
+
+.input {
+  max-width: 150px;
+  opacity: .3;
+  font-size: 30px!important;
+  font-family: 'Inter-Bold';
+}
+
+.body {
+  width: 100%;
+  min-height: 70px;
+  padding: 0px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid $greyStrokeColor;
+  margin-bottom: 60px;
+
+  & > div {
+    margin-bottom: 0;
+  }
+}
+
+.content {
+  width: 100%;
+}
+
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

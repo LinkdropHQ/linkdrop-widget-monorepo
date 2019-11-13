@@ -47,7 +47,6 @@ const generator = function * () {
   try {
     const chainId = yield select(generator.selectors.chainId)
     const wallet = yield select(generator.selectors.wallet)
-
     if (!wallet) {
       return
     }
@@ -60,6 +59,25 @@ const generator = function * () {
       const { total, docs } = yield call(getItemsTrustwallet, { wallet })
       if (total && total > 0) {
         const erc20AssetsFormatted = yield all(docs.map(({ contract: { address, symbol, decimals } }) => getTokenDataERC20({ address, symbol, decimals, chainId, provider, wallet })))
+        assetsStorage = assetsStorage.concat(erc20AssetsFormatted)
+      }
+    }
+    // should be deleted after demo
+    if (Number(chainId) === 4) {
+      const address = '0x245992e7a20039b45620bc840c7299f7a7b330bd'
+      const tokenContract = new ethers.Contract(address, TokenMock.abi, provider)
+      const balance = yield tokenContract.balanceOf(wallet)
+      const symbol = yield tokenContract.symbol()
+      const decimals = yield tokenContract.decimals()
+      if (String(balance) > 0) {
+        const erc20AssetsFormatted = yield getTokenDataERC20({
+          address,
+          symbol,
+          decimals,
+          chainId,
+          provider,
+          wallet
+        })
         assetsStorage = assetsStorage.concat(erc20AssetsFormatted)
       }
     }

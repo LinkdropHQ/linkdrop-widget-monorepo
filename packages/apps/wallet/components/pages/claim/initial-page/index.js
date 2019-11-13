@@ -27,14 +27,19 @@ class InitialPage extends React.Component {
     const finalIcon = iconType === 'default' ? <img onError={_ => this.setState({ iconType: 'blank' })} className={styles.icon} src={icon} /> : <Icons.Star />
     return <div className={commonStyles.container}>
       <Alert
-        noBorder={iconType === 'default' && symbol !== 'ETH'} className={classNames(styles.tokenIcon, {
+        noBorder={iconType === 'default' && symbol !== 'ETH'}
+        className={classNames(styles.tokenIcon, {
           [styles.tokenIconNft]: nftAddress && iconType === 'default'
         })} icon={finalIcon}
       />
       <div className={styles.title}>
         <span>{balanceFormatted}</span> {symbol}
       </div>
-      <Button disabled={loading} className={styles.button} onClick={_ => onClick && onClick()}>
+      <Button
+        disabled={loading}
+        className={styles.button}
+        onClick={_ => onClick && onClick()}
+      >
         {text('common.buttons.claim')}
       </Button>
     </div>
