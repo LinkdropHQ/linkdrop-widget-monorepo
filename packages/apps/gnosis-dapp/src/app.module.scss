@@ -2,6 +2,12 @@
   width: 300px;
   border-radius: 5px;
   font-size: 20px;
+  height: 50px;
+  line-height: 50px;
+  border: 2px solid black;
+  border-radius: 5px;
+  background: transparent;
+  box-sizing: border-box;
 }
 
 .title {
@@ -14,6 +20,7 @@
 .connected {
   height: 50px;
   width: 300px!important;
+  box-sizing: border-box;
   display: block!important;
   background: #DADADA;
   color: #979797;

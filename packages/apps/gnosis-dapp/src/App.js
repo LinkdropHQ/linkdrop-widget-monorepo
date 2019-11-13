@@ -4,7 +4,6 @@ import WalletProvider from '@linkdrop-widget/provider'
 import Web3 from 'web3'
 import qs from 'querystring'
 import './App.css'
-import { Button } from '@linkdrop/ui-kit'
 import Page from './page'
 import styles from './app.module.scss'
 
@@ -117,7 +116,7 @@ class App extends React.Component {
   _renderIfNotLoggedIn () {
     return (
       <div>
-        <Button
+        <button
           className={styles.button}
           inverted
           onClick={() => {
@@ -126,7 +125,7 @@ class App extends React.Component {
           }}
         >
           Connect
-        </Button>
+        </button>
       </div>
     )
   }
