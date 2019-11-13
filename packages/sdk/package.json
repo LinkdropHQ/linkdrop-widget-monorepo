@@ -1,6 +1,6 @@
 {
   "name": "@linkdrop-widget/sdk",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "main": "dist/index.js",
   "license": "MIT",
   "publishConfig": {
@@ -15,8 +15,8 @@
   "dependencies": {
     "@ensdomains/ens": "^0.3.11",
     "@gnosis.pm/safe-contracts": "^1.0.0",
+    "@linkdrop-widget/contracts": "^0.0.6",
     "@linkdrop/contracts": "^1.0.87",
-    "@linkdrop-widget/contracts": "^0.0.5",
     "assert": "^2.0.0",
     "assert-js": "^0.22.0",
     "axios": "^0.18.1",

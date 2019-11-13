@@ -1,6 +1,6 @@
 {
   "name": "@linkdrop-widget/scripts",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Scripts",
   "main": "index.js",
   "author": "Amir Jumaniyazov - <amir@linkdrop.io>",

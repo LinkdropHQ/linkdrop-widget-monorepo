@@ -1,6 +1,6 @@
 {
     "name": "@linkdrop-widget/contracts",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "Smart contracts for Linkdrop widget",
     "main": "index.js",
     "author": "Amir Jumaniyazov <amir@linkdrop.io>",

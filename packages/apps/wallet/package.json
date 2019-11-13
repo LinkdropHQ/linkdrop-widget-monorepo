@@ -1,6 +1,6 @@
 {
   "name": "@linkdrop-widget/wallet",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Wallet widget",
   "main": "index.js",
   "private": true,

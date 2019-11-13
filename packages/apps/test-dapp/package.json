@@ -1,6 +1,6 @@
 {
   "name": "@linkdrop-widget/test-dapp",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "private": true,
   "dependencies": {
     "classnames": "^2.2.6",
