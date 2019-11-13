@@ -38,7 +38,7 @@ class App extends React.Component {
   async _initProvider () {
     const urlParams = this._getParamsFromUrl()
     const network = urlParams.network
-    const widgetUrl = urlParams.widgetUrl || 'http://localhost:9002'
+    const widgetUrl = urlParams.widgetUrl || process.env.WIDGET_URL || 'http://localhost:9002'
 
     this.widget = new WalletProvider({
       network,
