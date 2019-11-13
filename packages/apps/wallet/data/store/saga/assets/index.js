@@ -10,6 +10,8 @@ import sendERC20 from './every/send-erc20'
 import sendEth from './every/send-eth'
 import sendERC721 from './every/send-erc721'
 import generateERC721Link from './every/generate-erc721-link'
+import generateERC20Link from './every/generate-erc20-link'
+import generateETHToken from './every/generate-eth-link'
 
 export default function * () {
   yield takeEvery('*ASSETS.GET_TOKEN_ERC20_DATA', getTokenERC20Data)
@@ -23,4 +25,6 @@ export default function * () {
   yield takeEvery('*ASSETS.SEND_ETH', sendEth)
   yield takeEvery('*ASSETS.SEND_ERC721', sendERC721)
   yield takeEvery('*ASSETS.GENERATE_ERC721_LINK', generateERC721Link)
+  yield takeEvery('*ASSETS.GENERATE_ERC20_LINK', generateERC20Link)
+  yield takeEvery('*ASSETS.GENERATE_ETH_LINK', generateETHToken)
 }

@@ -38,6 +38,14 @@ class Assets {
   generateERC721Link ({ nftAddress, tokenId }) {
     this.actions.dispatch({ type: '*ASSETS.GENERATE_ERC721_LINK', payload: { nftAddress, tokenId } })
   }
+
+  generateERC20Link ({ tokenAddress, amount, decimals }) {
+    this.actions.dispatch({ type: '*ASSETS.GENERATE_ERC20_LINK', payload: { tokenAddress, amount, decimals } })
+  }
+
+  generateETHLink ({ amount }) {
+    this.actions.dispatch({ type: '*ASSETS.GENERATE_ETH_LINK', payload: { amount } })
+  }
 }
 
 export default Assets

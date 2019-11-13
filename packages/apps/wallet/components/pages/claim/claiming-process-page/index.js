@@ -68,23 +68,21 @@ class ClaimingProcessPage extends React.Component {
   }
 
   renderPreview ({ mainAsset, loading, itemsToClaim }) {
-    if (mainAsset.type === 'erc721') {
-      const { iconType } = this.state
-      const { image, name, symbol } = mainAsset
-      const finalIcon = iconType === 'default' ? <img onError={_ => this.setState({ iconType: 'blank' })} className={styles.icon} src={image} /> : <Icons.Star />
-      return <div className={styles.tokenPreview}>
-        <Alert
-          noBorder={iconType === 'default' && symbol !== 'ETH'} className={classNames(styles.tokenIcon, {
-            [styles.tokenIconNft]: iconType === 'default'
-          })} icon={finalIcon}
-        />
-        <div className={styles.tokenPreviewTitle}>
-          {name}
-        </div>
+    const { iconType } = this.state
+    const { image, name, icon, symbol, balanceFormatted, nftAddress } = mainAsset
+    const finalIcon = iconType === 'default' ? <img onError={_ => this.setState({ iconType: 'blank' })} className={styles.icon} src={image || icon} /> : <Icons.Star />
+    return <div className={styles.tokenPreview}>
+      <Alert
+        noBorder={iconType === 'default' && symbol !== 'ETH'}
+        className={classNames(styles.tokenIcon, {
+          [styles.tokenIconNft]: nftAddress && iconType === 'default'
+        })}
+        icon={finalIcon}
+      />
+      <div className={styles.tokenPreviewTitle}>
+        {balanceFormatted && <span>{balanceFormatted}</span>} {nftAddress ? name : symbol}
       </div>
-    }
-
-    return <AccountBalance items={itemsToClaim} loading={loading} />
+    </div>
   }
 }
 

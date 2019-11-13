@@ -8,6 +8,7 @@ export default {
   },
   buttons: {
     goTo: 'Swap Tokens',
-    continue: 'Continue'
+    continue: 'Continue',
+    createLink: 'Create Link'
   }
 }
