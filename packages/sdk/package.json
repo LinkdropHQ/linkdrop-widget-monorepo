@@ -29,5 +29,6 @@
   },
   "devDependencies": {
     "truffle": "4.1.14"
-  }
+  },
+  "gitHead": "3f804eef9cda0f29656e8342f86b9a42cc809d84"
 }
