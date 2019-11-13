@@ -15,8 +15,8 @@ import { signTx } from './signTx'
 import GnosisSafe from '@gnosis.pm/safe-contracts/build/contracts/GnosisSafe'
 import ProxyFactory from '@gnosis.pm/safe-contracts/build/contracts/ProxyFactory'
 import CreateAndAddModules from '@gnosis.pm/safe-contracts/build/contracts/CreateAndAddModules'
-import LinkdropModule from '../../contracts/build/LinkdropModule'
-import RecoveryModule from '../../contracts/build/RecoveryModule'
+import LinkdropModule from '@linkdrop-widget/contracts/build/LinkdropModule'
+import RecoveryModule from '@linkdrop-widget/contracts/build/RecoveryModule'
 
 const ADDRESS_ZERO = ethers.constants.AddressZero
 

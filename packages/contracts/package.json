@@ -1,11 +1,13 @@
 {
     "name": "@linkdrop-widget/contracts",
     "version": "0.0.5",
-    "description": "Smart contracts for Huski app",
+    "description": "Smart contracts for Linkdrop widget",
     "main": "index.js",
     "author": "Amir Jumaniyazov <amir@linkdrop.io>",
     "license": "MIT",
-    "private": true,
+    "publishConfig": {
+        "access": "public"
+    },
     "scripts": {
         "build": "npx waffle",
         "test": "mocha --file ./test/register.js --recursive"
@@ -23,7 +25,8 @@
         "ethers": "^4.0.30",
         "expect": "^24.9.0",
         "openzeppelin-solidity": "^2.3.0",
-        "solc": "^0.5.9"
+        "solc": "^0.5.9",
+        "truffle": "4.1.15"
     },
     "devDependencies": {
         "@babel/cli": "^7.4.4",

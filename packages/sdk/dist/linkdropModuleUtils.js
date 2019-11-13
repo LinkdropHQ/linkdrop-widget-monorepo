@@ -11,7 +11,7 @@ var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"))
 
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 
-var _LinkdropModule = _interopRequireDefault(require("../../contracts/build/LinkdropModule.json"));
+var _LinkdropModule = _interopRequireDefault(require("@linkdrop-widget/contracts/build/LinkdropModule.json"));
 
 var _ethers = require("ethers");
 

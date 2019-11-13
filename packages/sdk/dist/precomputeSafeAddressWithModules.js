@@ -19,9 +19,9 @@ var _MultiSend = _interopRequireDefault(require("@gnosis.pm/safe-contracts/build
 
 var _CreateAndAddModules = _interopRequireDefault(require("@gnosis.pm/safe-contracts/build/contracts/CreateAndAddModules"));
 
-var _LinkdropModule = _interopRequireDefault(require("../../contracts/build/LinkdropModule"));
+var _LinkdropModule = _interopRequireDefault(require("@linkdrop-widget/contracts/build/LinkdropModule"));
 
-var _RecoveryModule = _interopRequireDefault(require("../../contracts/build/RecoveryModule.json"));
+var _RecoveryModule = _interopRequireDefault(require("@linkdrop-widget/contracts/build/RecoveryModule.json"));
 
 var DELEGATECALL_OP = 1;
 /**

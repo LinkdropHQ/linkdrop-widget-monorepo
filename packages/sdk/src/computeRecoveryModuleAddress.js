@@ -1,4 +1,4 @@
-import RecoveryModule from '../../contracts/build/RecoveryModule.json'
+import RecoveryModule from '@linkdrop-widget/contracts/build/RecoveryModule.json'
 import assert from 'assert-js'
 
 import { ethers } from 'ethers'

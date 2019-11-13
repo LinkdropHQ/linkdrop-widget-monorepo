@@ -1,4 +1,4 @@
-import LinkdropModule from '@linkdrop/safe-module-contracts/build/LinkdropModule'
+import LinkdropModule from '@linkdrop-widget/contracts/build/LinkdropModule'
 import assert from 'assert-js'
 
 import { ethers } from 'ethers'
