@@ -1,6 +1,6 @@
 {
     "name": "@linkdrop-widget/contracts",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Smart contracts for Huski app",
     "main": "index.js",
     "author": "Amir Jumaniyazov <amir@linkdrop.io>",
