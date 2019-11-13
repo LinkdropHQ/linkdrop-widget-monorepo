@@ -1,7 +1,7 @@
 {
   "name": "@linkdrop-widget/sdk",
   "version": "0.0.4",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
