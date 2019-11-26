@@ -103,3 +103,18 @@
   padding: 0 35px;
   border-radius: 5px;
 }
+
+@media (max-width: 640px) {
+  .footer {
+    height: auto;
+  }
+
+  .menu {
+    flex-direction: column;
+    
+    a {
+      margin-right: 0;
+      margin-bottom: 4px;
+    }
+  }
+}
