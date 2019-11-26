@@ -6,6 +6,7 @@ import qs from 'querystring'
 import './App.css'
 import Page from './page'
 import styles from './app.module.scss'
+import gnosisFooterLogo from 'assets/images/gnosis-footer.png'
 
 class App extends React.Component {
   constructor (props) {
@@ -115,17 +116,19 @@ class App extends React.Component {
 
   _renderIfNotLoggedIn () {
     return (
-      <div>
-        <button
+      <div className={styles.container}>
+        <h2 className={styles.subtitle}>Linkdrop Module Demo</h2>
+        <div className={styles.description}>
+          Linkdrop Module adds share-by-link<br />
+          functionality to Gnosis Safe. <a target='_blank' href='https://medium.com/linkdrophq/gnosis-safe-linkdrop-module-62debd13cb4c'>Learn more</a>
+        </div>
+        <a
           className={styles.button}
-          inverted
-          onClick={() => {
-            // this.widget.showWidget()
-            // this._connect(this.state.ensNameInput)
-          }}
+          href='https://t.me/LinkdropGnosisBot'
+          target='_blank'
         >
-          Connect
-        </button>
+          Get Invite Link
+        </a>
       </div>
     )
   }
@@ -166,6 +169,16 @@ class App extends React.Component {
         {this.state.connected
           ? this._renderIfLoggedIn()
           : this._renderIfNotLoggedIn()}
+          <footer className={styles.footer}>
+            <div className={styles.gnosisLogo}>
+              <img src={gnosisFooterLogo} />
+            </div>
+            <div className={styles.menu}>
+              <a href='https://blog.gnosis.pm/tagged/geco' target='_blank'>Funded by GECO</a>
+              <a href='https://linkdrop.io' target='_blank'>About Linkdrop</a>
+              <a href='https://safe.gnosis.io' target='_blank'>About Gnosis Safe</a>
+            </div>
+          </footer>
       </Page>
     )
   }

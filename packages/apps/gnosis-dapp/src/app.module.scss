@@ -4,10 +4,68 @@
   font-size: 20px;
   height: 50px;
   line-height: 50px;
-  border: 2px solid black;
   border-radius: 5px;
-  background: transparent;
+  background: #0025FF;
   box-sizing: border-box;
+  cursor: pointer;
+  display: inline-block;
+  color: #FFF;
+  text-decoration: none;
+  text-align: center;
+}
+
+.container {
+  text-align: center;
+}
+
+.footer {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  height: 80px;
+  padding: 10px;
+  text-align: center;
+}
+
+.menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  a {
+    color: #979797;
+    white-space: nowrap;
+    text-decoration: none;
+    margin-right: 45px;
+    font-size: 18px;
+    display: inline-block;
+
+    &:last-child {
+      margin-right: 0px;
+    }
+  }
+}
+
+.subtitle {
+  font-size: 24px;
+  font-family: 'Inter-Bold';
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.description {
+  text-align: center;
+  margin-bottom: 50px;
+  font-size: 18px;
+
+  a {
+    font-family: 'Inter-Bold';
+    text-decoration: none;
+    color: #000;
+  }
 }
 
 .title {
@@ -15,6 +73,18 @@
   font-family: 'Inter-Regular';
   text-align: center;
   margin: 0 0 30px;
+}
+
+.gnosisLogo {
+  position: fixed;
+  max-width: 120px;
+  left: 10px;
+  bottom: 14px;
+
+
+  img {
+    max-width: 100%;
+  }
 }
 
 .connected {
