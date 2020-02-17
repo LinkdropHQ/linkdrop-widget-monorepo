@@ -5,7 +5,14 @@
   text-align: left;
   margin-bottom: 20px;
   display: flex;
+  cursor: pointer;
   align-items: center;
+  background: #FFF;
+  transition: transform .3s;
+
+  &:hover {
+    transform: scale(1.04);
+  }
 
   &.loading {
     opacity: .3;

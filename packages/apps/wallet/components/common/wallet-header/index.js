@@ -2,11 +2,12 @@ import React from 'react'
 import styles from './styles.module'
 import { translate, actions } from 'decorators'
 import { Icons } from '@linkdrop/ui-kit'
+import CloseArrow from 'components/common/icons/close-arrow'
 import classNames from 'classnames'
-import { Note } from 'components/common'
 import Menu from './menu'
 import Footer from './footer'
 import Name from './name'
+import { AvatarIcon } from 'components/common'
 import { Scrollbars } from 'react-custom-scrollbars'
 import variables from 'variables'
 import { prepareRedirectUrl } from 'helpers'
@@ -52,7 +53,7 @@ class WalletHeader extends React.Component {
               opened: !opened
             })}
           >
-            <Icons.CloseArrow />
+            <CloseArrow />
           </div>
         </div>
         <div className={styles.bodyMain}>
@@ -61,12 +62,6 @@ class WalletHeader extends React.Component {
             width: '100%'
           }}
           >
-            {/* decided to hide it for better times... */}
-            {false && <div className={styles.bodyContent}>
-              {this.renderAvatar({ avatar })}
-              {this.renderName({ ens, chainId })}
-              <Note title='⚠ T️his wallet is for testing only. Use at your own risk' />
-            </div>}
             <Menu />
             <Footer />
           </Scrollbars>
@@ -75,18 +70,9 @@ class WalletHeader extends React.Component {
     </div>
   }
 
-  renderAvatar ({ avatar }) {
-    if (!avatar || avatar === 'undefined') {
-      return <div className={classNames(styles.avatar, styles.avatarDefault)}>
-        <Icons.Profile fill={variables.avatarDisabled} width={80} height={80} />
-      </div>
-    }
-    return <div className={styles.avatar} style={{ backgroundImage: `url(${avatar})` }} />
-  }
-
   renderProfileIcon ({ avatar }) {
     if (!avatar || avatar === 'undefined') {
-      return <Icons.Profile fill={variables.dbBlue} />
+      return <AvatarIcon fill={variables.dbBlue} />
     }
     return <div
       className={classNames(styles.avatar, styles.avatarSmall)}

@@ -1,7 +1,7 @@
 {
   "name": "@linkdrop-widget/sdk",
-  "version": "0.0.1",
-  "main": "src/index.js",
+  "version": "0.0.6",
+  "main": "dist/index.js",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -15,6 +15,7 @@
   "dependencies": {
     "@ensdomains/ens": "^0.3.11",
     "@gnosis.pm/safe-contracts": "^1.0.0",
+    "@linkdrop-widget/contracts": "^0.0.6",
     "@linkdrop/contracts": "^1.0.87",
     "assert": "^2.0.0",
     "assert-js": "^0.22.0",
@@ -25,9 +26,11 @@
     "ethereumjs-abi": "^0.6.8",
     "ethereumjs-util": "^6.1.0",
     "ethers": "^4.0.27",
-    "query-string": "^6.8.3"
+    "query-string": "^6.8.3",
+    "truffle": "4.1.14"
   },
   "devDependencies": {
     "truffle": "4.1.14"
-  }
+  },
+  "gitHead": "3f804eef9cda0f29656e8342f86b9a42cc809d84"
 }

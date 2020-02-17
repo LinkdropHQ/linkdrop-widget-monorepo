@@ -57,61 +57,14 @@ class Authorization extends React.Component {
     })
   }
 
-  // async _syncPrivateKeyWithDrive () {
-  //   const {
-  //     chainId
-  //   } = this.props
-  //   const { email, avatar } = gapiService.getEmailAndAvatar()
-
-  //   // fetching files from Drive
-  //   const fetchResult = await gapiService.fetchFiles({ chainId })
-  //   let data
-  //   if (fetchResult.success && fetchResult.data[`_${chainId}`]) {
-  //     data = fetchResult.data[`_${chainId}`]
-  //   } else { // if no files on drive upload new ones
-  //     const ens = getEns({ email, chainId })
-  //     const { contractAddress, privateKey } = this.props
-  //     const uploadResult = await gapiService.uploadFiles({ chainId, ens, contractAddress, privateKey })
-  //     data = uploadResult.data
-  //   }
-  //   const { privateKey, contractAddress, ens } = data
-  //   this.actions().user.setUserData({ privateKey, contractAddress, ens, avatar, chainId })
-  // }
-
   enableDrivePermissions () {
     this.actions().authorization.enableGDrivePermissions()
-    // try {
-    //   this.setState({ accessingDrive: true })
-    //   await gapiService.enableDrivePermissions()
-    //   await this._syncPrivateKeyWithDrive()
-    //   this.setState({ accessingDrive: false })
-    // } catch (err) {
-    //   this.setState({ accessingDrive: false })
-    //   this.actions().authorization.setErrors({
-    //     errors: ['SOME_ERROR_OCCURED_WITH_GDRIVE']
-    //   })
-    // }
   }
 
   renderGoogleDriveScreen () {
     const { accessingDrive } = this.state
     return <GoogleDrivePermission accessingDrive={accessingDrive} enableDrivePermissions={_ => this.enableDrivePermissions()} />
   }
-
-  // async handleAuthClick () {
-  // const isSignedIn = await gapiService.signIn()
-  // if (isSignedIn) {
-  //   // if has drive permissions sync with it immediately
-  //   if (gapiService.hasDrivePermissions()) {
-  //     await this._syncPrivateKeyWithDrive()
-  //   } else {
-  //     // otherwise show screen to enable permissions
-  //     this.setState({
-  //       authorized: true
-  //     })
-  //   }
-  // }
-  // }
 
   renderAuthorizationScreen () {
     const { loading, authorizationLoading } = this.props

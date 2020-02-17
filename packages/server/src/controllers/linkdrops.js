@@ -81,17 +81,19 @@ export const claimERC721 = wrapAsync(async (req, res, next) => {
     assert.string(receiverAddress, 'Receiver address is required')
     assert.string(receiverSignature, 'Receiver signature is required')
 
-    const { success, txHash, errors } = await linkdropModuleService.claim({
-      weiAmount,
-      nftAddress,
-      tokenId,
-      expirationTime,
-      linkId,
-      linkdropModuleAddress,
-      linkdropSignerSignature,
-      receiverAddress,
-      receiverSignature
-    })
+    const { success, txHash, errors } = await linkdropModuleService.claimERC721(
+      {
+        weiAmount,
+        nftAddress,
+        tokenId,
+        expirationTime,
+        linkId,
+        linkdropModuleAddress,
+        linkdropSignerSignature,
+        receiverAddress,
+        receiverSignature
+      }
+    )
 
     res.json({
       success,

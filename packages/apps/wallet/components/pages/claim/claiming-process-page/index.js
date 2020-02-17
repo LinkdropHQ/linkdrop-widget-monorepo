@@ -8,7 +8,7 @@ import styles from './styles.module'
 import { Alert, Icons } from '@linkdrop/ui-kit'
 import classNames from 'classnames'
 
-@actions(({ user: { chainId }, tokens: { transactionId, transactionStatus } }) => ({ transactionId, chainId, transactionStatus }))
+@actions(({ tokens: { transactionId, transactionStatus } }) => ({ transactionId, transactionStatus }))
 @translate('pages.claim')
 class ClaimingProcessPage extends React.Component {
   constructor (props) {
@@ -25,7 +25,7 @@ class ClaimingProcessPage extends React.Component {
       tokenAmount,
       expirationTime,
       linkKey,
-      linkdropMasterAddress,
+      linkdropModuleAddress,
       linkdropSignerSignature,
       nftAddress,
       tokenId,
@@ -34,15 +34,15 @@ class ClaimingProcessPage extends React.Component {
     } = getHashVariables()
 
     if (nftAddress && tokenId) {
-      return this.actions().tokens.claimTokensERC721({ campaignId, nftAddress, tokenId, weiAmount, expirationTime, linkKey, linkdropSignerSignature, linkdropMasterAddress })
+      return this.actions().tokens.claimTokensERC721({ campaignId, nftAddress, tokenId, weiAmount, expirationTime, linkKey, linkdropSignerSignature, linkdropModuleAddress })
     }
-    return this.actions().tokens.claimTokensERC20({ campaignId, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature })
+    return this.actions().tokens.claimTokensERC20({ campaignId, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropModuleAddress, linkdropSignerSignature })
   }
 
-  componentWillReceiveProps ({ transactionId: id, transactionStatus: status, chainId }) {
+  componentWillReceiveProps ({ transactionId: id, transactionStatus: status }) {
     const { transactionId: prevId, transactionStatus: prevStatus } = this.props
     if (id != null && prevId === null) {
-      this.statusCheck = window.setInterval(_ => this.actions().tokens.checkTransactionStatus({ transactionId: id, chainId, statusToAdd: 'claimed' }), 3000)
+      this.statusCheck = window.setInterval(_ => this.actions().tokens.checkTransactionStatus({ statusToAdd: 'claimed' }), 3000)
     }
     if (status != null && status === 'claimed' && prevStatus === null) {
       this.statusCheck && window.clearInterval(this.statusCheck)
@@ -54,7 +54,7 @@ class ClaimingProcessPage extends React.Component {
   }
 
   render () {
-    const { itemsToClaim, transactionId, chainId } = this.props
+    const { itemsToClaim, transactionId } = this.props
     const { loading } = this.state
     const mainAsset = getCurrentAsset({ itemsToClaim })
     if (!mainAsset) { return null }
@@ -62,29 +62,27 @@ class ClaimingProcessPage extends React.Component {
     return <div className={commonStyles.container}>
       {this.renderPreview({ mainAsset, loading, itemsToClaim })}
       <div className={styles.loading}>
-        <TokensAmount chainId={chainId} transactionId={transactionId} claimingFinished={!loading} loading={loading} symbol={symbol} amount={balanceFormatted} />
+        <TokensAmount transactionId={transactionId} claimingFinished={!loading} loading={loading} symbol={symbol} amount={balanceFormatted} />
       </div>
     </div>
   }
 
   renderPreview ({ mainAsset, loading, itemsToClaim }) {
-    if (mainAsset.type === 'erc721') {
-      const { iconType } = this.state
-      const { image, name, symbol } = mainAsset
-      const finalIcon = iconType === 'default' ? <img onError={_ => this.setState({ iconType: 'blank' })} className={styles.icon} src={image} /> : <Icons.Star />
-      return <div className={styles.tokenPreview}>
-        <Alert
-          noBorder={iconType === 'default' && symbol !== 'ETH'} className={classNames(styles.tokenIcon, {
-            [styles.tokenIconNft]: iconType === 'default'
-          })} icon={finalIcon}
-        />
-        <div className={styles.tokenPreviewTitle}>
-          {name}
-        </div>
+    const { iconType } = this.state
+    const { image, name, icon, symbol, balanceFormatted, nftAddress } = mainAsset
+    const finalIcon = iconType === 'default' ? <img onError={_ => this.setState({ iconType: 'blank' })} className={styles.icon} src={image || icon} /> : <Icons.Star />
+    return <div className={styles.tokenPreview}>
+      <Alert
+        noBorder={iconType === 'default' && symbol !== 'ETH'}
+        className={classNames(styles.tokenIcon, {
+          [styles.tokenIconNft]: nftAddress && iconType === 'default'
+        })}
+        icon={finalIcon}
+      />
+      <div className={styles.tokenPreviewTitle}>
+        {balanceFormatted && <span>{balanceFormatted}</span>} {nftAddress ? name : symbol}
       </div>
-    }
-
-    return <AccountBalance items={itemsToClaim} loading={loading} />
+    </div>
   }
 }
 

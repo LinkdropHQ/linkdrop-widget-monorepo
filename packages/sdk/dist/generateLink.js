@@ -113,7 +113,7 @@ function () {
             linkId = _ref3.linkId;
             linkdropSignerSignature = _ref3.linkdropSignerSignature;
             // Construct url
-            url = "".concat(claimHost, "/#/claim?linkdropModuleAddress=").concat(linkdropModuleAddress, "&weiAmount=").concat(weiAmount, "&tokenAddress=").concat(tokenAddress, "&tokenAmount=").concat(tokenAmount, "&expirationTime=").concat(expirationTime, "&linkKey=").concat(linkKey, "&linkdropSignerSignature=").concat(linkdropSignerSignature);
+            url = "".concat(claimHost, "/#/receive?linkdropModuleAddress=").concat(linkdropModuleAddress, "&weiAmount=").concat(weiAmount, "&tokenAddress=").concat(tokenAddress, "&tokenAmount=").concat(tokenAmount, "&expirationTime=").concat(expirationTime, "&linkKey=").concat(linkKey, "&linkdropSignerSignature=").concat(linkdropSignerSignature);
             return _context.abrupt("return", {
               url: url,
               linkId: linkId,
@@ -233,7 +233,7 @@ function () {
             linkId = _ref6.linkId;
             linkdropSignerSignature = _ref6.linkdropSignerSignature;
             // Construct url
-            url = "".concat(claimHost, "/#/claim?linkdropModuleAddress=").concat(linkdropModuleAddress, "&weiAmount=").concat(weiAmount, "&nftAddress=").concat(nftAddress, "&tokenId=").concat(tokenId, "&expirationTime=").concat(expirationTime, "&linkKey=").concat(linkKey, "&linkdropSignerSignature=").concat(linkdropSignerSignature);
+            url = "".concat(claimHost, "/#/receive?linkdropModuleAddress=").concat(linkdropModuleAddress, "&weiAmount=").concat(weiAmount, "&nftAddress=").concat(nftAddress, "&tokenId=").concat(tokenId, "&expirationTime=").concat(expirationTime, "&linkKey=").concat(linkKey, "&linkdropSignerSignature=").concat(linkdropSignerSignature);
             return _context2.abrupt("return", {
               url: url,
               linkId: linkId,

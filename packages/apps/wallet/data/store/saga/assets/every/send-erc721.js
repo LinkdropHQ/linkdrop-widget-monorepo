@@ -1,8 +1,8 @@
 import { defineNetworkName } from '@linkdrop/commons'
 import { put, select } from 'redux-saga/effects'
-import NFTMock from 'contracts/NFTMock.json'
 import { ethers } from 'ethers'
-import { convertEns } from './helpers'
+import { defineAddressFromEns, prepareSendParams } from './helpers'
+import handleSendResponse from './handle-send-response'
 
 const generator = function * ({ payload }) {
   try {
@@ -10,64 +10,33 @@ const generator = function * ({ payload }) {
     yield put({ type: 'USER.SET_ERRORS', payload: { errors: [] } })
     const { to, tokenAddress, tokenId } = payload
     const chainId = yield select(generator.selectors.chainId)
-    let address = to
-    const sdk = yield select(generator.selectors.sdk)
     const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
-    if (to.indexOf('.') > -1) {
-      address = yield convertEns({ ens: to, provider })
-    }
+    const address = yield defineAddressFromEns({ to, provider })
     if (!address) {
       yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
-      return yield put({
-        type: 'USER.SET_ERRORS',
-        payload: { errors: ['ENS_INVALID'] }
-      })
+      return yield put({ type: 'USER.SET_ERRORS', payload: { errors: ['ENS_INVALID'] } })
     }
-
+    const sdk = yield select(generator.selectors.sdk)
     const privateKey = yield select(generator.selectors.privateKey)
-    const tokenContract = new ethers.Contract(
+    const params = yield prepareSendParams({
+      type: 'erc721',
       tokenAddress,
-      NFTMock.abi,
-      provider
-    )
-    const owner = new ethers.Wallet(privateKey).address
-    const wallet = sdk.precomputeAddress({ owner })
-    const data = yield tokenContract.interface.functions.safeTransferFrom.encode(
-      [wallet, address, tokenId]
-    )
+      chainId,
+      sdk,
+      sendTo: address,
+      privateKey,
+      tokenId
+    })
 
-    const params = {
-      safe: wallet,
-      to: tokenAddress,
-      data,
-      value: '0',
-      privateKey
-    }
     const result = yield sdk.executeTx(params)
-    const { success, errors, txHash } = result
-    if (success) {
-      yield put({
-        type: 'TOKENS.SET_TRANSACTION_ID',
-        payload: { transactionId: txHash }
-      })
-      yield put({
-        type: 'TOKENS.SET_TRANSACTION_DATA',
-        payload: {
-          transactionData: {
-            tokenId,
-            tokenAddress,
-            status: 'loading'
-          }
-        }
-      })
-    } else {
-      window.alert('Some error occured')
-      yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
-      if (errors.length > 0) {
-        console.error(errors[0])
+    yield handleSendResponse({
+      payload: {
+        result,
+        tokenAddress,
+        tokenId
       }
-    }
+    })
   } catch (e) {
     yield put({ type: 'USER.SET_LOADING', payload: { loading: false } })
     window.alert('Some error occured')

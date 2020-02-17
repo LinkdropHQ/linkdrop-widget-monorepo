@@ -1,32 +1,24 @@
 import { put, select } from 'redux-saga/effects'
 import { ethers } from 'ethers'
-import { factory } from 'app.config.js'
 import { defineNetworkName } from '@linkdrop/commons'
-import LinkdropFactory from '@linkdrop/contracts/build/LinkdropFactory'
 
 const generator = function * ({ payload }) {
   try {
     const chainId = yield select(generator.selectors.chainId)
+    const sdk = yield select(generator.selectors.sdk)
     yield put({
       type: 'USER.SET_READY_TO_CLAIM',
-      payload: { readyToClaim: false }
+      payload: {
+        readyToClaim: false
+      }
     })
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
-    const { linkdropMasterAddress, linkKey, campaignId } = payload
+    const { linkdropModuleAddress, linkKey } = payload
     const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
     const linkWallet = yield new ethers.Wallet(linkKey, provider)
     const linkId = yield linkWallet.address
-    const factoryContract = yield new ethers.Contract(
-      factory,
-      LinkdropFactory.abi,
-      provider
-    )
-    const claimed = yield factoryContract.isClaimedLink(
-      linkdropMasterAddress,
-      campaignId,
-      linkId
-    )
+    const claimed = yield sdk.isClaimedLink({ linkdropModule: linkdropModuleAddress, linkId })
     yield put({
       type: 'USER.SET_ALREADY_CLAIMED',
       payload: { alreadyClaimed: claimed }
@@ -43,5 +35,6 @@ const generator = function * ({ payload }) {
 
 export default generator
 generator.selectors = {
-  chainId: ({ user: { chainId } }) => chainId
+  chainId: ({ user: { chainId } }) => chainId,
+  sdk: ({ user: { sdk } }) => sdk
 }

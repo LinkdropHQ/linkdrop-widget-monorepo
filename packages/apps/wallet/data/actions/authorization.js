@@ -3,10 +3,6 @@ class Authorization {
     this.actions = actions
   }
 
-  // verifyEmail ({ code }) {
-  //   this.actions.dispatch({ type: '*AUTHORIZATION.VERIFY_EMAIL', payload: { code } })
-  // }
-
   setErrors ({ errors }) {
     this.actions.dispatch({ type: '*AUTHORIZATION.SET_ERRORS', payload: { errors } })
   }
@@ -43,7 +39,7 @@ class Authorization {
   }
 
   signOut () {
-    this.actions.dispatch({ type: 'AUTHORIZATION.SIGN_OUT' })
+    this.actions.dispatch({ type: '*AUTHORIZATION.SIGN_OUT' })
   }
 }
 

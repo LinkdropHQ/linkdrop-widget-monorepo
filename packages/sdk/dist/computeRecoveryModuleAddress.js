@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.proxyCreationCode = exports.computeRecoveryModuleAddress = void 0;
 
-var _RecoveryModule = _interopRequireDefault(require("../../contracts/build/RecoveryModule.json"));
+var _RecoveryModule = _interopRequireDefault(require("@linkdrop-widget/contracts/build/RecoveryModule.json"));
 
 var _assertJs = _interopRequireDefault(require("assert-js"));
 

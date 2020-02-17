@@ -1,47 +1,62 @@
-import { put, select, call } from 'redux-saga/effects'
+import { put, select } from 'redux-saga/effects'
 import { ethers, utils } from 'ethers'
 import { defineNetworkName } from '@linkdrop/commons'
 import TokenMock from 'contracts/TokenMock.json'
-import { getAssetPrice } from 'data/api/assets'
+import getAssetDecimals from './get-asset-decimals'
+import getAssetSymbol from './get-asset-symbol'
+import getAssetPrice from './get-asset-price'
+import { prepareAssetFormat } from './helpers'
+import getEthData from './get-eth-data'
 
 const generator = function * ({ payload }) {
   try {
     yield put({ type: 'ASSETS.SET_LOADING', payload: { loading: true } })
-    const { tokenAmount, tokenAddress } = payload
+    const { tokenAmount, tokenAddress, weiAmount } = payload
+    console.log({ tokenAmount, tokenAddress, weiAmount })
     const chainId = yield select(generator.selectors.chainId)
     const networkName = defineNetworkName({ chainId })
     const provider = yield ethers.getDefaultProvider(networkName)
-    let decimals
-    let symbol
-    const icon = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${tokenAddress.toLowerCase()}/logo.png`
-    if (tokenAddress.toLowerCase() === '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359') {
-      // DAI token has problem with fetching decimals
-      decimals = 18
-      symbol = 'DAI'
+    const assetsToClaim = yield select(generator.selectors.itemsToClaim)
+    let newAssetToClaim
+    if (tokenAddress === ethers.constants.AddressZero) {
+      const contract = yield new ethers.Contract(tokenAddress, TokenMock.abi, provider)
+      const decimals = 18
+      const symbol = 'ETH'
+      const assetPrice = yield getAssetPrice({ symbol, chainId })
+      const amountBigNumber = utils.formatUnits(weiAmount, decimals)
+      newAssetToClaim = prepareAssetFormat({
+        balanceFormatted: Number(amountBigNumber),
+        balance: tokenAmount,
+        address: tokenAddress,
+        symbol,
+        decimals,
+        type: 'erc20',
+        price: assetPrice
+      })
     } else {
       const contract = yield new ethers.Contract(tokenAddress, TokenMock.abi, provider)
-      decimals = yield contract.decimals()
-      symbol = yield contract.symbol()
+      const decimals = yield getAssetDecimals({ contract, tokenAddress })
+      const symbol = yield getAssetSymbol({ contract, tokenAddress })
+      const assetPrice = yield getAssetPrice({ symbol, chainId })
+      const amountBigNumber = utils.formatUnits(tokenAmount, decimals)
+      newAssetToClaim = prepareAssetFormat({
+        balanceFormatted: Number(amountBigNumber),
+        balance: tokenAmount,
+        address: tokenAddress,
+        symbol,
+        decimals,
+        type: 'erc20',
+        price: assetPrice
+      })
     }
-    let assetPrice = 0
-    if (Number(chainId) === 1) {
-      assetPrice = yield call(getAssetPrice, { symbol })
-    }
-    const amountBigNumber = utils.formatUnits(tokenAmount, decimals)
-    const assetsToClaim = yield select(generator.selectors.itemsToClaim)
-    const newAssetToClaim = {
-      balanceFormatted: Number(amountBigNumber),
-      balance: tokenAmount,
-      tokenAddress,
-      icon,
-      symbol,
-      decimals,
-      type: 'erc20',
-      price: assetPrice
-    }
-    const assetsUpdated = assetsToClaim.concat([newAssetToClaim])
+
+    const assetsUpdated = assetsToClaim.concat(newAssetToClaim)
     yield put({ type: 'ASSETS.SET_ITEMS_TO_CLAIM', payload: { itemsToClaim: assetsUpdated } })
+    if (weiAmount) {
+      yield getEthData({ payload: { weiAmount } })
+    }
     yield put({ type: 'ASSETS.SET_LOADING', payload: { loading: false } })
+    yield put({ type: 'USER.SET_STEP', payload: { step: 1 } })
   } catch (e) {
     yield put({ type: 'USER.SET_ERRORS', payload: { errors: ['LINK_INVALID'] } })
     console.error(e)

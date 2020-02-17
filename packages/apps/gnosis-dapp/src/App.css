@@ -1,0 +1,79 @@
+@font-face {
+  font-family: 'Inter-Regular';
+  src: url('./assets/fonts/Inter-Regular.woff2') format('woff2'), /* Super Modern Browsers */
+       url('./assets/fonts/Inter-Regular.woff') format('woff')
+}
+
+@font-face {
+  font-family: 'Inter-Bold';
+  src: url('./assets/fonts/Inter-Bold.woff2') format('woff2'), /* Super Modern Browsers */
+       url('./assets/fonts/Inter-Bold.woff') format('woff')
+}
+
+@font-face {
+  font-family: 'Inter-Medium';
+  src: url('./assets/fonts/Inter-Medium.woff2') format('woff2'), /* Super Modern Browsers */
+       url('./assets/fonts/Inter-Medium.woff') format('woff')
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  background: #E8E7E6;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.App-header {
+  background-color: #eee;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: #777;
+}
+
+.App-link {
+  background-color: blue;
+  color: white;
+  padding: 10px;
+  font-size: 20px;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ens-input {
+    width: 200px;
+    padding: 5px;
+    text-align: center;
+    margin-bottom: 10px;
+}

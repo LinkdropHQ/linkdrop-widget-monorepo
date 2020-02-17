@@ -26,10 +26,12 @@ const generator = function * ({ payload }) {
       type: 'eth',
       price: assetPrice
     }
-    const assetsUpdated = assetsToClaim.concat([newAssetToClaim])
+    let assetsUpdated = assetsToClaim
+    if (Number(weiAmount) > 0) {
+      assetsUpdated = assetsUpdated.concat(newAssetToClaim)
+    }
     yield put({ type: 'ASSETS.SET_ITEMS_TO_CLAIM', payload: { itemsToClaim: assetsUpdated } })
     yield put({ type: 'ASSETS.SET_LOADING', payload: { loading: false } })
-    yield put({ type: 'USER.SET_STEP', payload: { step: 1 } })
   } catch (e) {
     console.error(e)
   }

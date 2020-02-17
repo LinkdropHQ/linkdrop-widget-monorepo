@@ -1,11 +1,22 @@
 import axios from 'axios'
 import assert from 'assert-js'
 import { ethers } from 'ethers'
-import { signReceiverAddress } from './utils'
+import {
+  signReceiverAddress,
+  encodeParams,
+  encodeDataForCreateAndAddModules
+} from './utils'
 import { computeLinkdropModuleAddress } from './computeLinkdropModuleAddress'
 import { computeRecoveryModuleAddress } from './computeRecoveryModuleAddress'
-import { precomputeSafeAddressWithModules } from './precomputeSafeAddressWithModules'
+import { computeSafeAddress } from './computeSafeAddress'
 import { getEnsOwner } from './ensUtils'
+import { signTx } from './signTx'
+
+import GnosisSafe from '@gnosis.pm/safe-contracts/build/contracts/GnosisSafe'
+import ProxyFactory from '@gnosis.pm/safe-contracts/build/contracts/ProxyFactory'
+import CreateAndAddModules from '@gnosis.pm/safe-contracts/build/contracts/CreateAndAddModules'
+import LinkdropModule from '@linkdrop-widget/contracts/build/LinkdropModule'
+import RecoveryModule from '@linkdrop-widget/contracts/build/RecoveryModule'
 
 const ADDRESS_ZERO = ethers.constants.AddressZero
 
@@ -21,7 +32,7 @@ const ADDRESS_ZERO = ethers.constants.AddressZero
  * @param {String} campaignId Campaign id
  * @param {String} gnosisSafeMasterCopy Deployed gnosis safe mastercopy address
  * @param {String} proxyFactory Deployed proxy factory address
- * @param {String} owner Safe owner address
+ * @param {String} privateKey Safe owner's private key
  * @param {String} linkdropModuleMasterCopy Deployed linkdrop module master copy address
  * @param {String} createAndAddModules Deployed createAndAddModules library address
  * @param {String} multiSend Deployed multiSend library address
@@ -47,7 +58,7 @@ export const claimAndCreateERC721 = async ({
   campaignId,
   gnosisSafeMasterCopy,
   proxyFactory,
-  owner,
+  privateKey,
   linkdropModuleMasterCopy,
   createAndAddModules,
   multiSend,
@@ -56,6 +67,7 @@ export const claimAndCreateERC721 = async ({
   guardian,
   recoveryPeriod,
   recoveryModuleMasterCopy,
+  gasPrice,
   ensName,
   ensDomain,
   ensAddress,
@@ -78,10 +90,11 @@ export const claimAndCreateERC721 = async ({
     'Gnosis safe mastercopy address is required'
   )
   assert.string(proxyFactory, 'Proxy factory address is required')
-  assert.string(owner, 'Owner is required')
+  assert.string(privateKey, 'Private key is required')
   assert.string(apiHost, 'Api host is required')
   assert.string(ensName, 'Ens name is required')
   assert.string(saltNonce, 'Salt nonce is required')
+  assert.string(gasPrice, 'Gas price is required')
   assert.string(guardian, 'Guardian address is required')
   assert.string(recoveryPeriod, 'Recovery period is required')
   assert.string(ensAddress, 'Ens address is required')
@@ -117,27 +130,65 @@ export const claimAndCreateERC721 = async ({
   })
   assert.true(ensOwner === ADDRESS_ZERO, 'Provided name already has an owner')
 
-  const safeAddress = precomputeSafeAddressWithModules({
-    gnosisSafeMasterCopy,
-    proxyFactory,
-    owner,
-    linkdropModuleMasterCopy,
-    createAndAddModules,
-    multiSend,
-    saltNonce,
-    guardian,
-    recoveryPeriod,
-    recoveryModuleMasterCopy
-  })
+  const provider = new ethers.providers.JsonRpcProvider(jsonRpcUrl)
 
-  const receiverSignature = await signReceiverAddress(linkKey, safeAddress)
-  const linkId = new ethers.Wallet(linkKey).address
+  const owner = new ethers.Wallet(privateKey).address
+
+  let gnosisSafeData = encodeParams(GnosisSafe.abi, 'setup', [
+    [owner], // owners
+    1, // threshold
+    ADDRESS_ZERO, // to
+    '0x', // data,
+    ADDRESS_ZERO, // payment token address
+    0, // payment amount
+    ADDRESS_ZERO // payment receiver address
+  ])
+
+  let createSafeData = encodeParams(ProxyFactory.abi, 'createProxyWithNonce', [
+    gnosisSafeMasterCopy,
+    gnosisSafeData,
+    saltNonce
+  ])
+
+  const estimate = (await provider.estimateGas({
+    to: proxyFactory,
+    data: createSafeData,
+    gasPrice
+  })).add(104000)
+
+  const creationCosts = estimate.mul(gasPrice)
+
+  gnosisSafeData = encodeParams(GnosisSafe.abi, 'setup', [
+    [owner], // owners
+    1, // threshold
+    ADDRESS_ZERO, // to
+    '0x', // data,
+    ADDRESS_ZERO, // payment token address
+    creationCosts, // payment amount
+    ADDRESS_ZERO // payment receiver address
+  ])
+
+  createSafeData = encodeParams(ProxyFactory.abi, 'createProxyWithNonce', [
+    gnosisSafeMasterCopy,
+    gnosisSafeData,
+    saltNonce
+  ])
+
+  const safe = computeSafeAddress({
+    owner,
+    saltNonce,
+    gnosisSafeMasterCopy,
+    deployer: proxyFactory,
+    to: ADDRESS_ZERO,
+    data: '0x',
+    paymentAmount: creationCosts.toString()
+  })
 
   const linkdropModule = computeLinkdropModuleAddress({
     owner,
     saltNonce,
     linkdropModuleMasterCopy,
-    deployer: safeAddress
+    deployer: safe
   })
 
   const recoveryModule = computeRecoveryModuleAddress({
@@ -145,8 +196,75 @@ export const claimAndCreateERC721 = async ({
     recoveryPeriod,
     saltNonce,
     recoveryModuleMasterCopy,
-    deployer: safeAddress
+    deployer: safe
   })
+
+  const receiverSignature = await signReceiverAddress(linkKey, safe)
+  const linkId = new ethers.Wallet(linkKey).address
+
+  const linkdropModuleSetupData = encodeParams(LinkdropModule.abi, 'setup', [
+    [owner]
+  ])
+
+  const linkdropModuleCreationData = encodeParams(
+    ProxyFactory.abi,
+    'createProxyWithNonce',
+    [linkdropModuleMasterCopy, linkdropModuleSetupData, saltNonce]
+  )
+
+  const recoveryModuleSetupData = encodeParams(RecoveryModule.abi, 'setup', [
+    [guardian],
+    recoveryPeriod
+  ])
+
+  const recoveryModuleCreationData = encodeParams(
+    ProxyFactory.abi,
+    'createProxyWithNonce',
+    [recoveryModuleMasterCopy, recoveryModuleSetupData, saltNonce]
+  )
+
+  const modulesCreationData = encodeDataForCreateAndAddModules([
+    linkdropModuleCreationData,
+    recoveryModuleCreationData
+  ])
+
+  const createAndAddModulesData = encodeParams(
+    CreateAndAddModules.abi,
+    'createAndAddModules',
+    [proxyFactory, modulesCreationData]
+  )
+
+  const signature = signTx({
+    safe,
+    privateKey,
+    to: createAndAddModules,
+    value: '0',
+    data: createAndAddModulesData,
+    operation: '1', // delegatecall
+    safeTxGas: '0',
+    baseGas: '0',
+    gasPrice: '0',
+    gasToken: ADDRESS_ZERO,
+    refundReceiver: ADDRESS_ZERO,
+    nonce: '0'
+  })
+
+  const createAndAddModulesSafeTxData = encodeParams(
+    GnosisSafe.abi,
+    'execTransaction',
+    [
+      createAndAddModules,
+      0,
+      createAndAddModulesData,
+      1,
+      0,
+      0,
+      0,
+      ADDRESS_ZERO,
+      ADDRESS_ZERO,
+      signature
+    ]
+  )
 
   const response = await axios.post(
     `${apiHost}/api/v1/safes/claimAndCreateERC721`,
@@ -156,7 +274,7 @@ export const claimAndCreateERC721 = async ({
       ensName,
       guardian,
       recoveryPeriod,
-      gasPrice: '0',
+      gasPrice,
       weiAmount,
       nftAddress,
       tokenId,
@@ -166,7 +284,8 @@ export const claimAndCreateERC721 = async ({
       campaignId,
       linkdropSignerSignature,
       receiverSignature,
-      email
+      email,
+      createAndAddModulesSafeTxData
     }
   )
 
@@ -177,8 +296,8 @@ export const claimAndCreateERC721 = async ({
     txHash,
     linkdropModule,
     recoveryModule,
-    safeAddress,
-    creationCosts: '0',
+    safe,
+    creationCosts,
     errors
   }
 }

@@ -1,29 +1,27 @@
 import { put, select } from 'redux-saga/effects'
 import { ERRORS } from './data'
-import { ethers } from 'ethers'
 import { factory } from 'app.config.js'
 import { getEns } from 'helpers'
 
 const generator = function * ({ payload }) {
   try {
-    const { campaignId, tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropMasterAddress, linkdropSignerSignature } = payload
+    const { tokenAddress, tokenAmount, weiAmount, expirationTime, linkKey, linkdropModuleAddress, linkdropSignerSignature } = payload
     yield put({ type: 'USER.SET_LOADING', payload: { loading: true } })
     const sdk = yield select(generator.selectors.sdk)
     const chainId = yield select(generator.selectors.chainId)
     const email = yield select(generator.selectors.email)
     const privateKey = yield select(generator.selectors.privateKey)
-    const result = yield sdk.claimAndCreate({
+    const result = yield sdk.claimAndCreateP2P({
       weiAmount: weiAmount || '0',
       tokenAddress,
       email,
       tokenAmount: tokenAmount || '0',
       expirationTime,
       linkKey,
-      linkdropMasterAddress,
+      linkdropModuleAddress,
       linkdropSignerSignature,
-      campaignId,
       factoryAddress: factory,
-      owner: new ethers.Wallet(privateKey).address,
+      privateKey,
       ensName: getEns({ email, chainId }),
       saltNonce: String(+(new Date())),
       gasPrice: '0'

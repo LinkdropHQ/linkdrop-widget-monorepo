@@ -23,7 +23,7 @@ var _GnosisSafe = _interopRequireDefault(require("@gnosis.pm/safe-contracts/buil
 
 var _estimateTxGas = require("./estimateTxGas");
 
-var _web = _interopRequireDefault(require("web3"));
+var _utils = require("./utils");
 
 var getGasSpectrum =
 /*#__PURE__*/
@@ -31,19 +31,19 @@ function () {
   var _ref2 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
   _regenerator["default"].mark(function _callee(_ref) {
-    var jsonRpcUrl, safe, privateKey, to, value, data, operation, gasToken, refundReceiver, web3, gnosisSafe, nonce, gasSpectrum, i, estimate;
+    var jsonRpcUrl, safe, privateKey, to, value, data, operation, gasToken, refundReceiver, provider, gnosisSafe, nonce, gasSpectrum, i, estimateData, tx, estimate;
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             jsonRpcUrl = _ref.jsonRpcUrl, safe = _ref.safe, privateKey = _ref.privateKey, to = _ref.to, value = _ref.value, data = _ref.data, operation = _ref.operation, gasToken = _ref.gasToken, refundReceiver = _ref.refundReceiver;
-            web3 = new _web["default"](jsonRpcUrl);
-            gnosisSafe = new web3.eth.Contract(_GnosisSafe["default"].abi, safe);
+            provider = new _ethers.ethers.providers.JsonRpcProvider(jsonRpcUrl);
+            gnosisSafe = new _ethers.ethers.Contract(safe, _GnosisSafe["default"].abi, provider);
             _context.next = 5;
-            return gnosisSafe.methods.nonce().call();
+            return gnosisSafe.nonce();
 
           case 5:
-            nonce = _context.sent;
+            nonce = _context.sent.toString();
             _context.next = 8;
             return (0, _estimateTxGas.estimateGasCosts)({
               jsonRpcUrl: jsonRpcUrl,
@@ -63,7 +63,7 @@ function () {
 
           case 10:
             if (!(i < gasSpectrum.length)) {
-              _context.next = 21;
+              _context.next = 23;
               break;
             }
 
@@ -85,26 +85,30 @@ function () {
 
           case 13:
             gasSpectrum[i].signature = _context.sent;
-            _context.next = 16;
-            return gnosisSafe.methods.execTransaction(to, value, data, operation, gasSpectrum[i].safeTxGas, gasSpectrum[i].baseGas, gasSpectrum[i].gasPrice, gasToken, refundReceiver, gasSpectrum[i].signature).estimateGas({
+            estimateData = (0, _utils.encodeParams)(_GnosisSafe["default"].abi, 'execTransaction', [to, value, data, operation, gasSpectrum[i].safeTxGas, gasSpectrum[i].baseGas, gasSpectrum[i].gasPrice, gasToken, refundReceiver, gasSpectrum[i].signature]);
+            tx = {
               from: new _ethers.ethers.Wallet(privateKey).address,
+              to: safe,
+              data: estimateData,
               gasPrice: gasSpectrum[i].gasPrice
-            });
-
-          case 16:
-            estimate = _context.sent;
-            // Add the txGasEstimate and an additional 10k to the estimate to ensure that there is enough gas for the safe transaction
-            gasSpectrum[i].gasLimit = estimate + gasSpectrum[i].safeTxGas + 100000;
+            };
+            _context.next = 18;
+            return provider.estimateGas(tx);
 
           case 18:
+            estimate = _context.sent;
+            // Add the txGasEstimate and an additional 10k to the estimate to ensure that there is enough gas for the safe transaction
+            gasSpectrum[i].gasLimit = +estimate + gasSpectrum[i].safeTxGas + 100000;
+
+          case 20:
             i++;
             _context.next = 10;
             break;
 
-          case 21:
+          case 23:
             return _context.abrupt("return", gasSpectrum);
 
-          case 22:
+          case 24:
           case "end":
             return _context.stop();
         }

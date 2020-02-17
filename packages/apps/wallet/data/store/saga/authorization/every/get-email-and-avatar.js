@@ -1,7 +1,6 @@
 /* global gapi */
-import { put } from 'redux-saga/effects'
 
-const generator = function * () {
+const generator = function () {
   try {
     const authInstance = gapi.auth2.getAuthInstance()
     const isSignedIn = authInstance.isSignedIn.get()

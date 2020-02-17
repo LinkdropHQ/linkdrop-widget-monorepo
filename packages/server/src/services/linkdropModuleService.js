@@ -7,6 +7,10 @@ import ClaimTx from '../models/claimTx'
 import ClaimTxERC721 from '../models/claimTxERC721'
 
 class LinkdropModuleService {
+  constructor () {
+    this.abi = LinkdropModule.abi
+  }
+
   async claim ({
     weiAmount,
     tokenAddress,
@@ -166,7 +170,7 @@ class LinkdropModuleService {
       })
 
       // Check link params
-      await linkdropModule.checkLinkParams(
+      await linkdropModule.checkLinkParamsERC721(
         weiAmount,
         nftAddress,
         tokenId,
@@ -180,7 +184,7 @@ class LinkdropModuleService {
 
       logger.debug('Claiming...')
       // Claim
-      const tx = await linkdropModule.claimLink(
+      const tx = await linkdropModule.claimLinkERC721(
         weiAmount,
         nftAddress,
         tokenId,
@@ -193,7 +197,7 @@ class LinkdropModuleService {
       )
 
       // Save claim tx to database
-      const claimTx = new ClaimTx({
+      const claimTx = new ClaimTxERC721({
         weiAmount,
         nftAddress,
         tokenId,

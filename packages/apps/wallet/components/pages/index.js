@@ -1,5 +1,6 @@
 import NotFound from './not-found'
 import Page from './page'
+import PageExpandable from './page-expandable'
 import Claim from './claim'
 import Wallet from './wallet'
 import Confirm from './confirm'
@@ -9,7 +10,6 @@ import Receive from './receive'
 import Common from './common'
 import Widget from './widget'
 import BuyTokens from './buy-tokens'
-import Assets from './assets'
 
 export {
   NotFound,
@@ -22,6 +22,6 @@ export {
   Receive,
   Common,
   Widget,
-  Assets,
-  BuyTokens
+  BuyTokens,
+  PageExpandable
 }

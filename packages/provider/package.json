@@ -1,10 +1,10 @@
 {
   "name": "@linkdrop-widget/provider",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "main": "src/index.js",
   "license": "MIT",
   "publishConfig": {
-    "access": "publish"
+    "access": "public"
   },
   "babel": {
     "extends": "../../babel.config.js"
@@ -13,5 +13,6 @@
     "ethers": "^4.0.27",
     "penpal": "^4.1.1",
     "web3-provider-engine": "^15.0.0"
-  }
+  },
+  "gitHead": "3f804eef9cda0f29656e8342f86b9a42cc809d84"
 }

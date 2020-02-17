@@ -2774,6 +2774,11 @@
     "@types/istanbul-lib-coverage" "*"
     "@types/istanbul-lib-report" "*"
 
+"@types/lodash@^4.14.132":
+  version "4.14.144"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.144.tgz#12e57fc99064bce45e5ab3c8bc4783feb75eab8e"
+  integrity sha512-ogI4g9W5qIQQUhXAclq6zhqgqNUr7UlFaqDHbch7WLSLeeM/7d3CRaw7GLajxvyFvhJqw4Rpcz5bhoaYtIx6Tg==
+
 "@types/minimatch@*":
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
@@ -2788,6 +2793,11 @@
   version "10.14.21"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.14.21.tgz#4a9db7ef1d1671c0015e632c5fa3d46c86c58c1e"
   integrity sha512-nuFlRdBiqbF+PJIEVxm2jLFcQWN7q7iWEJGsBV4n7v1dbI9qXB8im2pMMKMCUZe092sQb5SQft2DHfuQGK5hqQ==
+
+"@types/node@^12.0.2":
+  version "12.11.7"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.11.7.tgz#57682a9771a3f7b09c2497f28129a0462966524a"
+  integrity sha512-JNbGaHFCLwgHn/iCckiGSOZ1XYHsKFwREtzPwSGCVld1SGhOlmZw2D4ZI94HQCrBHbADzW9m4LER/8olJTRGHA==
 
 "@types/prop-types@*":
   version "15.7.3"
@@ -9036,6 +9046,15 @@ fancy-log@^1.3.2:
     color-support "^1.1.3"
     parse-node-version "^1.0.0"
     time-stamp "^1.0.0"
+
+fast-csv@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/fast-csv/-/fast-csv-3.4.0.tgz#a284a907df57f06d44ac99fe23523345c2252528"
+  integrity sha512-/vPTDJc/l6VLOLIqcrMjuhyi8ZVTipTNl2GkVvaYiHlyh16oQMYPUkUVfREurT3MYE9j3mLQDk2Q8kPq30qQCg==
+  dependencies:
+    "@types/lodash" "^4.14.132"
+    "@types/node" "^12.0.2"
+    lodash "^4.17.13"
 
 fast-deep-equal@^2.0.1:
   version "2.0.1"
@@ -21786,6 +21805,7 @@ websocket@1.0.29:
   dependencies:
     debug "^2.2.0"
     es5-ext "^0.10.50"
+    gulp "^4.0.2"
     nan "^2.14.0"
     typedarray-to-buffer "^3.1.5"
     yaeti "^0.0.6"

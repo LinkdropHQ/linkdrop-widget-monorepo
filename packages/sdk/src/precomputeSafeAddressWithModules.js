@@ -9,8 +9,8 @@ import {
 import ProxyFactory from '@gnosis.pm/safe-contracts/build/contracts/ProxyFactory'
 import MultiSend from '@gnosis.pm/safe-contracts/build/contracts/MultiSend'
 import CreateAndAddModules from '@gnosis.pm/safe-contracts/build/contracts/CreateAndAddModules'
-import LinkdropModule from '../../contracts/build/LinkdropModule'
-import RecoveryModule from '../../contracts/build/RecoveryModule.json'
+import LinkdropModule from '@linkdrop-widget/contracts/build/LinkdropModule'
+import RecoveryModule from '@linkdrop-widget/contracts/build/RecoveryModule.json'
 
 const DELEGATECALL_OP = 1
 

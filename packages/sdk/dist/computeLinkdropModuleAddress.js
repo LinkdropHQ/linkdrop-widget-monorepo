@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.proxyCreationCode = exports.computeLinkdropModuleAddress = void 0;
 
-var _LinkdropModule = _interopRequireDefault(require("@linkdrop/safe-module-contracts/build/LinkdropModule"));
+var _LinkdropModule = _interopRequireDefault(require("@linkdrop-widget/contracts/build/LinkdropModule"));
 
 var _assertJs = _interopRequireDefault(require("assert-js"));
 

@@ -2,11 +2,13 @@ import { add } from 'mathjs'
 import { utils } from 'ethers'
 
 export default (arr) => {
-  return arr.reduce((res, { tokenAddress: newId, balanceFormatted, decimals, icon, price, image, name, symbol, type, balance }) => {
-    if (type === 'erc721') {
-      return res.concat({ tokenAddress: newId, name, balanceFormatted, decimals, icon, price, symbol, image, type, balance })
-    }
+  return arr.reduce((res, { tokenAddress: newId, tokenId, balanceFormatted, decimals, icon, price, image, name, symbol, type, balance }) => {
     var previouslyAdded = res.find(({ tokenAddress: prevId }) => prevId === newId)
+    if (type === 'erc721') {
+      if (previouslyAdded && previouslyAdded.tokenId === tokenId) { return res }
+      return res.concat({ tokenAddress: newId, name, tokenId, balanceFormatted, decimals, icon, price, symbol, image, type, balance })
+    }
+
     if (!previouslyAdded) {
       return res.concat({ tokenAddress: newId, balanceFormatted, decimals, icon, price, symbol, image, type, balance })
     } else {

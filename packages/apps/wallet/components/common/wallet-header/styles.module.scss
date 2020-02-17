@@ -17,13 +17,13 @@
     top: 50%;
     cursor: pointer;
     transform: translateY(-50%);
-    height: 40px;
+    height: 35px;
   }
 
   .bodyHeaderCloseIcon, .bodyHeaderQrIcon {
     position: absolute;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(-50%) rotate(180deg);
     cursor: pointer;
   }
 

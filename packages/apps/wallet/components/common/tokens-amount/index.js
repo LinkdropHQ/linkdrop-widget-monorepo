@@ -1,12 +1,15 @@
 import React from 'react'
 import styles from './styles.module'
 import { ComponentInternalLoading, Icons } from '@linkdrop/ui-kit'
-import { translate } from 'decorators'
+import { translate, actions } from 'decorators'
 import { defineEtherscanUrl } from '@linkdrop/commons'
 import classNames from 'classnames'
 import variables from 'variables'
 import config from 'app.config.js'
 
+@actions(({ user: { chainId } }) => ({
+  chainId
+}))
 @translate('common.tokensAmount')
 class TokensAmount extends React.Component {
   constructor (props) {

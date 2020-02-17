@@ -1,3 +1,3 @@
 import WalletSDK from '@linkdrop-widget/sdk/src/index'
 
-export default ({ chain, apiHost }) => new WalletSDK({ chain, apiHost })
+export default ({ chain, apiHost, claimHost }) => new WalletSDK({ chain, claimHost, apiHost })
